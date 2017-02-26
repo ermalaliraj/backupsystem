@@ -23,8 +23,6 @@ public class CommandClient {
 			String lookupString = getLookupString("RuCommand", RuCommandRemote.class.getName());
 	        RuCommandRemote remote  = (RuCommandRemote) context.lookup(lookupString);
 	        
-	        
-	        
 	        Long id = 1L;
     		createRu(remote, id);
 	        //remote.removeRemoteUnit(id);
