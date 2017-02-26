@@ -1,0 +1,44 @@
+
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="WebApp_ID" version="2.5">
+
+	<display-name>REST-WEB Application</display-name>
+
+	<context-param>
+		<param-name>locatorFactorySelector</param-name>
+		<param-value>beanRefContext.xml</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>parentContextKey</param-name>
+		<param-value>ear.context</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/spring-empty.xml</param-value>
+	</context-param>
+ 
+	<persistence-unit-ref>
+		<persistence-unit-ref-name>persistence/firstEM</persistence-unit-ref-name>
+		<persistence-unit-name>firstEM</persistence-unit-name>
+	</persistence-unit-ref>
+ 
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<env-entry>
+		<env-entry-name>LOGBACK-CONFIG</env-entry-name>
+		<env-entry-type>java.lang.String</env-entry-type>
+		<env-entry-value>./apps-properties/ib-pc-logback-be.xml</env-entry-value>
+	</env-entry>
+	
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+
+</web-app>

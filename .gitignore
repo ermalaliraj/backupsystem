@@ -1,0 +1,17 @@
+.project
+.metadata
+.classpath
+
+
+.settings/
+*/.settings
+*/.settings/**
+
+target/
+*/target
+*/target/**
+
+backup_code
+backup_crypted
+ru - arquillian
+uml

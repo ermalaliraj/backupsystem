@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<groupId>com.ea</groupId>
+	<artifactId>backupsystem-server</artifactId>
+	<packaging>pom</packaging>
+	<version>1.0.0-SNAPSHOT</version>
+
+	<modules>
+		<module>backupsystem-server-api</module>
+		<module>../utility</module>
+		<module>../backupsystem-protocol</module>
+		<module>backupsystem-server-server</module>
+		<!-- <module>backupsystem-web</module> -->
+		<module>backupsystem-server-ear</module>
+	</modules>
+	
+	<properties>
+		<java.version>1.6</java.version>
+		<j2ee.version>6.0</j2ee.version>
+		<spring-version>3.1.0.RELEASE</spring-version>
+		<org.aspectj-version>1.6.11</org.aspectj-version>
+		<org.slf4j-version>1.6.1</org.slf4j-version>
+		<org.hibernate-version>4.1.4.Final</org.hibernate-version>
+		<ejb.version>3.0</ejb.version>
+		
+		<bs.api-version>1.0.0-SNAPSHOT</bs.api-version>
+		<bs.protocol-version>1.0.0-SNAPSHOT</bs.protocol-version>
+		<ea.utility-version>1.0.0-SNAPSHOT</ea.utility-version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.ea</groupId>
+				<artifactId>backupsystem-protocol</artifactId>
+				<version>${bs.protocol-version}</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.ea</groupId>
+				<artifactId>utility</artifactId>
+				<version>${ea.utility-version}</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.ea</groupId>
+				<artifactId>backupsystem-server-api</artifactId>
+				<version>${bs.api-version}</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
+		
+			 <dependency>
+				<groupId>javax</groupId>
+				<artifactId>javaee-api</artifactId>
+				<version>${j2ee.version}</version>
+				<scope>provided</scope>
+			</dependency>
+
+			
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>1.2.14</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${org.slf4j-version}</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+				<version>${org.slf4j-version}</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>${org.slf4j-version}</version>
+				<scope>compile</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+</project>
