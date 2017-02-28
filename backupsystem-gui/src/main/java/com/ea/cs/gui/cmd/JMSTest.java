@@ -141,7 +141,8 @@ public class JMSTest {
 		ConnectionFactory cf = null;
 		try {
 			//jboss7
-			cf = (ConnectionFactory) ctx.lookup("jms/RemoteConnectionFactory");
+			//cf = (ConnectionFactory) ctx.lookup("jms/RemoteConnectionFactory");
+			cf = (ConnectionFactory) ctx.lookup("java:/JmsXA");
 		} catch (NamingException e) {
 			System.out.println("Could not retrieve ConnectionFactory: " + e.getMessage());
 		}
@@ -150,7 +151,8 @@ public class JMSTest {
 	
 	private static Context getContextEnvJboss7() throws NamingException {
 		String host = "127.0.0.1";
-		String port = "4447";
+		//String port = "4447";  //remoting
+		String port = "5445"; //messaging
 		try {
 			Properties properties = new Properties();
 			properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.jboss.naming.remote.client.InitialContextFactory");

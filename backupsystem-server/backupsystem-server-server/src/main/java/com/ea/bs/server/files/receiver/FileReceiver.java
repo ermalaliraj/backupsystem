@@ -31,11 +31,20 @@ import com.ea.util.IOUtilities;
 			@ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge"),
 			@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
 			@ActivationConfigProperty(propertyName = "destination", propertyValue = "jms/queue/scapture"),
-//			@ActivationConfigProperty(propertyName = "MaxPoolSize", propertyValue = "1"),
-//			@ActivationConfigProperty(propertyName = "MaxMessages", propertyValue = "1"), 
-//			@ActivationConfigProperty(propertyName = "messagingType", propertyValue = "javax.jms.MessageListener"),
-			//@ActivationConfigProperty(propertyName = "useJNDI", propertyValue = "true") 
+			@ActivationConfigProperty(propertyName = "connectorClassName", propertyValue = "org.hornetq.core.remoting.impl.netty.NettyConnectorFactory"),
+			@ActivationConfigProperty(propertyName = "connectionParameters", propertyValue = "host=127.0.0.1;port=5445")
 		})
+
+//@MessageDriven(
+//		messageListenerInterface=MessageListener.class,
+//				name = "bs/FileReceiver"
+//				, activationConfig = {
+//					@ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge"),
+//					@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
+//					@ActivationConfigProperty(propertyName = "destination", propertyValue = "jms/queue/scapture"),
+//					@ActivationConfigProperty(propertyName = "connectorClassName", propertyValue = "org.hornetq.core.remoting.impl.netty.NettyConnectorFactory"),          
+//			        @ActivationConfigProperty(propertyName = "connectionParameters", propertyValue = "host=127.0.0.1;port=4445")}
+//		)
 public class FileReceiver extends MessageReceiver {
 
 	private static final Log log = LogFactory.getLog(FileReceiver.class);

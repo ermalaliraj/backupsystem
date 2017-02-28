@@ -28,8 +28,9 @@ public abstract class MessageReceiver implements MessageListener {
 	protected MessageDrivenContext ctx;
 
 	//@Resource(mappedName = "java:/LocalJMS")
-	@Resource(mappedName = "java:/ConnectionFactory")
-	protected ConnectionFactory connectionFactory;
+	//@Resource(mappedName = "java:/ConnectionFactory")
+//	@Resource(mappedName = "java:/JmsXA")
+//	protected ConnectionFactory connectionFactory;
 
 	public void onMessage(Message jmsMessage) {
 		com.ea.jms.Message messageRequest = null;
@@ -80,47 +81,47 @@ public abstract class MessageReceiver implements MessageListener {
 		Session session = null;
 		MessageProducer producer = null;
 
-		try {
-			log.trace("Connection creation, MessageReceiver: " + hashCode());
-			connection = connectionFactory.createConnection();
-
-			log.trace("Session creation, MessageReceiver: " + hashCode());
-			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
-			log.trace("Producer creation, MessageReceiver: " + hashCode());
-			producer = session.createProducer(queue);
-
-			log.trace("Message creation, MessageReceiver: " + hashCode());
-			ObjectMessage jmsMessage = session.createObjectMessage(message);
-
-			log.trace("Sending reply message, MessageReceiver: " + hashCode());
-			producer.send(jmsMessage);
-		} catch (Exception e) {
-			//log.error("An error occurred while sending reply message to TMP queue: "+queue, e);
-			throw new MessageException("Exception sending reply message", e);
-		} finally {
-			if (producer != null) {
-				try {
-					producer.close();
-				} catch (Exception e) {
-					log.warn("Cannot close producer, MessageReceiver: " + hashCode(), e);
-				}
-			}
-			if (session != null) {
-				try {
-					session.close();
-				} catch (Exception e) {
-					log.warn("Cannot close session, MessageReceiver: " + hashCode(), e);
-				}
-			}
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (Exception e) {
-					log.warn("Cannot close connection, MessageReceiver: " + hashCode(), e);
-				}
-			}
-		}
+//		try {
+//			log.trace("Connection creation, MessageReceiver: " + hashCode());
+//			connection = connectionFactory.createConnection();
+//
+//			log.trace("Session creation, MessageReceiver: " + hashCode());
+//			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+//
+//			log.trace("Producer creation, MessageReceiver: " + hashCode());
+//			producer = session.createProducer(queue);
+//
+//			log.trace("Message creation, MessageReceiver: " + hashCode());
+//			ObjectMessage jmsMessage = session.createObjectMessage(message);
+//
+//			log.trace("Sending reply message, MessageReceiver: " + hashCode());
+//			producer.send(jmsMessage);
+//		} catch (Exception e) {
+//			//log.error("An error occurred while sending reply message to TMP queue: "+queue, e);
+//			throw new MessageException("Exception sending reply message", e);
+//		} finally {
+//			if (producer != null) {
+//				try {
+//					producer.close();
+//				} catch (Exception e) {
+//					log.warn("Cannot close producer, MessageReceiver: " + hashCode(), e);
+//				}
+//			}
+//			if (session != null) {
+//				try {
+//					session.close();
+//				} catch (Exception e) {
+//					log.warn("Cannot close session, MessageReceiver: " + hashCode(), e);
+//				}
+//			}
+//			if (connection != null) {
+//				try {
+//					connection.close();
+//				} catch (Exception e) {
+//					log.warn("Cannot close connection, MessageReceiver: " + hashCode(), e);
+//				}
+//			}
+//		}
 	}
 
 }

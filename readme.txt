@@ -27,6 +27,26 @@ http://stackoverflow.com/questions/9534512/bouncycastle-jboss-as7-jce-cannot-aut
 Add jboss-client.jar to classpath of client project (GUI)
 
 
+4) Sending remote messages
+http://stackoverflow.com/questions/9588166/sending-a-jms-message-to-a-remote-queue-on-jboss-as-5-and-as-7?rq=1
+https://developer.jboss.org/message/721977#721977#721977
+http://docs.jboss.org/hornetq/2.2.5.Final/user-manual/en/html_single/index.html#d0e8392
+https://lukaszantoniak.wordpress.com/2012/12/11/jboss-as-7-remote-jms-queue/
+
+
+git branch basic
+git checkout basic
+git push --set-upstream origin basic
+git diff master basic
+
+git log -p -1
+git log --stat
+
+git checkout master
+git merge basic
+
+
+
 
 
 

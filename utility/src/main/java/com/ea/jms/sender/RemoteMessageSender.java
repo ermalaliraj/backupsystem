@@ -30,12 +30,11 @@ import com.ea.jms.exception.NoReplyException;
  * Abstract class for sending JMS messages.
  * The context of the destination can be configured once and used many times to send messages to the same destination.
  */
-public abstract class MessageSender {
+public abstract class RemoteMessageSender {
 
-	private static final Log log = LogFactory.getLog(MessageSender.class);
+	private static final Log log = LogFactory.getLog(RemoteMessageSender.class);
 	
-//	@Resource(mappedName = "java:/RemoteConnectionFactory")
-	@Resource(mappedName = "java:/RemoteConnectionFactory")
+	@Resource(mappedName = "java:/JmsXA")
 	private ConnectionFactory connectionFactory;
 	protected MessageConnection messageConnection = null;
 	protected String destinationName = null;
@@ -46,19 +45,19 @@ public abstract class MessageSender {
 	private void init() throws MessageException {
 		Context ctx = null;
 		log.info("Initializing EJB MessageSender: " + hashCode());
-//		try {
-//			log.debug("Creating JNDI context server [host: "+messageConnection.getHost()+":"+messageConnection.getPort()+"],  Destination: " + destinationName+". EJB MessageSender: " + hashCode());
-//			//ctx = getContextEnvJboss7(messageConnection);
-//			log.trace("Lookup Destination: " + destinationName + ". EJB SingleMessageSender: " + hashCode());
-//			destination = (Destination) ctx.lookup(destinationName);
-//			log.trace("Destination:" + destinationName + " looked up. EJB MessageSender: " + hashCode());
-//		} catch (NamingException e) {
-//			log.error("NamingException while initializing MessageSender--> " + hashCode()+". Exception: "+ e.getMessage(), e);
-//			throw new MessageException("NamingException occurred while sending asynchronous message. Exception:"+ e.getMessage(), e);
-//		} finally {
-//			closeInitialContext(ctx);
-//		} 
-//		log.info("Initialization of EJB MessageSender: " + hashCode() + " correctly occurred");
+		try {
+			log.debug("Creating JNDI context server [host: "+messageConnection.getHost()+":"+messageConnection.getPort()+"],  Destination: " + destinationName+". EJB MessageSender: " + hashCode());
+			ctx = getContextEnvJboss7(messageConnection);
+			log.trace("Lookup Destination: " + destinationName + ". EJB SingleMessageSender: " + hashCode());
+			destination = (Destination) ctx.lookup(destinationName);
+			log.trace("Destination:" + destinationName + " looked up. EJB MessageSender: " + hashCode());
+		} catch (NamingException e) {
+			log.error("NamingException while initializing MessageSender--> " + hashCode()+". Exception: "+ e.getMessage(), e);
+			throw new MessageException("NamingException occurred while sending asynchronous message. Exception:"+ e.getMessage(), e);
+		} finally {
+			closeInitialContext(ctx);
+		} 
+		log.info("Initialization of EJB MessageSender: " + hashCode() + " correctly occurred");
 	}
 
 	/**
@@ -84,13 +83,12 @@ public abstract class MessageSender {
 		try {
 			log.trace("Creating JMS connection. EJB MessageSender: " + hashCode());
 			String CONNECTION_FACTOY_DEFAULT = "jms/RemoteConnectionFactory";
-		//	Context ctx = getContextEnvJboss7(messageConnection);
-		//	ConnectionFactory connectionFactory = (ConnectionFactory) ctx.lookup(CONNECTION_FACTOY_DEFAULT);
+			//Context ctx = getContextEnvJboss7(messageConnection);
+			//ConnectionFactory connectionFactory = (ConnectionFactory) ctx.lookup(CONNECTION_FACTOY_DEFAULT);
 			connection = connectionFactory.createConnection();
 			
 			log.trace("Creating session and producer... EJB MessageSender: " + hashCode());
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			destination = session.createQueue(destinationName);
 			producer = session.createProducer(destination);
 			ObjectMessage jmsMessage = null;
 			jmsMessage = session.createObjectMessage(message);
@@ -103,11 +101,7 @@ public abstract class MessageSender {
 			log.info("Asynchronous message successfully sent. EJB MessageSender: " + hashCode());
 		} catch (JMSException jmse) {
 			throw new MessageException("Error occurred while sending asynchronous message, Exception:  " + jmse.getMessage(), jmse);
-		} 
-//		catch (NamingException e) {
-//			log.error("sssssssssssssssssssss:", e);
-//		} 
-		finally {
+		}  finally {
 			closeJmsProducer(producer);
 			closeJmsSession(session);
 			closeJmsConnection(connection);
@@ -132,11 +126,10 @@ public abstract class MessageSender {
 		try {
 			log.trace("Creating JMS connection. EJB MessageSender: " + hashCode());
 			//ConnectionFactory connectionFactory = null;
-			connection = connectionFactory .createConnection();
+			connection = connectionFactory.createConnection();
 
 			log.trace("Creating session and producer... EJB MessageSender: " + hashCode());
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			destination = session.createQueue(destinationName);
 			producer = session.createProducer(destination);
 			producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 
@@ -174,24 +167,24 @@ public abstract class MessageSender {
 		}
 	}
 	
-//	protected static Context getContextEnvJboss7(MessageConnection messageConnection) throws NamingException {
-//		try {
-//			Properties properties = new Properties();
-//			properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.jboss.naming.remote.client.InitialContextFactory");
-//			properties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
-//			properties.put(Context.PROVIDER_URL, "remote://" + messageConnection.getHost() + ":" + messageConnection.getPort());
-//			properties.put(Context.SECURITY_PRINCIPAL, messageConnection.getUsername());
-//			properties.put(Context.SECURITY_CREDENTIALS, messageConnection.getPassword());
-//			// deactivate authentication
-//			// properties.put("jboss.naming.client.connect.options.org.xnio.Options.SASL_POLICY_NOPLAINTEXT","false");
-//			// properties.put("remote.connection.default.connect.options.org.xnio.Options.SASL_POLICY_NOANONYMOUS","false");
-//			Context context = new InitialContext(properties);
-//			return context;
-//		} catch (NamingException e) {
-//			log.error("Error creating InitialContext with data: " + messageConnection, e);
-//			throw e;
-//		}
-//	}
+	protected static Context getContextEnvJboss7(MessageConnection messageConnection) throws NamingException {
+		try {
+			Properties properties = new Properties();
+			properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.jboss.naming.remote.client.InitialContextFactory");
+			properties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
+			properties.put(Context.PROVIDER_URL, "remote://" + messageConnection.getHost() + ":" + messageConnection.getPort());
+			properties.put(Context.SECURITY_PRINCIPAL, messageConnection.getUsername());
+			properties.put(Context.SECURITY_CREDENTIALS, messageConnection.getPassword());
+			// deactivate authentication
+			// properties.put("jboss.naming.client.connect.options.org.xnio.Options.SASL_POLICY_NOPLAINTEXT","false");
+			// properties.put("remote.connection.default.connect.options.org.xnio.Options.SASL_POLICY_NOANONYMOUS","false");
+			Context context = new InitialContext(properties);
+			return context;
+		} catch (NamingException e) {
+			log.error("Error creating InitialContext with data: " + messageConnection, e);
+			throw e;
+		}
+	}
 
 	private void closeJmsConsumer(MessageConsumer consumer) {
 		if (consumer != null) {

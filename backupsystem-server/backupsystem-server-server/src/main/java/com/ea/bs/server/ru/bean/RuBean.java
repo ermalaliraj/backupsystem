@@ -51,7 +51,8 @@ public class RuBean implements RuBeanLocal {
 		conn.setUrlPkgPrefixes("org.jboss.ejb.client.naming");
 		conn.setProtocol("remote://");
 		conn.setHost("127.0.0.1");
-		conn.setPort(4447);
+		//conn.setPort(4447);
+		conn.setPort(3447);
 		conn.setTimeout(10*1000);
 		conn.setReadTimeout(10*1000);
 		conn.setConnectionFactory("ConnectionFactory");
