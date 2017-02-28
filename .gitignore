@@ -11,6 +11,10 @@ target/
 */target
 */target/**
 
+logs/
+*/logs
+*/logs/**
+
 backup_code
 backup_crypted
 ru - arquillian
