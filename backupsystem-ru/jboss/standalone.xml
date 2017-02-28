@@ -60,12 +60,12 @@
             <console-handler name="CONSOLE">
                 <level name="DEBUG"/>
                 <formatter>
-                    <pattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%E%n"/>
+                    <pattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c] %s%E%n"/>
                 </formatter>
             </console-handler>
             <periodic-rotating-file-handler name="FILE">
                 <formatter>
-                    <pattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%E%n"/>
+                    <pattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c] %s%E%n"/>
                 </formatter>
                 <file relative-to="jboss.server.log.dir" path="server.log"/>
                 <suffix value=".yyyy-MM-dd"/>
@@ -73,7 +73,7 @@
             </periodic-rotating-file-handler>
             <periodic-rotating-file-handler name="FILE_CAPTURE_RU">
                 <formatter>
-                    <pattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%E%n"/>
+                    <pattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c] %s%E%n"/>
                 </formatter>
                 <file relative-to="jboss.server.log.dir" path="capture_ru.log"/>
                 <suffix value=".yyyy-MM-dd"/>
@@ -502,7 +502,7 @@
 
     <deployments>
         <deployment name="backupsystem-ru-ear.ear" runtime-name="backupsystem-ru-ear.ear">
-            <content sha1="28a3bcf29afbfd100c47362c102f0f95382c450a"/>
+            <content sha1="62a2813ab848820f4510c56015695544e8bb4305"/>
         </deployment>
     </deployments>
 </server>
