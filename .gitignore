@@ -2,7 +2,6 @@
 .metadata
 .classpath
 
-
 .settings/
 */.settings
 */.settings/**
@@ -10,6 +9,10 @@
 target/
 */target
 */target/**
+
+logs/
+*/logs
+*/logs/**
 
 backup_code
 backup_crypted

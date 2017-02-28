@@ -182,7 +182,7 @@ public class CommandReceiver extends MessageReceiver {
 		Message response = null;
 		try {
 			sendFileManager.sendSampleFileLogic();
-			log.debug("[RU] Sample Command correctly executed. Chck Folder for incoming files from RU: "+idRu);
+			log.debug("[RU] Sample Command correctly executed. Check Folder for incoming files from RU: "+idRu);
 			List<FileMsgInfo> list = new ArrayList<FileMsgInfo>();
 			response = new SendSampleFileMessage(idRu, list);
 		} catch (Exception e) {

@@ -29,8 +29,9 @@ public abstract class MessageReceiver implements MessageListener {
 
 	//@Resource(mappedName = "java:/LocalJMS")
 	//@Resource(mappedName = "java:/ConnectionFactory")
-//	@Resource(mappedName = "java:/JmsXA")
-//	protected ConnectionFactory connectionFactory;
+	//@Resource(mappedName = "java:/JmsXA")
+	@Resource(mappedName = "java:/RemoteConnectionFactory")
+	protected ConnectionFactory connectionFactory;
 
 	public void onMessage(Message jmsMessage) {
 		com.ea.jms.Message messageRequest = null;
@@ -81,47 +82,61 @@ public abstract class MessageReceiver implements MessageListener {
 		Session session = null;
 		MessageProducer producer = null;
 
-//		try {
-//			log.trace("Connection creation, MessageReceiver: " + hashCode());
-//			connection = connectionFactory.createConnection();
-//
-//			log.trace("Session creation, MessageReceiver: " + hashCode());
-//			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-//
-//			log.trace("Producer creation, MessageReceiver: " + hashCode());
-//			producer = session.createProducer(queue);
-//
-//			log.trace("Message creation, MessageReceiver: " + hashCode());
-//			ObjectMessage jmsMessage = session.createObjectMessage(message);
-//
-//			log.trace("Sending reply message, MessageReceiver: " + hashCode());
-//			producer.send(jmsMessage);
-//		} catch (Exception e) {
-//			//log.error("An error occurred while sending reply message to TMP queue: "+queue, e);
-//			throw new MessageException("Exception sending reply message", e);
-//		} finally {
-//			if (producer != null) {
-//				try {
-//					producer.close();
-//				} catch (Exception e) {
-//					log.warn("Cannot close producer, MessageReceiver: " + hashCode(), e);
-//				}
-//			}
-//			if (session != null) {
-//				try {
-//					session.close();
-//				} catch (Exception e) {
-//					log.warn("Cannot close session, MessageReceiver: " + hashCode(), e);
-//				}
-//			}
-//			if (connection != null) {
-//				try {
-//					connection.close();
-//				} catch (Exception e) {
-//					log.warn("Cannot close connection, MessageReceiver: " + hashCode(), e);
-//				}
-//			}
-//		}
+		try {
+			log.trace("Creating JMS connection to REPLY. EJB MessageSender: " + hashCode());
+			connection = connectionFactory.createConnection();
+			log.trace("JMS connection created. EJB MessageSender: " + hashCode());	
+		} catch (Exception e) {
+			throw new MessageException("Error creating JMS connection", e);
+		} 
+
+		try {
+			log.trace("Creating JMS session to REPLY. EJB MessageSender: " + hashCode());
+			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+			log.trace("JMS session created. EJB MessageSender: " + hashCode());	
+		} catch (Exception e) {
+			throw new MessageException("Error creating JMS session", e);
+		} 
+		
+		try {
+			log.trace("Creating JMS producer to REPLY. EJB MessageSender: " + hashCode());
+			producer = session.createProducer(queue);
+			log.trace("JMS producer created. EJB MessageSender: " + hashCode());
+		} catch (Exception e) {
+			throw new MessageException("Error creating JMS producer", e);
+		} 
+		
+		try{
+			log.trace("Creating JMS ObjectMessage to REPLY. EJB MessageSender: " + hashCode());
+			ObjectMessage jmsMessage = session.createObjectMessage(message);
+			log.trace("Sending reply message, MessageReceiver: " + hashCode());
+			producer.send(jmsMessage);
+		} catch (Exception e) {
+			//log.error("An error occurred while sending reply message to TMP queue: "+queue, e);
+			throw new MessageException("Exception sending reply message", e);
+		} finally {
+			if (producer != null) {
+				try {
+					producer.close();
+				} catch (Exception e) {
+					log.warn("Cannot close producer, MessageReceiver: " + hashCode(), e);
+				}
+			}
+			if (session != null) {
+				try {
+					session.close();
+				} catch (Exception e) {
+					log.warn("Cannot close session, MessageReceiver: " + hashCode(), e);
+				}
+			}
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (Exception e) {
+					log.warn("Cannot close connection, MessageReceiver: " + hashCode(), e);
+				}
+			}
+		}
 	}
 
 }

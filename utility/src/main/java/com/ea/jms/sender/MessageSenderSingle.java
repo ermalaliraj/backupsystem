@@ -160,7 +160,7 @@ public abstract class MessageSenderSingle {
 				log.debug("Received reply for synchronous message of type: "+message.getMessageType()+". EJB SingleMessageSender: " + hashCode());
 				response = (Message) reply.getObject();
 			} else {
-				log.error("Reply from the Destination '"+destinationName+"' is NULL! MessageConnection: "+messageConnection+", EJB SingleMessageSender: " + hashCode());
+				log.error("Reply from the Destination '"+destinationName+"' messageType: "+message.getMessageType()+" is NULL! MessageConnection: "+messageConnection+", EJB SingleMessageSender: " + hashCode());
 				throw new NoReplyException("The Destination '"+destinationName+"' couldn't reply before timeout.");
 			}
 			log.info("Reply correctly received from Destination for synchronous message of type: "+message.getMessageType()+". Reply: "+response.getMessageType()+". EJB SingleMessageSender: " + hashCode());

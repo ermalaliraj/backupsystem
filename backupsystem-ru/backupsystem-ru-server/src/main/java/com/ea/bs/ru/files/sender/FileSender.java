@@ -27,7 +27,8 @@ public class FileSender extends MessageSender implements FileSenderLocal {
 
 	@PostConstruct
 	public void setDestinationName(InvocationContext ctx) {
-		super.destinationName = "jms/queue/scapture";
+		//super.destinationName = "jms/queue/scapture";
+		super.destinationName = "scapture";
 		super.messageConnection = ruConfig.getServerConnection();
 	}
 

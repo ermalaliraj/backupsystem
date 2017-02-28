@@ -87,11 +87,36 @@ public abstract class MessageSender {
 		//	Context ctx = getContextEnvJboss7(messageConnection);
 		//	ConnectionFactory connectionFactory = (ConnectionFactory) ctx.lookup(CONNECTION_FACTOY_DEFAULT);
 			connection = connectionFactory.createConnection();
-			
-			log.trace("Creating session and producer... EJB MessageSender: " + hashCode());
+			log.trace("JMS connection created. EJB MessageSender: " + hashCode());
+		} catch (Exception e) {
+			throw new MessageException("Error creating JMS connection", e);
+		} 
+		
+		try {
+			log.trace("Creating JMS session. EJB MessageSender: " + hashCode());
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+			log.trace("JMS session created. EJB MessageSender: " + hashCode());	
+		} catch (Exception e) {
+			throw new MessageException("Error creating JMS session", e);
+		} 
+		
+		try {
+			log.trace("Creating JMS queue '"+destinationName+"'. EJB MessageSender: " + hashCode());
 			destination = session.createQueue(destinationName);
+			log.trace("JMS queue created. EJB MessageSender: " + hashCode());
+		} catch (Exception e) {
+			throw new MessageException("Error creating JMS queue '"+destinationName+"'", e);
+		}
+		
+		try {
+			log.trace("Creating JMS producer. EJB MessageSender: " + hashCode());
 			producer = session.createProducer(destination);
+			log.trace("JMS producer created. EJB MessageSender: " + hashCode());
+		} catch (Exception e) {
+			throw new MessageException("Error creating JMS producer", e);
+		}	
+		
+		try{
 			ObjectMessage jmsMessage = null;
 			jmsMessage = session.createObjectMessage(message);
 			jmsMessage.setStringProperty("messageType", message.getMessageType());
