@@ -45,6 +45,8 @@ git log --stat
 git checkout master
 git merge basic
 
+--cancel local changes
+git checkout .
 
 
 

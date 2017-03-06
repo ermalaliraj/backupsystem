@@ -24,21 +24,21 @@ public class CommandClient {
 	        RuCommandRemote remote  = (RuCommandRemote) context.lookup(lookupString);
 	        
 	        Long id = 1L;
-    		createRu(remote, id);
+    	//	createRu(remote, id);
 	        //remote.removeRemoteUnit(id);
 //			log.debug("RU: " + id + " removed!");
 	        
-	      // remote.getSampleFiles(id);
+	 //     remote.getSampleFiles(id);
 	        
-//	        RuDTO status = remote.getStatus(id);
-//	        log.debug("RU Status from server: "+status);
+	        RuDTO status = remote.getStatus(id);
+	        log.debug("RU Status from server: "+status);
 	        
-	       remote.avviaServizio(id);
+//	       remote.avviaServizio(id);
 //	        log.debug("Servizio avviato per RU "+id);
 //	        RuDTO status2 = remote.getStatus(id);
 //	        log.debug("RU Status (2) from server: "+status2);
 	        
-	        //remote.stopService(id);
+	  //      remote.stopService(id);
 //	        log.debug("STOPPED service in RU "+id);
 //	        RuDTO status3 = remote.getStatus(id);
 //	     	log.debug("RU Status (3) from server: "+status3);

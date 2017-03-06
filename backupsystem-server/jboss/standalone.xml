@@ -531,11 +531,4 @@
         <outbound-socket-binding name="backupsystem-socket-binding">
             <remote-destination host="127.0.0.1" port="5445"/>
         </outbound-socket-binding>
-    </socket-binding-group>
-
-    <deployments>
-        <deployment name="backupsystem-server-ear.ear" runtime-name="backupsystem-server-ear.ear">
-            <content sha1="7ee9dcc21a5aab7800189ff644e14b7dd7ab91a2"/>
-        </deployment>
-    </deployments>
 </server>
