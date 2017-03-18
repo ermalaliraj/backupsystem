@@ -40,3 +40,7 @@ testuser=d50a027eccf79d93dbe27d62b8990d20
 --add line application-roles.properties
 testuser=admin,guest
 
+
+1)cd RU-PRJ
+mvn package
+cp /home/uel/workspace/backupsystem/backupsystem-ru/backupsystem-ru-ear/target/backupsystem-ru-ear.ear /opt/jboss7/standalone/deployments/

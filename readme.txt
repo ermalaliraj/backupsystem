@@ -74,7 +74,8 @@ git checkout master
 git merge basic
 
 --cancel local changes
-git checkout .
+git clean -df
+git checkout -- .
 
 
 
