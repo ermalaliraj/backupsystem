@@ -47,17 +47,17 @@ public class RuBean implements RuBeanLocal {
 	
 	private MessageConnection buildMessageConnection() {
 		MessageConnection conn = new MessageConnection();
-		conn.setInitialContext("org.jboss.naming.remote.client.InitialContextFactory");
-		conn.setUrlPkgPrefixes("org.jboss.ejb.client.naming");
-		conn.setProtocol("remote://");
-		conn.setHost("127.0.0.1");
-		//conn.setPort(4447);
-		conn.setPort(3447);
+//		conn.setInitialContext("org.jboss.naming.remote.client.InitialContextFactory");
+//		conn.setUrlPkgPrefixes("org.jboss.ejb.client.naming");
+		//conn.setProtocol("remote://");
+		conn.setHost("192.168.1.2");
+		//conn.setPort(5445);
+		conn.setPort(4447);
 		conn.setTimeout(10*1000);
 		conn.setReadTimeout(10*1000);
-		conn.setConnectionFactory("ConnectionFactory");
-		conn.setUsername("adminapp");
-		conn.setPassword("adminpwd");		
+//		conn.setConnectionFactory("ConnectionFactory");
+//		conn.setUsername("adminapp");
+//		conn.setPassword("adminpwd");		
 		return conn;
 	}
 
