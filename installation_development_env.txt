@@ -1,0 +1,92 @@
+WILDFLY 10.1
+dhclient
+http://developer-should-know.com/post/112230363742/how-to-install-wildfly-as-a-service-on-linux
+yum clean all
+cd /opt
+wget http://download.jboss.org/wildfly/10.1.0.Final/wildfly-10.1.0.Final.zip
+unzip wildfly-10.1.0.Final.zip -d /opt/
+ln -s /opt/wildfly-10.1.0.Final /opt/wildfly
+
+cp /opt/wildfly/docs/contrib/scripts/init.d/wildfly.conf /etc/default/wildfly.conf   (change JAVA JBOSS variables)
+cp /opt/wildfly/docs/contrib/scripts/init.d/wildfly-init-redhat.sh /etc/init.d/wildfly
+chmod 755 wildfly
+
+chkconfig --add wildfly
+chkconfig --level 2345  wildfly on
+
+--1)useradd -s /sbin/nologin wildfly  OR see next mode
+sudo groupadd -g 1001 wildfly_admins
+sudo useradd -g wildfly_admins -d /home/wildfly -m wildfly
+--usermod -a -G wildfly_admins wildfly   (If you need to add user to group wildfly_admins)
+$ vi ~/.bash_profile
+--add
+export JBOSS_HOME="/opt/wildfly"
+export PATH=$PATH:$HOME/bin:$WILDFLY_HOME/bin
+--Apply new parameters to current environment:
+source ~/.bash_profile
+
+
+
+chown -R wildfly:wildfly /opt/wildfly-9.0.1.Final
+chown -R wildfly:wildfly /opt/wildfly
+chown -R wildfly:wildfly /var/log/wildfly
+
+service wildfly  [start/stop/status]    (/etc/init.d/wildfly [start/stop/status] without adding the service)
+
+http://localhost:9990/console/
+http://192.168.1.7:9990/console/
+Add user admin / adminpwd in the file WILDFLY_PATH\standalone\configuration\mgmt-users.properties
+admin=ba4462a8ece14e763861605aadcb4e50
+
+--bind all interfaces to <any-address> to accept requests from all IPs. Result: jboss los will see "Http management interface listening on http://0.0.0.0:9990/management"
+<interface name="...">
+	<any-address/>
+</interface>
+--disable firewall if cannot access from outside Drobox
+systemctl stop firewalld.service
+systemctl disable firewalld.service
+
+
+ECLIPSE - neon
+--download jar from: http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/neon/2/eclipse-jee-neon-2-linux-gtk-x86_64.tar.gz&mirror_id=1250
+tar -zxvf eclipse-java-luna-SR1-linux-gtk-x86_64.tar.gz -C /opt
+ln -s /opt/eclipse/eclipse /usr/bin/eclipse
+
+--Create Gnome desktop launcher.
+##nano /usr/share/applications/eclipse.desktop
+Add the following lines of code to the new file: /usr/share/applications/eclipse.desktop.
+[Desktop Entry]
+Encoding=UTF-8
+Name=Eclipse 4.4.1
+Comment=Eclipse Luna
+Exec=/usr/bin/eclipse
+Icon=/opt/eclipse/icon.xpm
+Categories=Application;Development;Java;IDE
+Version=1.0
+Type=Application
+Terminal=0
+
+--must see ecplise icon in applications menu bar, if not try from command line >eclipse
+
+MAVEN
+wget http://www.apache.org/dist//maven/binaries/apache-maven-3.0.5-bin.tar.gz
+tar -zxvf apache-maven-3.0.5-bin.tar.gz -C /opt
+
+--add system variables
+gedit /home/uel/.bashrc 
+export M2_HOME=/opt/apache-maven-3.0.5
+export PATH=${M2_HOME}/bin:${PATH}
+
+-- Install external libs
+mvn install:install-file -Dfile=./javabase64-1.3.1.jar -DgroupId=it.sauronsoftware -DartifactId=javabase64 -Dversion=1.3.1 -Dpackaging=jar
+
+1)cd RU-PRJ
+mvn package
+cp /home/uel/workspace/backupsystem/backupsystem-ru/backupsystem-ru-ear/target/backupsystem-ru-ear.ear /opt/wildfly/standalone/deployments/
+
+2)cd /opt/wildfly/standalone/log/
+tail -100f sever.log
+
+3)cd /opt/wildfly/bin
+./jboss-cli.sh --connect controller=localhost:9990
+deploy /home/uel/workspace/backupsystem/backupsystem-ru/backupsystem-ru-ear/target/backupsystem-ru-ear.ear

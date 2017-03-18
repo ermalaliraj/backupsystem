@@ -3,10 +3,7 @@ set "JAVA_HOME=C:\Program Files\Java\jdk1.8.0_101"
 cd C:/Program Files/jboss-as-7.1.1.Final/bin  (C:/Program Files/jboss-wildfly-10.1/bin)
 jboss-cli.bat --connect controller=localhost:8990
 deploy D:\Ermal_Data\Projects\examples_accademic\backupsystem\backupsystem-server\backupsystem-server-ear\target\backupsystem-server-ear.ear
-copy "D:\Ermal_Data\Projects\examples_accademic\backupsystem\backupsystem-server\backupsystem-server-ear\target\backupsystem-server-ear.ear" "C:\Program Files\jboss-as-7.1.1.Final\standalone\deployments"
-del /q "C:\Program Files\jboss-as-7.1.1.Final\standalone\deployments\"\*
-for /d %x in ("C:\Program Files\jboss-as-7.1.1.Final\standalone\deployments\"\*) do @rd /s /q "%x"
-
+copy "D:\Ermal_Data\Projects\examples_accademic\backupsystem\backupsystem-server\backupsystem-server-ear\target\backupsystem-server-ear.ear" "C:\Program Files\jboss-wildfly-10.1\standalone\deployments"
 
 cd C:/Program Files/jboss-as-7.1.1.Final_RU/bin    (C:\Program Files\jboss-wildfly-10.1_RU\bin)
 jboss-cli.bat --connect controller=localhost:9990

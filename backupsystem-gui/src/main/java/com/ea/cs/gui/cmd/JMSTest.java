@@ -141,8 +141,9 @@ public class JMSTest {
 		ConnectionFactory cf = null;
 		try {
 			//jboss7
-			//cf = (ConnectionFactory) ctx.lookup("jms/RemoteConnectionFactory");
-			cf = (ConnectionFactory) ctx.lookup("java:/JmsXA");
+			cf = (ConnectionFactory) ctx.lookup("jms/RemoteConnectionFactory");
+			//cf = (ConnectionFactory) ctx.lookup("java:/JmsXA");
+			log.debug("CF created: "+cf);
 		} catch (NamingException e) {
 			System.out.println("Could not retrieve ConnectionFactory: " + e.getMessage());
 		}
@@ -150,21 +151,22 @@ public class JMSTest {
 	}
 	
 	private static Context getContextEnvJboss7() throws NamingException {
-		String host = "127.0.0.1";
-		//String port = "4447";  //remoting
-		String port = "5445"; //messaging
+		String host = "192.168.1.2";
+		String port = "4447";  //remoting
+		//String port = "5445"; //messaging
 		try {
 			Properties properties = new Properties();
 			properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.jboss.naming.remote.client.InitialContextFactory");
 			properties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
 			properties.put(Context.PROVIDER_URL, "remote://" + host + ":" + port);
 			properties.put("jboss.naming.client.ejb.context", "true");
-			properties.put(Context.SECURITY_PRINCIPAL, "adminapp");
-			properties.put(Context.SECURITY_CREDENTIALS, "adminpwd");
+			properties.put(Context.SECURITY_PRINCIPAL, "testuser");//adminapp
+			properties.put(Context.SECURITY_CREDENTIALS, "testpwd");//adminpwd
 			// deactivate authentication
 //			 properties.put("jboss.naming.client.connect.options.org.xnio.Options.SASL_POLICY_NOPLAINTEXT","false");
 //			 properties.put("remote.connection.default.connect.options.org.xnio.Options.SASL_POLICY_NOANONYMOUS","false");
 			Context context = new InitialContext(properties);
+			log.debug("Context created: "+context.getEnvironment());
 			return context;
 		} catch (NamingException e) {
 			log.error("Error creating InitialContext", e);
