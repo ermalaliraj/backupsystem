@@ -37,6 +37,7 @@ public class CommandSender extends MessageSenderSingle2 implements CommandSender
 	@PostConstruct
 	public void setDestinationName(InvocationContext ctx) {
 		super.destinationName = "remoteCMD";
+		super.destinationName = "jms/queue/remoteCMD";
 	}
 
 	public RuMsgInfo getRuDetail(long idRu) throws MessageException {

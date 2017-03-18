@@ -28,10 +28,10 @@ public class CommandClient {
 	        //remote.removeRemoteUnit(id);
 //			log.debug("RU: " + id + " removed!");
 	        
-	 //     remote.getSampleFiles(id);
+	      remote.getSampleFiles(id);
 	        
-	        RuDTO status = remote.getStatus(id);
-	        log.debug("RU Status from server: "+status);
+//	        RuDTO status = remote.getStatus(id);
+//	        log.debug("RU Status from server: "+status);
 	        
 //	       remote.avviaServizio(id);
 //	        log.debug("Servizio avviato per RU "+id);
@@ -76,7 +76,9 @@ public class CommandClient {
 		final String distinctName = "";
 //		final String beanName = "RuCommand";
 //		final String viewClassName = RuCommandRemote.class.getName();
+		// se specificato  "org.jboss.ejb.client.naming"
 		String lookupString = "ejb:" + appName + "/" + moduleName + "/" + distinctName + "/" + beanName + "!" + fullRemoteName;
+		//String lookupString = "" + appName + "/" + moduleName + "/" + distinctName + "/" + beanName + "!" + fullRemoteName;
 		return lookupString;
 	}
 	
@@ -86,11 +88,11 @@ public class CommandClient {
 		try {
 			Properties properties = new Properties();
 			properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.jboss.naming.remote.client.InitialContextFactory");
-			properties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
+			properties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");  //senza questa riga, lookup: "" + appName + "/" + moduleName + "/" + distinctName + "/" + beanName + "!" + fullRemoteName;
 			properties.put(Context.PROVIDER_URL, "remote://" + host + ":" + port);
 			properties.put("jboss.naming.client.ejb.context", "true");
-			properties.put(Context.SECURITY_PRINCIPAL, "adminapp");
-			properties.put(Context.SECURITY_CREDENTIALS, "adminpwd");
+			properties.put(Context.SECURITY_PRINCIPAL, "testuser");
+			properties.put(Context.SECURITY_CREDENTIALS, "testpwd");
 			// deactivate authentication
 			// properties.put("jboss.naming.client.connect.options.org.xnio.Options.SASL_POLICY_NOPLAINTEXT","false");
 			// properties.put("remote.connection.default.connect.options.org.xnio.Options.SASL_POLICY_NOANONYMOUS","false");

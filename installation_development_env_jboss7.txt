@@ -24,7 +24,6 @@ passwd jboss7
 jboss7 / jboss7
 su - jboss7
 
-
 -- created similar jboss7 customized
 # cd /usr/share/jboss-as/bin/init.d  
 # cp jboss-as-standalone.sh /etc/init.d/jboss7
@@ -40,7 +39,20 @@ testuser=d50a027eccf79d93dbe27d62b8990d20
 --add line application-roles.properties
 testuser=admin,guest
 
+Created MODULE org\bouncycastle\main
+-rwxr-xr-x 1 jboss7 jboss  192035 18 mar 16.10 bcmail-jdk14-1.38.jar
+-rwxr-xr-x 1 jboss7 jboss  192035 18 mar 16.10 bcmail-jdk14-138.jar
+-rwxr-xr-x 1 jboss7 jboss  487144 18 mar 16.10 bcmail-jdk15on-1.46.jar
+-rwxr-xr-x 1 jboss7 jboss 1551468 18 mar 16.10 bcprov-jdk14-1.38.jar
+-rwxr-xr-x 1 jboss7 jboss 1551468 18 mar 16.10 bcprov-jdk14-138.jar
+-rwxr-xr-x 1 jboss7 jboss 1815692 18 mar 16.10 bcprov-jdk15on-1.46.jar
+-rwxr-xr-x 1 jboss7 jboss   22994 18 mar 16.10 bctsp-jdk14-1.38.jar
+-rwxr-xr-x 1 jboss7 jboss     763 18 mar 16.10 module.xml
+
 
 1)cd RU-PRJ
+export JAVA_HOME=/usr/local/java/jdk7
 mvn package
 cp /home/uel/workspace/backupsystem/backupsystem-ru/backupsystem-ru-ear/target/backupsystem-ru-ear.ear /opt/jboss7/standalone/deployments/
+
+./jboss-cli.sh --connect controller=localhost:9999

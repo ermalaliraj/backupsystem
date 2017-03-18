@@ -54,10 +54,10 @@ public class RuBean implements RuBeanLocal {
 		//conn.setPort(5445);
 		conn.setPort(4447);
 		conn.setTimeout(10*1000);
-		conn.setReadTimeout(10*1000);
+		//conn.setReadTimeout(10*1000);
 //		conn.setConnectionFactory("ConnectionFactory");
-//		conn.setUsername("adminapp");
-//		conn.setPassword("adminpwd");		
+		conn.setUsername("testuser");
+		conn.setPassword("testpwd");		
 		return conn;
 	}
 

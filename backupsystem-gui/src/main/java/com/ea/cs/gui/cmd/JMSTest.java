@@ -29,6 +29,7 @@ import javax.naming.NameClassPair;
 import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
+import org.hornetq.jms.client.HornetQObjectMessage;
 
 
 public class JMSTest {
@@ -111,10 +112,14 @@ public class JMSTest {
 					log.debug("Message from Queue: " + msg);
 					if (msg != null) {
 						System.out.println("msg: "+msg);
-						TextMessage text = (TextMessage)msg;
-						log.debug("Message TEXTfrom Queue: " + text.getText());
-//						org.hornetq.jms.client.HornetQObjectMessage msgHornt = (HornetQObjectMessage) msg;
-//						log.debug("Message (Java object) from Queue: " + msgHornt.getObject());
+						if(msg instanceof org.hornetq.jms.client.HornetQObjectMessage){
+							org.hornetq.jms.client.HornetQObjectMessage msgHornt = (HornetQObjectMessage) msg;
+							log.debug("Message (Java object) from Queue: " + msgHornt.getObject());							
+						} else {
+							TextMessage text = (TextMessage)msg;
+							log.debug("Message TEXTfrom Queue: " + text.getText());
+						}
+
 					}
 					//receivedMsg = (msg != null);
 					msgsDrained++;
@@ -159,7 +164,7 @@ public class JMSTest {
 			properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.jboss.naming.remote.client.InitialContextFactory");
 			properties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
 			properties.put(Context.PROVIDER_URL, "remote://" + host + ":" + port);
-			properties.put("jboss.naming.client.ejb.context", "true");
+			//properties.put("jboss.naming.client.ejb.context", "true");
 			properties.put(Context.SECURITY_PRINCIPAL, "testuser");//adminapp
 			properties.put(Context.SECURITY_CREDENTIALS, "testpwd");//adminpwd
 			// deactivate authentication

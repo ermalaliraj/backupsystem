@@ -146,7 +146,7 @@ public abstract class MessageSenderSingle {
 			ObjectMessage jmsMessage = session.createObjectMessage(message);
 			jmsMessage.setStringProperty("messageType", message.getMessageType());
 			jmsMessage.setJMSReplyTo(replyQueue);
-			jmsMessage.setJMSExpiration(messageConnection.getReadTimeout());
+			jmsMessage.setJMSExpiration(messageConnection.getTimeout());
 			if (!msgPersistence){
 				producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 			}
@@ -155,7 +155,7 @@ public abstract class MessageSenderSingle {
 			log.info("Synchronous message of type: "+message.getMessageType()+" successfully sent. EJB SingleMessageSender: " + hashCode());
 			
 			MessageConsumer consumer = session.createConsumer(replyQueue); //create consumer, waiting the reply
-			ObjectMessage reply = (ObjectMessage) consumer.receive(messageConnection.getReadTimeout());
+			ObjectMessage reply = (ObjectMessage) consumer.receive(messageConnection.getTimeout());
 			if (reply != null) {
 				log.debug("Received reply for synchronous message of type: "+message.getMessageType()+". EJB SingleMessageSender: " + hashCode());
 				response = (Message) reply.getObject();
