@@ -23,8 +23,6 @@
 		<ejb.version>3.0</ejb.version>
 	    
 	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	    <maven.compiler.source>1.7</maven.compiler.source>
-	    <maven.compiler.target>1.7</maven.compiler.target>
 
 		<bs.api-version>1.0.0-SNAPSHOT</bs.api-version>
 		<bs.protocol-version>1.0.0-SNAPSHOT</bs.protocol-version>
