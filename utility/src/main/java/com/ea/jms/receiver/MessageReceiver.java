@@ -30,7 +30,9 @@ public abstract class MessageReceiver implements MessageListener {
 	//@Resource(mappedName = "java:/LocalJMS")
 	//@Resource(mappedName = "java:/ConnectionFactory")
 	//@Resource(mappedName = "java:/JmsXA")
-	@Resource(mappedName = "java:/RemoteConnectionFactory")
+	//public final static String CONNECTION_FACTOY_DEFAULT = "jms/RemoteConnectionFactory";
+	
+	@Resource(mappedName = "java:/ConnectionFactory")
 	protected ConnectionFactory connectionFactory;
 
 	public void onMessage(Message jmsMessage) {
@@ -87,15 +89,15 @@ public abstract class MessageReceiver implements MessageListener {
 			connection = connectionFactory.createConnection();
 			log.trace("JMS connection created. EJB MessageSender: " + hashCode());	
 		} catch (Exception e) {
-			throw new MessageException("Error creating JMS connection", e);
+			throw new MessageException("Error creating JMS REPLY connection", e);
 		} 
 
 		try {
 			log.trace("Creating JMS session to REPLY. EJB MessageSender: " + hashCode());
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			log.trace("JMS session created. EJB MessageSender: " + hashCode());	
+			log.trace("JMS session created. EJB MessageSender: " + hashCode() + ", jmsSession: "+session);	
 		} catch (Exception e) {
-			throw new MessageException("Error creating JMS session", e);
+			throw new MessageException("Error creating JMS REPLY session", e);
 		} 
 		
 		try {
@@ -103,7 +105,7 @@ public abstract class MessageReceiver implements MessageListener {
 			producer = session.createProducer(queue);
 			log.trace("JMS producer created. EJB MessageSender: " + hashCode());
 		} catch (Exception e) {
-			throw new MessageException("Error creating JMS producer", e);
+			throw new MessageException("Error creating JMS REPLY producer", e);
 		} 
 		
 		try{
@@ -113,7 +115,7 @@ public abstract class MessageReceiver implements MessageListener {
 			producer.send(jmsMessage);
 		} catch (Exception e) {
 			//log.error("An error occurred while sending reply message to TMP queue: "+queue, e);
-			throw new MessageException("Exception sending reply message", e);
+			throw new MessageException("Exception sending REPLY message", e);
 		} finally {
 			if (producer != null) {
 				try {

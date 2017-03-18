@@ -35,9 +35,9 @@ public abstract class MessageSenderSingle {
 	private static final Log log = LogFactory.getLog(MessageSenderSingle.class);
 	//public final static String CONNECTION_FACTOY_DEFAULT = "InVmConnectionFactory";
 	//public final static String CONNECTION_FACTOY_DEFAULT = "jms/RemoteConnectionFactory";
-	public final static String CONNECTION_FACTOY_DEFAULT = "java:/JmsXA";
-	//@Resource(mappedName = "java:/JmsXA")
-	@Resource(mappedName = "java:/RemoteConnectionFactory")
+	//public final static String CONNECTION_FACTOY_DEFAULT = "java:/JmsXA";
+	@Resource(mappedName = "java:/JmsXA")
+	//@Resource(mappedName = "java:/RemoteConnectionFactory")
 	private ConnectionFactory connectionFactory;
 	
 	protected String destinationName;

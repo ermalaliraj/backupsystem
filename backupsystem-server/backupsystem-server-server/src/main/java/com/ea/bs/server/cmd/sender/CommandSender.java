@@ -7,6 +7,8 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.InvocationContext;
+import javax.jms.JMSConnectionFactory;
+import javax.jms.JMSContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -23,19 +25,22 @@ import com.ea.db.DBException;
 import com.ea.jms.Message;
 import com.ea.jms.MessageConnection;
 import com.ea.jms.exception.MessageException;
-import com.ea.jms.sender.MessageSenderSingle;
 
 
 @Stateless
-public class CommandSender extends MessageSenderSingle implements CommandSenderLocal {
+public class CommandSender extends MessageSenderPool implements CommandSenderLocal {
 
 	private static final Log log = LogFactory.getLog(CommandSender.class);
 
 	@EJB(name = "RemoteUnitBean")
 	private RuBeanLocal ruBean;
 
+	@JMSConnectionFactory("java:/jms/remoteCF")
+	private JMSContext context;
+	
 	@PostConstruct
 	public void setDestinationName(InvocationContext ctx) {
+		//super.destinationName = "jms/queue/remoteCMD";
 		super.destinationName = "remoteCMD";
 	}
 
@@ -46,7 +51,7 @@ public class CommandSender extends MessageSenderSingle implements CommandSenderL
 			log.debug("[SERVER] Send command GET_STATUS to idRU: " + idRu);
 			MessageConnection messageConnection = ruBean.getMessageConnectionRu(idRu);
 			request = new Message(CommandMessageType.ServerMessageType.GET_STATUS.name());
-			response = this.sendSynchMessage(messageConnection, request, false);
+			response = this.sendSynchMessage(messageConnection, request);
 			if (response instanceof RuDetailMessage) {
 				RuDetailMessage ruDetailMessage = (RuDetailMessage) response;
 				return ruDetailMessage.getRuMsgInfo();

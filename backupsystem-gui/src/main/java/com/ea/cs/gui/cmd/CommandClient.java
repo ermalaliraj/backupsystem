@@ -21,14 +21,15 @@ public class CommandClient {
 		try {
 			Context context = getContextEnvJboss7();
 			String lookupString = getLookupString("RuCommand", RuCommandRemote.class.getName());
+			log.debug("remote ejb: "+lookupString);
 	        RuCommandRemote remote  = (RuCommandRemote) context.lookup(lookupString);
 	        
 	        Long id = 1L;
-    	//	createRu(remote, id);
+   	//createRu(remote, id);
 	        //remote.removeRemoteUnit(id);
 //			log.debug("RU: " + id + " removed!");
 	        
-	 //     remote.getSampleFiles(id);
+	  remote.getSampleFiles(id);
 	        
 	        RuDTO status = remote.getStatus(id);
 	        log.debug("RU Status from server: "+status);
@@ -70,31 +71,35 @@ public class CommandClient {
 	// Get string to lookup for Remote interface in Jboss7
 	// ejb:<app-name>/<module-name>/<distinct-name>/<bean-name>!<fully-qualified-classname-of-the-remote-interface>
 	protected static String getLookupString(String beanName, String fullRemoteName) {
+		//final String prefix = "ejb:";
+		final String prefix = "/";
 		final String appName = "backupsystem-server-ear";
 		//final String appName = "backupsystem-ear-1.0.0-SNAPSHOT";
 		final String moduleName = "backupsystem-server-server";
 		final String distinctName = "";
 //		final String beanName = "RuCommand";
 //		final String viewClassName = RuCommandRemote.class.getName();
-		String lookupString = "ejb:" + appName + "/" + moduleName + "/" + distinctName + "/" + beanName + "!" + fullRemoteName;
+		String lookupString = prefix + appName + "/" + moduleName + "/" + distinctName + "/" + beanName + "!" + fullRemoteName;
 		return lookupString;
 	}
 	
 	protected static Context getContextEnvJboss7() throws NamingException {
 		String host = "127.0.0.1";
-		String port = "4447";
+		String port = "8080";
 		try {
 			Properties properties = new Properties();
 			properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.jboss.naming.remote.client.InitialContextFactory");
-			properties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
-			properties.put(Context.PROVIDER_URL, "remote://" + host + ":" + port);
+			//properties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
+			properties.put(Context.PROVIDER_URL, "http-remoting://" + host + ":" + port);
 			properties.put("jboss.naming.client.ejb.context", "true");
 			properties.put(Context.SECURITY_PRINCIPAL, "adminapp");
 			properties.put(Context.SECURITY_CREDENTIALS, "adminpwd");
+			
 			// deactivate authentication
 			// properties.put("jboss.naming.client.connect.options.org.xnio.Options.SASL_POLICY_NOPLAINTEXT","false");
 			// properties.put("remote.connection.default.connect.options.org.xnio.Options.SASL_POLICY_NOANONYMOUS","false");
 			Context context = new InitialContext(properties);
+			log.debug("context: "+context.getEnvironment());
 			return context;
 		} catch (NamingException e) {
 			log.error("Error creating InitialContext", e);

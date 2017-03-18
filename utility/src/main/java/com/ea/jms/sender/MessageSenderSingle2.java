@@ -32,7 +32,7 @@ public abstract class MessageSenderSingle2 {
 
 	private static final Log log = LogFactory.getLog(MessageSenderSingle.class);
 	// public final static String CONNECTION_FACTOY_DEFAULT = "InVmConnectionFactory";
-	 public final static String CONNECTION_FACTOY_DEFAULT = "jms/RemoteConnectionFactory";
+	public final static String CONNECTION_FACTOY_DEFAULT = "jms/RemoteConnectionFactory";
 	//public final static String CONNECTION_FACTOY_DEFAULT = "java:/JmsXA";
 
 	protected String destinationName;
@@ -59,7 +59,7 @@ public abstract class MessageSenderSingle2 {
 		try {
 			log.debug("Creating JNDI context server [host: " + messageConnection.getHost() + ":" + messageConnection.getPort() + "]. EJB SingleMessageSender: " + hashCode());
 			ctx = getContextEnvJboss7(messageConnection);
-			log.trace("JNDI context created. EJB SingleMessageSender: " + hashCode());
+			log.trace("JNDI context created. EJB SingleMessageSender: " + hashCode()+", context: " + ctx.getEnvironment());
 		} catch (Exception e) {
 			throw new MessageException("Error creating JMS context", e);
 		}
@@ -149,7 +149,7 @@ public abstract class MessageSenderSingle2 {
 		try {
 			log.debug("Creating JNDI context server [host: " + messageConnection.getHost() + ":" + messageConnection.getPort() + "]. EJB SingleMessageSender: " + hashCode());
 			ctx = getContextEnvJboss7(messageConnection);
-			log.trace("JNDI context created. EJB SingleMessageSender: " + hashCode());
+			log.trace("JNDI context created. EJB SingleMessageSender: " + hashCode()+", context: "+ctx.getEnvironment());
 		} catch (Exception e) {
 			throw new MessageException("Error creating JMS context", e);
 		}
@@ -234,19 +234,19 @@ public abstract class MessageSenderSingle2 {
 		try {
 			Properties properties = new Properties();
 			properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.jboss.naming.remote.client.InitialContextFactory");
-			properties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
-			properties.put(Context.PROVIDER_URL, "remote://" + messageConnection.getHost() + ":" + messageConnection.getPort());
-			// properties.put("jboss.naming.client.ejb.context", "true");
-			properties.put(Context.SECURITY_PRINCIPAL, messageConnection.getUsername());
-			properties.put(Context.SECURITY_CREDENTIALS, messageConnection.getPassword());
-			// deactivate authentication
-			// properties.put("jboss.naming.client.connect.options.org.xnio.Options.SASL_POLICY_NOPLAINTEXT","false");
-			// properties.put("remote.connection.default.connect.options.org.xnio.Options.SASL_POLICY_NOANONYMOUS","false");
+			properties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming"); //when .properties file is used
+			//properties.put(Context.PROVIDER_URL, "http-remoting://" + messageConnection.getHost() + ":" + messageConnection.getPort());
+			properties.put("jboss.naming.client.ejb.context", "true");
+			//properties.put(Context.SECURITY_PRINCIPAL, messageConnection.getUsername());
+			//properties.put(Context.SECURITY_CREDENTIALS, messageConnection.getPassword());
 			Context context = new InitialContext(properties);
 			return context;
 		} catch (NamingException e) {
 			log.error("Error creating InitialContext with data: " + messageConnection, e);
 			throw e;
+		} catch (Exception e) {
+			log.error("General Error creating InitialContext with data: " + messageConnection, e);
+			throw new NamingException("General Error creating InitialContext with data: " + messageConnection+", Exception: "+ e.getMessage());
 		}
 	}
 

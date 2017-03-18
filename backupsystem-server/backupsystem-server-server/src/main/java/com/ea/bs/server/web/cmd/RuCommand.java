@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remote;
@@ -37,7 +38,7 @@ import com.ea.jms.exception.MessageException;
 @Stateless
 @Remote(RuCommandRemote.class)
 @Interceptors({ WebAccessInterceptor.class })
-@RolesAllowed({ "ADMIN" })
+@RolesAllowed({ "APP_ADMIN" })
 public class RuCommand implements RuCommandRemote {
 	
 	private static final Log log = LogFactory.getLog(RuCommand.class);
@@ -75,6 +76,7 @@ public class RuCommand implements RuCommandRemote {
 		}
 	}
 	
+	@RolesAllowed({"APP_ADMIN"})
 	public RuDTO getStatus(long idRu) throws ServerException, RuNotPresentInRegistryException {
 		log.debug("[SERVER] Get Status for ru: " + idRu);
 		try {
@@ -96,10 +98,10 @@ public class RuCommand implements RuCommandRemote {
 			log.error("[SERVER] RemoteUnit with id '"+idRu+"'not present in DB", e);
 			throw new ServerException("RemoteUnit with id '"+idRu+"' not present in DB. Error: "+e.getMessage());
 		} catch (MessageException e) {
-			log.error("[SERVER] MessageException GETTING status from ru: "+idRu+". Error: "+e.getMessage());
+			log.error("[SERVER] MessageException GETTING status from ru: "+idRu, e);
 			throw new ServerException("Cannot GET status from ru: "+idRu+". Error: "+e.getMessage());
 		} catch (Exception e) {
-			log.error("[SERVER] General Exception GETTING status from ru: "+idRu+". Error: "+e.getMessage(), e);
+			log.error("[SERVER] General Exception GETTING status from ru: "+idRu, e);
 			throw new ServerException("Cannot GET status from ru: "+idRu+". Error: "+e.getMessage());
 		}
 	}
@@ -187,7 +189,6 @@ public class RuCommand implements RuCommandRemote {
 		} 
 	}
 	
-	@RolesAllowed({"USER"})
 	public List<byte[]> getSampleFiles(long idRu) throws ServerException {
 		List<byte[]> filesList = new ArrayList<byte[]>();
 		try {

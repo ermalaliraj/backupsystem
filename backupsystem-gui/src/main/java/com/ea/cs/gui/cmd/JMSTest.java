@@ -29,6 +29,7 @@ import javax.naming.NameClassPair;
 import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
+import org.hornetq.jms.client.HornetQObjectMessage;
 
 
 public class JMSTest {
@@ -55,7 +56,8 @@ public class JMSTest {
 			//ConnectionFactory connectionFactory = getConnectionFactory(ctx);
 			log.debug("Got ConnectionFactory: " + connectionFactory);
 
-			connection = connectionFactory.createConnection();
+			//connection = connectionFactory.createConnection();
+			connection = connectionFactory.createConnection("adminapp", "adminpwd");
 			log.debug("Creating session and producer...");
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 			producer = session.createProducer(queue);
@@ -95,15 +97,16 @@ public class JMSTest {
 		if (msgsOnQueue <= 0) {
 			log.info("Queue " + queueName + " is already empty");
 		} else {
-			Connection con = null;
+			Connection connection = null;
 			try {
 				// Queue queue = (Queue)ctx.lookup("queue/" + queueName);
 				Queue queue = (Queue) ctx.lookup(jndiPrefix + queueName);
-				ConnectionFactory cf = getConnectionFactoryJboss7(ctx);
-				con = cf.createConnection();
-				Session session = con.createSession(false, Session.AUTO_ACKNOWLEDGE);
+				ConnectionFactory connectionFactory = getConnectionFactoryJboss7(ctx);
+				//con = cf.createConnection();
+				connection = connectionFactory.createConnection("adminapp", "adminpwd");
+				Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 				MessageConsumer consumer = session.createConsumer(queue);
-				con.start();
+				connection.start();
 				boolean receivedMsg = true;
 				//while (msgsDrained < amount && msgsDrained < msgsOnQueue && receivedMsg) {
 				while (msgsDrained < amount) {
@@ -111,10 +114,13 @@ public class JMSTest {
 					log.debug("Message from Queue: " + msg);
 					if (msg != null) {
 						System.out.println("msg: "+msg);
-						TextMessage text = (TextMessage)msg;
-						log.debug("Message TEXTfrom Queue: " + text.getText());
-//						org.hornetq.jms.client.HornetQObjectMessage msgHornt = (HornetQObjectMessage) msg;
-//						log.debug("Message (Java object) from Queue: " + msgHornt.getObject());
+						if(msg instanceof org.hornetq.jms.client.HornetQObjectMessage){
+							org.hornetq.jms.client.HornetQObjectMessage msgHornt = (HornetQObjectMessage) msg;
+							log.debug("Message (Java object) from Queue: " + msgHornt.getObject());							
+						} else{
+							TextMessage text = (TextMessage)msg;
+							log.debug("Message TEXTfrom Queue: " + text.getText());
+						}
 					}
 					//receivedMsg = (msg != null);
 					msgsDrained++;
@@ -122,7 +128,7 @@ public class JMSTest {
  			} catch (Exception e) {
 				log.error("Clearing queue failed.", e);
 			} finally {
-				closeConnection(con);
+				closeConnection(connection);
 			}
 		}
 		return (msgsDrained == msgsOnQueue);
@@ -142,17 +148,47 @@ public class JMSTest {
 		try {
 			//jboss7
 			//cf = (ConnectionFactory) ctx.lookup("jms/RemoteConnectionFactory");
-			cf = (ConnectionFactory) ctx.lookup("java:/JmsXA");
+			cf = (ConnectionFactory) ctx.lookup("java:/remoteCF");
+			
+			log.debug("connectionFactory: "+cf);
 		} catch (NamingException e) {
-			System.out.println("Could not retrieve ConnectionFactory: " + e.getMessage());
+			log.debug("Could not retrieve ConnectionFactory: ", e);
 		}
 		return cf;
 	}
 	
+	private static Context getContextEnvJboss8() throws NamingException {
+		String host = "localhost";
+		//String host = "192.168.1.10";
+		
+		String port = "8080";  //remoting ru
+		//String port = "4445"; //messaging ru
+		try {
+			Properties properties = new Properties();
+			properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.jboss.naming.remote.client.InitialContextFactory");
+			//properties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
+			properties.put(Context.PROVIDER_URL, "http-remoting://" + host + ":" + port);
+			properties.put("jboss.naming.client.ejb.context", "true");
+			properties.put(Context.SECURITY_PRINCIPAL, "adminapp");
+			properties.put(Context.SECURITY_CREDENTIALS, "adminpwd");
+			Context context = new InitialContext(properties);
+			log.debug("context: "+context.getEnvironment());
+			return context;
+		} catch (NamingException e) {
+			log.error("Error creating InitialContext", e);
+			throw e;
+		}
+	}
+	
 	private static Context getContextEnvJboss7() throws NamingException {
 		String host = "127.0.0.1";
-		//String port = "4447";  //remoting
-		String port = "5445"; //messaging
+		
+		//String port = "4447";  //remoting server
+		//String port = "5445"; //messaging server
+		
+		String port = "3447";  //remoting ru
+		//String port = "4445"; //messaging ru
+		
 		try {
 			Properties properties = new Properties();
 			properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.jboss.naming.remote.client.InitialContextFactory");
@@ -165,6 +201,7 @@ public class JMSTest {
 //			 properties.put("jboss.naming.client.connect.options.org.xnio.Options.SASL_POLICY_NOPLAINTEXT","false");
 //			 properties.put("remote.connection.default.connect.options.org.xnio.Options.SASL_POLICY_NOANONYMOUS","false");
 			Context context = new InitialContext(properties);
+			log.debug("context: "+context.getEnvironment());
 			return context;
 		} catch (NamingException e) {
 			log.error("Error creating InitialContext", e);
@@ -225,15 +262,16 @@ public class JMSTest {
 				queueName = "remoteCMD";
 				textToSend = "GET_STATUS";
 				//textToSend = "Just a text sent to JMS queue";
+				//jndiPrefix = "jms/queue/";
 				jndiPrefix = "jms/queue/";
-				ctx = getContextEnvJboss7();
+				ctx = getContextEnvJboss8();
 				connectionFactory = getConnectionFactoryJboss7(ctx);
 			} else if(jbossVersion.equals("jboss4")){
 				queueName = "messagerQueueTUTOR";
 				textToSend = "object serializzato da mandare";
 				jndiPrefix = "queue/";
 				ctx = getContextEnvJboss4();
-				connectionFactory = getConnectionFactoryJboss7(ctx);
+				connectionFactory = getConnectionFactoryJboss4(ctx);
 			} else{
 				System.out.println("Jboss7 oppure jboss4. nessun altro valore");
 				return;

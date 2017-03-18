@@ -41,21 +41,21 @@ public class RuBean implements RuBeanLocal {
 	
 	public MessageConnection getMessageConnectionRu(long idRu) throws DBException {
 		MessageConnection conn = buildMessageConnection();
-		log.trace("MessageConnection for idRu: "+idRu+" from DB: "+conn);
+		log.trace("MessageConnection (not all params are used) for idRu: "+idRu+" from DB: "+conn);
 		return conn;
 	}
 	
 	private MessageConnection buildMessageConnection() {
 		MessageConnection conn = new MessageConnection();
-		conn.setInitialContext("org.jboss.naming.remote.client.InitialContextFactory");
-		conn.setUrlPkgPrefixes("org.jboss.ejb.client.naming");
-		conn.setProtocol("remote://");
-		conn.setHost("127.0.0.1");
+		//conn.setInitialContext("org.jboss.naming.remote.client.InitialContextFactory");
+		//conn.setUrlPkgPrefixes("org.jboss.ejb.client.naming");
+		//conn.setProtocol("remote://");
+		conn.setHost("192.168.1.10");
 		//conn.setPort(4447);
-		conn.setPort(3447);
-		conn.setTimeout(10*1000);
-		conn.setReadTimeout(10*1000);
-		conn.setConnectionFactory("ConnectionFactory");
+		conn.setPort(8080);
+		//conn.setTimeout(10*1000);
+		//conn.setReadTimeout(10*1000);
+		//conn.setConnectionFactory("ConnectionFactory");
 		conn.setUsername("adminapp");
 		conn.setPassword("adminpwd");		
 		return conn;

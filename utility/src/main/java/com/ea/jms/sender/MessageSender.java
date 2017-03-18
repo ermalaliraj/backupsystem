@@ -35,8 +35,8 @@ public abstract class MessageSender {
 	private static final Log log = LogFactory.getLog(MessageSender.class);
 	
 //	@Resource(mappedName = "java:/RemoteConnectionFactory")
-	@Resource(mappedName = "java:/RemoteConnectionFactory")
-	private ConnectionFactory connectionFactory;
+//	@Resource(mappedName = "java:/RemoteConnectionFactory")
+//	private ConnectionFactory connectionFactory;
 	protected MessageConnection messageConnection = null;
 	protected String destinationName = null;
 	private Destination destination = null;
@@ -84,8 +84,9 @@ public abstract class MessageSender {
 		try {
 			log.trace("Creating JMS connection. EJB MessageSender: " + hashCode());
 			String CONNECTION_FACTOY_DEFAULT = "jms/RemoteConnectionFactory";
-		//	Context ctx = getContextEnvJboss7(messageConnection);
-		//	ConnectionFactory connectionFactory = (ConnectionFactory) ctx.lookup(CONNECTION_FACTOY_DEFAULT);
+			Context ctx = getContextEnvJboss8();
+			log.trace("Server contect created. EJB MessageSender: " + hashCode() + ", context: "+ctx.getEnvironment());
+			ConnectionFactory connectionFactory = (ConnectionFactory) ctx.lookup(CONNECTION_FACTOY_DEFAULT);
 			connection = connectionFactory.createConnection();
 			log.trace("JMS connection created. EJB MessageSender: " + hashCode());
 		} catch (Exception e) {
@@ -142,62 +143,62 @@ public abstract class MessageSender {
 	/**
 	 * Send an Synchronous message
 	 */
-	protected Message sendSynchMessage(Message message) throws MessageException {
-		Connection connection = null;
-		Session session = null;
-		MessageProducer producer = null;
-		MessageConsumer consumer = null;
-		Message response = null;
-
-		if (destination == null){
-			init();
-		}
-		
-		log.info("Sending Synchronous message. EJB MessageSender: " + hashCode() + " ...");
-		try {
-			log.trace("Creating JMS connection. EJB MessageSender: " + hashCode());
-			//ConnectionFactory connectionFactory = null;
-			connection = connectionFactory .createConnection();
-
-			log.trace("Creating session and producer... EJB MessageSender: " + hashCode());
-			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			destination = session.createQueue(destinationName);
-			producer = session.createProducer(destination);
-			producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-
-			Queue replyQueue = session.createTemporaryQueue();
-			consumer = session.createConsumer(replyQueue);
-
-			ObjectMessage jmsMessage = session.createObjectMessage(message);
-			jmsMessage.setJMSReplyTo(replyQueue);
-			jmsMessage.setJMSExpiration(messageConnection.getTimeout());
-			jmsMessage.setStringProperty("messageType", message.getMessageType());
-			producer.send(jmsMessage);
-			connection.start();
-			log.info("Synchronous message successfully sent. EJB MessageSender: " + hashCode());
-			
-			ObjectMessage reply = (ObjectMessage) consumer.receive(messageConnection.getTimeout());
-			if (reply != null) {
-				log.trace("Reply received for synchronous message. EJB MessageSender: " + hashCode());
-				response = (Message) reply.getObject();
-			} else {
-				log.error("Reply from the Destination is NULL!!! EJB MessageSender: " + hashCode());
-				throw new NoReplyException("The Destination couldn't reply before timeout");
-			}
-			
-			log.info("Reply correctly received from Destination for synchronous message. EJB MessageSender: " + hashCode());
-			return response;
-		} catch (JMSException e) {
-			log.error("JMSException while sending synchronous message in MessageSender--> " + hashCode()+". Exception: "+ e.getMessage(), e);
-			throw new MessageException("JMSException occurred while sending synchronous message. Exception:"+ e.getMessage(), e);
-		} finally {
-			closeJmsConsumer(consumer);
-			closeJmsProducer(producer);
-			closeJmsSession(session);
-			closeJmsConnection(connection);
-			log.debug("JMS connection closure terminated. EJB MessageSender: " + hashCode());
-		}
-	}
+	//protected Message sendSynchMessage(Message message) throws MessageException {
+//		Connection connection = null;
+//		Session session = null;
+//		MessageProducer producer = null;
+//		MessageConsumer consumer = null;
+//		Message response = null;
+//
+//		if (destination == null){
+//			init();
+//		}
+//		
+//		log.info("Sending Synchronous message. EJB MessageSender: " + hashCode() + " ...");
+//		try {
+//			log.trace("Creating JMS connection. EJB MessageSender: " + hashCode());
+//			//ConnectionFactory connectionFactory = null;
+//			connection = connectionFactory .createConnection();
+//
+//			log.trace("Creating session and producer... EJB MessageSender: " + hashCode());
+//			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+//			destination = session.createQueue(destinationName);
+//			producer = session.createProducer(destination);
+//			producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+//
+//			Queue replyQueue = session.createTemporaryQueue();
+//			consumer = session.createConsumer(replyQueue);
+//
+//			ObjectMessage jmsMessage = session.createObjectMessage(message);
+//			jmsMessage.setJMSReplyTo(replyQueue);
+//			jmsMessage.setJMSExpiration(messageConnection.getTimeout());
+//			jmsMessage.setStringProperty("messageType", message.getMessageType());
+//			producer.send(jmsMessage);
+//			connection.start();
+//			log.info("Synchronous message successfully sent. EJB MessageSender: " + hashCode());
+//			
+//			ObjectMessage reply = (ObjectMessage) consumer.receive(messageConnection.getTimeout());
+//			if (reply != null) {
+//				log.trace("Reply received for synchronous message. EJB MessageSender: " + hashCode());
+//				response = (Message) reply.getObject();
+//			} else {
+//				log.error("Reply from the Destination is NULL!!! EJB MessageSender: " + hashCode());
+//				throw new NoReplyException("The Destination couldn't reply before timeout");
+//			}
+//			
+//			log.info("Reply correctly received from Destination for synchronous message. EJB MessageSender: " + hashCode());
+//			return response;
+//		} catch (JMSException e) {
+//			log.error("JMSException while sending synchronous message in MessageSender--> " + hashCode()+". Exception: "+ e.getMessage(), e);
+//			throw new MessageException("JMSException occurred while sending synchronous message. Exception:"+ e.getMessage(), e);
+//		} finally {
+//			closeJmsConsumer(consumer);
+//			closeJmsProducer(producer);
+//			closeJmsSession(session);
+//			closeJmsConnection(connection);
+//			log.debug("JMS connection closure terminated. EJB MessageSender: " + hashCode());
+//		}
+	//}
 	
 //	protected static Context getContextEnvJboss7(MessageConnection messageConnection) throws NamingException {
 //		try {
@@ -265,6 +266,27 @@ public abstract class MessageSender {
 			} catch (Exception e) {
 				log.warn("JNDI context cannot be closed. EJB MessageSender: " + hashCode(), e);
 			}
+		}
+	}
+	
+	private static Context getContextEnvJboss8() throws NamingException {
+		String host = "localhost";
+		String port = "7080"; 
+		//String port = "4445"; 
+		try {
+			Properties properties = new Properties();
+			properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.jboss.naming.remote.client.InitialContextFactory");
+			//properties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
+			properties.put(Context.PROVIDER_URL, "http-remoting://" + host + ":" + port);
+			properties.put("jboss.naming.client.ejb.context", "true");
+			properties.put(Context.SECURITY_PRINCIPAL, "testuser");
+			properties.put(Context.SECURITY_CREDENTIALS, "testuser");
+			Context context = new InitialContext(properties);
+			log.debug("context: "+context.getEnvironment());
+			return context;
+		} catch (NamingException e) {
+			log.error("Error creating InitialContext", e);
+			throw e;
 		}
 	}
 }

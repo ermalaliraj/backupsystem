@@ -32,6 +32,7 @@ import com.ea.jms.exception.MessageException;
 import com.ea.jms.receiver.MessageReceiver;
 
 
+//@ResourceAdapter("remote-artemis")
 @MessageDriven(
 		messageListenerInterface=MessageListener.class,
 		mappedName = "cs/CommandReceiver"
