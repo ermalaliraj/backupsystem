@@ -232,6 +232,9 @@ public abstract class MessageSenderSingle2 {
 
 	protected static Context getContextEnvJboss7(MessageConnection messageConnection) throws NamingException {
 		try {
+			messageConnection.setHost("192.168.1.5");
+			messageConnection.setPort(4447);
+			
 			Properties properties = new Properties();
 			properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.jboss.naming.remote.client.InitialContextFactory");
 			properties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");

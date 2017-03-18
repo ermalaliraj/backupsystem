@@ -12,6 +12,7 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
+import javax.jms.ObjectMessage;
 import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TextMessage;
@@ -60,11 +61,12 @@ public class JMSTest {
 			log.debug("Creating session and producer...");
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 			producer = session.createProducer(queue);
-			//ObjectMessage jmsMessage = session.createObjectMessage(text);
-			TextMessage msg = session.createTextMessage();
-			msg.setText(text);
-			// jmsMessage.setStringProperty("messageType",
-			// message.getMessageType());
+			ObjectMessage msg = session.createObjectMessage(text);
+			msg.setStringProperty("messageType", "PROVA_ERMAL");
+			//TextMessage msg = session.createTextMessage();
+			//msg.setText(text);
+			
+			// jmsMessage.setStringProperty("messageType", message.getMessageType());
 			log.debug("Sending message...");
 			producer.send(msg);
 			connection.start();
@@ -75,7 +77,7 @@ public class JMSTest {
 			} catch (InterruptedException e) {
 			}
 
-			drainQueue(ctx, queueName, 1);
+			//drainQueue(ctx, queueName, 1);
 
 			// try {
 			// Thread.sleep(Integer.MAX_VALUE);
@@ -157,6 +159,7 @@ public class JMSTest {
 	
 	private static Context getContextEnvJboss7() throws NamingException {
 		String host = "192.168.1.2";
+		//String host = "127.0.0.1";
 		String port = "4447";  //remoting
 		//String port = "5445"; //messaging
 		try {

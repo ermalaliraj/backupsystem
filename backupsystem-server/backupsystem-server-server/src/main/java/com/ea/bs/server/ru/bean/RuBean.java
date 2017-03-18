@@ -50,9 +50,9 @@ public class RuBean implements RuBeanLocal {
 //		conn.setInitialContext("org.jboss.naming.remote.client.InitialContextFactory");
 //		conn.setUrlPkgPrefixes("org.jboss.ejb.client.naming");
 		//conn.setProtocol("remote://");
-		conn.setHost("192.168.1.2");
+		//conn.setHost("192.168.1.5");
 		//conn.setPort(5445);
-		conn.setPort(4447);
+		//conn.setPort(4447);
 		conn.setTimeout(10*1000);
 		//conn.setReadTimeout(10*1000);
 //		conn.setConnectionFactory("ConnectionFactory");
