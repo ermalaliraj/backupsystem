@@ -1,7 +1,6 @@
 cd /tmp
 wget http://download.jboss.org/jbossas/7.1/jboss-as-7.1.1.Final/jboss-as-7.1.1.Final.zip
 
-
 unzip jboss-as-7.1.1.Final.zip -d /opt/
 ln -s /opt/jboss-as-7.1.1.Final /opt/jboss7
 
@@ -10,7 +9,7 @@ sudo useradd -g jboss -d /home/jboss7 -m jboss7
 chown -R jboss7. jboss-as-7.1.1.Final/
 chown -R jboss7. jboss7/
 
--- add following lines to the file
+-- add following lines to the file   /home/uel/.bashrc        .bash_profile
 gedit 
 JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.131-2.6.9.0.el7_3.x86_64
 export JAVA_HOME  

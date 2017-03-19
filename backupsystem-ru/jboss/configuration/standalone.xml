@@ -58,14 +58,14 @@
     <profile>
         <subsystem xmlns="urn:jboss:domain:logging:1.1">
             <console-handler name="CONSOLE">
-                <level name="DEBUG"/>
+                <level name="INFO"/>
                 <formatter>
-                    <pattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c] %s%E%n"/>
+                    <pattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%E%n"/>
                 </formatter>
             </console-handler>
             <periodic-rotating-file-handler name="FILE">
                 <formatter>
-                    <pattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c] %s%E%n"/>
+                    <pattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%E%n"/>
                 </formatter>
                 <file relative-to="jboss.server.log.dir" path="server.log"/>
                 <suffix value=".yyyy-MM-dd"/>
@@ -94,32 +94,28 @@
             <logger category="jacorb.config">
                 <level name="ERROR"/>
             </logger>
-            <logger category="org.hornetq">
-                <level name="INFO"/>
-            </logger>
             <logger category="javax.enterprise.resource.webcontainer">
                 <level name="WARN"/>
             </logger>
             <logger category="javax.faces">
                 <level name="WARN"/>
             </logger>
-            <logger category="org.jboss">
-                <level name="INFO"/>
-            </logger>
             <logger category="org.hibernate">
                 <level name="WARN"/>
             </logger>
+            <logger category="org.jboss">
+                <level name="DEBUG"/>
+            </logger>
+            <logger category="org.jboss.as.config">
+                <level name="DEBUG"/>
+            </logger>
+            <logger category="org.hornetq">
+                <level name="DEBUG"/>
+            </logger>
             <logger category="org.apache">
-                <level name="INFO"/>
+                <level name="DEBUG"/>
             </logger>
             <logger category="com.ea">
-                <level name="TRACE"/>
-                <handlers>
-                    <handler name="CONSOLE"/>
-                    <handler name="FILE_CAPTURE_RU"/>
-                </handlers>
-            </logger>
-            <logger category="com.ea.bs.ru">
                 <level name="TRACE"/>
                 <handlers>
                     <handler name="FILE_CAPTURE_RU"/>
@@ -145,27 +141,12 @@
                         <password>sa</password>
                     </security>
                 </datasource>
-                <datasource jndi-name="java:jboss/datasources/backupSystemServerDS" pool-name="backupSystemServerDS" enabled="true" use-java-context="true">
-                    <connection-url>jdbc:h2:mem:test;DB_CLOSE_DELAY=-1</connection-url>
-                    <driver>h2</driver>
-                    <security>
-                        <user-name>sa</user-name>
-                        <password>sa</password>
-                    </security>
-                </datasource>
                 <datasource jndi-name="java:jboss/datasources/ExampleDS" pool-name="ExampleDS" enabled="true" use-java-context="true">
                     <connection-url>jdbc:h2:mem:test;DB_CLOSE_DELAY=-1</connection-url>
                     <driver>h2</driver>
                     <security>
                         <user-name>sa</user-name>
                         <password>sa</password>
-                    </security>
-                </datasource>
-                <datasource jndi-name="java:jboss/datasources/firstDS" pool-name="firstDS" enabled="true">
-                    <connection-url>jdbc:h2:mem:test;DB_CLOSE_DELAY=-1</connection-url>
-                    <driver>h2</driver>
-                    <security>
-                        <user-name>sa</user-name>
                     </security>
                 </datasource>
                 <drivers>
@@ -290,16 +271,15 @@
                     <netty-connector name="netty-throughput" socket-binding="messaging-throughput">
                         <param key="batch-delay" value="50"/>
                     </netty-connector>
-                    <netty-connector name="backupsystem-connector" socket-binding="backupsystem-socket-binding"/>
                     <in-vm-connector name="in-vm" server-id="0"/>
                 </connectors>
 
                 <acceptors>
                     <netty-acceptor name="netty" socket-binding="messaging">
-                        <param key="host" value="${jboss.bind.address:127.0.0.1}"/>
+                        <param key="host" value="${jboss.bind.address:0.0.0.0}"/>
                     </netty-acceptor>
                     <netty-acceptor name="netty-throughput" socket-binding="messaging-throughput">
-                        <param key="host" value="${jboss.bind.address:127.0.0.1}"/>
+                        <param key="host" value="${jboss.bind.address:0.0.0.0}"/>
                         <param key="batch-delay" value="50"/>
                         <param key="direct-deliver" value="false"/>
                     </netty-acceptor>
@@ -347,7 +327,7 @@
                     <pooled-connection-factory name="hornetq-ra">
                         <transaction mode="xa"/>
                         <connectors>
-                            <connector-ref connector-name="backupsystem-connector"/>
+                            <connector-ref connector-name="in-vm"/>
                         </connectors>
                         <entries>
                             <entry name="java:/JmsXA"/>
@@ -363,22 +343,6 @@
                     <jms-queue name="testQueue">
                         <entry name="queue/test"/>
                         <entry name="java:jboss/exported/jms/queue/test"/>
-                    </jms-queue>
-                    <jms-queue name="ermalQueueProva">
-                        <entry name="queue/test2"/>
-                        <entry name="java:jboss/exported/jms/queue/test2"/>
-                    </jms-queue>
-                    <jms-queue name="ermalQueue">
-                        <entry name="queue/ermalQueue"/>
-                        <entry name="java:jboss/exported/jms/queue/ermalQueue"/>
-                    </jms-queue>
-                    <jms-queue name="garanteprivacyCf">
-                        <entry name="cf/garanteprivacy"/>
-                        <entry name="java:jboss/exported/jms/gp/cf/garanteprivacy"/>
-                    </jms-queue>
-                    <jms-queue name="garanteprivacyQueue">
-                        <entry name="queue/garanteprivacy"/>
-                        <entry name="java:jboss/exported/jms/gp/queue/garanteprivacy"/>
                     </jms-queue>
                     <jms-topic name="testTopic">
                         <entry name="topic/test"/>
@@ -467,42 +431,33 @@
 
     <interfaces>
         <interface name="management">
-            <inet-address value="${jboss.bind.address.management:127.0.0.1}"/>
+            <inet-address value="${jboss.bind.address.management:0.0.0.0}"/>
         </interface>
         <interface name="public">
-            <inet-address value="${jboss.bind.address:127.0.0.1}"/>
+            <inet-address value="${jboss.bind.address:0.0.0.0}"/>
         </interface>
         <interface name="unsecure">
-            <inet-address value="${jboss.bind.address.unsecure:127.0.0.1}"/>
+            <inet-address value="${jboss.bind.address.unsecure:0.0.0.0}"/>
         </interface>
     </interfaces>
 
     <socket-binding-group name="standard-sockets" default-interface="public" port-offset="${jboss.socket.binding.port-offset:0}">
-        <socket-binding name="management-native" interface="management" port="${jboss.management.native.port:8999}"/>
-        <socket-binding name="management-http" interface="management" port="${jboss.management.http.port:8990}"/>
-        <socket-binding name="management-https" interface="management" port="${jboss.management.https.port:8443}"/>
-        <socket-binding name="ajp" port="7009"/>
-        <socket-binding name="http" port="7200"/>
-        <socket-binding name="https" port="7443"/>
-        <socket-binding name="jacorb" interface="unsecure" port="2528"/>
-        <socket-binding name="jacorb-ssl" interface="unsecure" port="2529"/>
-        <socket-binding name="messaging" port="4445"/>
-        <socket-binding name="messaging-throughput" port="4455"/>
-        <socket-binding name="osgi-http" interface="management" port="7090"/>
-        <socket-binding name="remoting" port="3447"/>
-        <socket-binding name="txn-recovery-environment" port="3712"/>
-        <socket-binding name="txn-status-manager" port="3713"/>
+        <socket-binding name="management-native" interface="management" port="${jboss.management.native.port:9999}"/>
+        <socket-binding name="management-http" interface="management" port="${jboss.management.http.port:9990}"/>
+        <socket-binding name="management-https" interface="management" port="${jboss.management.https.port:9443}"/>
+        <socket-binding name="ajp" port="8009"/>
+        <socket-binding name="http" port="8080"/>
+        <socket-binding name="https" port="8443"/>
+        <socket-binding name="jacorb" interface="unsecure" port="3528"/>
+        <socket-binding name="jacorb-ssl" interface="unsecure" port="3529"/>
+        <socket-binding name="messaging" port="5445"/>
+        <socket-binding name="messaging-throughput" port="5455"/>
+        <socket-binding name="osgi-http" interface="management" port="8090"/>
+        <socket-binding name="remoting" port="4447"/>
+        <socket-binding name="txn-recovery-environment" port="4712"/>
+        <socket-binding name="txn-status-manager" port="4713"/>
         <outbound-socket-binding name="mail-smtp">
-            <remote-destination host="localhost" port="24"/>
-        </outbound-socket-binding>
-        <outbound-socket-binding name="backupsystem-socket-binding">
-            <remote-destination host="localhost" port="4445"/>
+            <remote-destination host="localhost" port="25"/>
         </outbound-socket-binding>
     </socket-binding-group>
-
-    <deployments>
-        <deployment name="backupsystem-ru-ear.ear" runtime-name="backupsystem-ru-ear.ear">
-            <content sha1="62a2813ab848820f4510c56015695544e8bb4305"/>
-        </deployment>
-    </deployments>
 </server>
