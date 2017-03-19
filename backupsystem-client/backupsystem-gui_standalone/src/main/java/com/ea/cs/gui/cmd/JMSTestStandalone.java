@@ -57,22 +57,17 @@ public class JMSTestStandalone {
 			
 			Properties properties = new Properties();
 			properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.jboss.naming.remote.client.InitialContextFactory");
-			properties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
+			//properties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
 			properties.put(Context.PROVIDER_URL, "remote://" + host + ":" + port);
-//			//properties.put("jboss.naming.client.ejb.context", "true");
-//			properties.put(Context.SECURITY_PRINCIPAL, "testuser");//adminapp
-//			properties.put(Context.SECURITY_CREDENTIALS, "testpwd");//adminpwd
+			properties.put("jboss.naming.client.ejb.context", "true");
+			properties.put(Context.SECURITY_PRINCIPAL, "testuser");//adminapp
+			properties.put(Context.SECURITY_CREDENTIALS, "testpwd");//adminpwd
 			Context ctx = new InitialContext(properties);
-			
+//			Context ctx = getDynamicContext();
 			
 			log.debug("Context created: "+ctx.getEnvironment());
-		
 			
-//			final EJBClientConfiguration ejbClientConfiguration = new PropertiesBasedEJBClientConfiguration(properties);
-//			final ConfigBasedEJBClientContextSelector selector = new ConfigBasedEJBClientContextSelector(ejbClientConfiguration);
-//			ContextSelector<EJBClientContext> previousSelector = EJBClientContext.setSelector(selector);
-			
-			ConnectionFactory connectionFactory = (ConnectionFactory) ctx.lookup("jms/RemoteConnectionFactory");
+			final ConnectionFactory connectionFactory = (ConnectionFactory) ctx.lookup("jms/RemoteConnectionFactory");
 			log.debug("Got ConnectionFactory: " + connectionFactory);
 		
 			String jndiPrefix = "jms/queue/";
@@ -170,7 +165,7 @@ public class JMSTestStandalone {
 			properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.jboss.naming.remote.client.InitialContextFactory");
 			properties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
 			properties.put(Context.PROVIDER_URL, "remote://" + host + ":" + port);
-			//properties.put("jboss.naming.client.ejb.context", "true");
+			properties.put("jboss.naming.client.ejb.context", "true");
 			properties.put(Context.SECURITY_PRINCIPAL, "testuser");//adminapp
 			properties.put(Context.SECURITY_CREDENTIALS, "testpwd");//adminpwd
 			
