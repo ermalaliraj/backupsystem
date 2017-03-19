@@ -40,8 +40,15 @@
 			</dependency>
 			<dependency>
 				<groupId>com.ea</groupId>
+				<artifactId>backupsystem-protocol</artifactId>
+				<version>${ea.utility-version}</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.ea</groupId>
 				<artifactId>backupsystem-server-api</artifactId>
-				<version>${bs.api-version}</version>
+				<version>${bs.protocol-version}</version>
 				<type>jar</type>
 				<scope>provided</scope>
 			</dependency>
@@ -50,7 +57,7 @@
 				<groupId>javax</groupId>
 				<artifactId>javaee-api</artifactId>
 				<version>${j2ee.version}</version>
-				 <type>pom</type>
+				<type>jar</type>
 				<scope>provided</scope>
 			</dependency>
 

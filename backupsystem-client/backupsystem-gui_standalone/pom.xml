@@ -25,15 +25,11 @@
 		<dependency>
 			<groupId>com.ea</groupId>
 			<artifactId>backupsystem-protocol</artifactId>
-			<version>${bs.protocol-version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
-			<version>${j2ee.version}</version>
-			<type>pom</type>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>

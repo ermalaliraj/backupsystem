@@ -158,7 +158,7 @@ public class JMSTest {
 	}
 	
 	private static Context getContextEnvJboss7() throws NamingException {
-		String host = "192.168.1.9";
+		String host = "192.168.1.8";
 		//String host = "127.0.0.1";
 		String port = "4447";  //remoting
 		//String port = "5445"; //messaging

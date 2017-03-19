@@ -1,5 +1,7 @@
 package com.ea.jms.receiver;
 
+import java.io.Serializable;
+
 import javax.annotation.Resource;
 import javax.ejb.MessageDrivenContext;
 import javax.jms.Connection;
@@ -38,24 +40,29 @@ public abstract class MessageReceiver implements MessageListener {
 		com.ea.jms.Message messageResponse = null;
 		try {
 			if (jmsMessage instanceof ObjectMessage) {
-				messageRequest = (com.ea.jms.Message) ((ObjectMessage) jmsMessage).getObject();
-				log.info("New JMS message from IP: " + messageRequest.getIpAddress()+", messageType: " + messageRequest.getMessageType()+", MessageReceiver: " + hashCode());
-				
-				messageResponse = process(messageRequest);
-				
-				log.debug("Check if the message is synch/asynch. MessageReceiver: " + hashCode());
-				if (jmsMessage.getJMSReplyTo() != null) {
-					log.debug("Is synch message, need to reply back to TMP: "+jmsMessage.getJMSReplyTo()+". MessageReceiver: " + hashCode());
-					if (messageResponse != null) {
-						Queue responseQueue = (Queue) jmsMessage.getJMSReplyTo();
-						sendReply(responseQueue, messageResponse);
-						log.info("Reply for synch message with messageType: " + messageRequest.getMessageType() + " sent correctly to the sender. MessageReceiver: " + hashCode());
-					} else {
-						log.error("MessageResponse cannot be NULL in a synch mode scenario. MessageReceiver: " + hashCode());
-						throw new MessageException("MessageResponse cannot be NULL in a synch mode scenario");
+				Serializable serializedObj = ((ObjectMessage) jmsMessage).getObject();
+				if(serializedObj instanceof com.ea.jms.Message){
+					messageRequest = (com.ea.jms.Message) serializedObj;
+					log.info("New JMS message from IP: " + messageRequest.getIpAddress()+", messageType: " + messageRequest.getMessageType()+", MessageReceiver: " + hashCode());
+					
+					messageResponse = process(messageRequest);
+					
+					log.debug("Check if the message is synch/asynch. MessageReceiver: " + hashCode());
+					if (jmsMessage.getJMSReplyTo() != null) {
+						log.debug("Is synch message, need to reply back to TMP: "+jmsMessage.getJMSReplyTo()+". MessageReceiver: " + hashCode());
+						if (messageResponse != null) {
+							Queue responseQueue = (Queue) jmsMessage.getJMSReplyTo();
+							sendReply(responseQueue, messageResponse);
+							log.info("Reply for synch message with messageType: " + messageRequest.getMessageType() + " sent correctly to the sender. MessageReceiver: " + hashCode());
+						} else {
+							log.error("MessageResponse cannot be NULL in a synch mode scenario. MessageReceiver: " + hashCode());
+							throw new MessageException("MessageResponse cannot be NULL in a synch mode scenario");
+						}
 					}
+					log.info("Message with messageType: " + messageRequest.getMessageType() + " correctly elaborated. MessageReceiver: " + hashCode());
+				} else{
+					log.error("UNKNOWN JMS message in MDB MessageReceiver: " + hashCode() +", NO NEED for rollback. serializedObj: "+serializedObj);
 				}
-				log.info("Message with messageType: " + messageRequest.getMessageType() + " correctly elaborated. MessageReceiver: " + hashCode());
 			}
 		} catch (MessageApplicationException e) {
 			log.error("MessageApplicationException in MDB MessageReceiver: " + hashCode() +", NO NEED for rollback.", e);
