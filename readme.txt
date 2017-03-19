@@ -58,6 +58,9 @@ https://lukaszantoniak.wordpress.com/2012/12/11/jboss-as-7-remote-jms-queue/
 https://developer.jboss.org/thread/195968
 https://developer.jboss.org/thread/195845
 
+BUG for the dynamic functionality
+https://issues.jboss.org/browse/EJBCLIENT-12
+
 
 git branch basic
 git checkout basic

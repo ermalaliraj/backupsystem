@@ -10,7 +10,7 @@
 	<modules>
 		<module>backupsystem-server</module>
 		<module>backupsystem-ru</module>
-		<module>backupsystem-gui</module>
+		<module>backupsystem-client</module>
 	</modules>
 	
 	<properties>

@@ -48,36 +48,36 @@ public class JMSTest {
 		MessageProducer producer = null;
 
 		try {
-//			String lookupObj = jndiPrefix + queueName;
-//			// String lookupObj = "/jms/queue/test";
-//			log.debug("Looking up to " + lookupObj);
-//
-//			Destination queue = (Destination) ctx.lookup(lookupObj);
-//			log.debug("Got remote object: " + queue);
-//			//ConnectionFactory connectionFactory = getConnectionFactory(ctx);
-//			log.debug("Got ConnectionFactory: " + connectionFactory);
-//
-//			connection = connectionFactory.createConnection();
-//			log.debug("Creating session and producer...");
-//			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-//			producer = session.createProducer(queue);
-//			ObjectMessage msg = session.createObjectMessage(text);
-//			msg.setStringProperty("messageType", "PROVA_ERMAL");
-//			//TextMessage msg = session.createTextMessage();
-//			//msg.setText(text);
-//			
-//			// jmsMessage.setStringProperty("messageType", message.getMessageType());
-//			log.debug("Sending message...");
-//			producer.send(msg);
-//			connection.start();
-//			log.debug("Message Sent.");
-//
-//			try {
-//				Thread.sleep(1000);
-//			} catch (InterruptedException e) {
-//			}
+			String lookupObj = jndiPrefix + queueName;
+			// String lookupObj = "/jms/queue/test";
+			log.debug("Looking up to " + lookupObj);
 
-			drainQueue(ctx, queueName, 5);
+			Destination queue = (Destination) ctx.lookup(lookupObj);
+			log.debug("Got remote object: " + queue);
+			//ConnectionFactory connectionFactory = getConnectionFactory(ctx);
+			log.debug("Got ConnectionFactory: " + connectionFactory);
+
+			connection = connectionFactory.createConnection();
+			log.debug("Creating session and producer...");
+			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+			producer = session.createProducer(queue);
+			ObjectMessage msg = session.createObjectMessage(text);
+			msg.setStringProperty("messageType", "PROVA_ERMAL");
+			//TextMessage msg = session.createTextMessage();
+			//msg.setText(text);
+			
+			// jmsMessage.setStringProperty("messageType", message.getMessageType());
+			log.debug("Sending message...");
+			producer.send(msg);
+			connection.start();
+			log.debug("Message Sent.");
+
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+			}
+
+			//drainQueue(ctx, queueName, 5);
 
 			// try {
 			// Thread.sleep(Integer.MAX_VALUE);
@@ -158,8 +158,8 @@ public class JMSTest {
 	}
 	
 	private static Context getContextEnvJboss7() throws NamingException {
-		//String host = "192.168.1.2";
-		String host = "127.0.0.1";
+		String host = "192.168.1.9";
+		//String host = "127.0.0.1";
 		String port = "4447";  //remoting
 		//String port = "5445"; //messaging
 		try {

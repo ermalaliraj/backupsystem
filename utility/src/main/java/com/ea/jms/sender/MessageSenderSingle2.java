@@ -230,9 +230,9 @@ public abstract class MessageSenderSingle2 {
 		}
 	}
 
-	protected static Context getContextEnvJboss7(MessageConnection messageConnection) throws NamingException {
+	private static Context getContextEnvJboss7(MessageConnection messageConnection) throws NamingException {
 		try {
-			messageConnection.setHost("192.168.1.5");
+			messageConnection.setHost("192.168.1.9");
 			messageConnection.setPort(4447);
 			
 			Properties properties = new Properties();
