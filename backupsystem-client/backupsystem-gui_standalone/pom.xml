@@ -20,7 +20,6 @@
 		<dependency>
 			<groupId>com.ea</groupId>
 			<artifactId>utility</artifactId>
-			<version>${ea.utility-version}</version>
 		</dependency>
 		
 		<dependency>
@@ -32,6 +31,9 @@
 		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
+			<version>${j2ee.version}</version>
+			<type>pom</type>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>

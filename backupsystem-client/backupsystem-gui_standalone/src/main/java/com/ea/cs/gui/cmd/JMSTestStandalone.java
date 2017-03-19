@@ -51,19 +51,19 @@ public class JMSTestStandalone {
 	public void sendQueue() {
 		Connection connection = null;
 		try {
-			String host = "192.168.1.8";
+			String host = "192.168.1.9";
 			//String host = "127.0.0.1";
 			String port = "4447"; 
 			
 			Properties properties = new Properties();
-			//properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.jboss.naming.remote.client.InitialContextFactory");
-			//properties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
-//			properties.put(Context.PROVIDER_URL, "remote://" + host + ":" + port);
+			properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.jboss.naming.remote.client.InitialContextFactory");
+			properties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
+			properties.put(Context.PROVIDER_URL, "remote://" + host + ":" + port);
 //			//properties.put("jboss.naming.client.ejb.context", "true");
 //			properties.put(Context.SECURITY_PRINCIPAL, "testuser");//adminapp
 //			properties.put(Context.SECURITY_CREDENTIALS, "testpwd");//adminpwd
-			//Context ctx = new InitialContext(properties);
-			Context ctx = getDynamicContext();
+			Context ctx = new InitialContext(properties);
+			
 			
 			log.debug("Context created: "+ctx.getEnvironment());
 		
