@@ -55,13 +55,13 @@ public class RuConfig {
 		cryptedData = false;
 		
 		serverConnection = new MessageConnection();
-		serverConnection.setInitialContext("org.jboss.naming.remote.client.InitialContextFactory");
-		serverConnection.setUrlPkgPrefixes("org.jboss.ejb.client.naming");
-		serverConnection.setProtocol("remote://");
+//		serverConnection.setInitialContext("org.jboss.naming.remote.client.InitialContextFactory");
+//		serverConnection.setUrlPkgPrefixes("org.jboss.ejb.client.naming");
+//		serverConnection.setProtocol("remote://");
 		serverConnection.setHost("127.0.0.1");
 		serverConnection.setPort(4447);
 		serverConnection.setTimeout(10*1000);
-		serverConnection.setReadTimeout(10*1000);
+//		serverConnection.setReadTimeout(10*1000);
 		//serverConnection.setConnectionFactory("ConnectionFactory");
 		serverConnection.setUsername("adminapp");
 		serverConnection.setPassword("adminpwd");		
