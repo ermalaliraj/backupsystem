@@ -267,6 +267,11 @@
                 <journal-min-files>2</journal-min-files>
 
                 <connectors>
+                    <connector name="remote-jms">
+                        <factory-class>org.hornetq.core.remoting.impl.netty.NettyConnectorFactory</factory-class>
+                        <param key="host" value="192.168.1.8"/>
+                        <param key="port" value="5445"/>
+                    </connector>
                     <netty-connector name="netty" socket-binding="messaging"/>
                     <netty-connector name="netty-throughput" socket-binding="messaging-throughput">
                         <param key="batch-delay" value="50"/>
@@ -276,10 +281,10 @@
 
                 <acceptors>
                     <netty-acceptor name="netty" socket-binding="messaging">
-                        <param key="host" value="${jboss.bind.address:0.0.0.0}"/>
+                        <param key="host" value="192.168.1.8"/>
                     </netty-acceptor>
                     <netty-acceptor name="netty-throughput" socket-binding="messaging-throughput">
-                        <param key="host" value="${jboss.bind.address:0.0.0.0}"/>
+                        <param key="host" value="192.168.1.8"/>
                         <param key="batch-delay" value="50"/>
                         <param key="direct-deliver" value="false"/>
                     </netty-acceptor>
@@ -317,7 +322,7 @@
                     </connection-factory>
                     <connection-factory name="RemoteConnectionFactory">
                         <connectors>
-                            <connector-ref connector-name="netty"/>
+                            <connector-ref connector-name="remote-jms"/>
                         </connectors>
                         <entries>
                             <entry name="RemoteConnectionFactory"/>
@@ -434,7 +439,7 @@
             <inet-address value="${jboss.bind.address.management:0.0.0.0}"/>
         </interface>
         <interface name="public">
-            <inet-address value="${jboss.bind.address:0.0.0.0}"/>
+            <inet-address value="${jboss.bind.address:127.1.0.0}"/>
         </interface>
         <interface name="unsecure">
             <inet-address value="${jboss.bind.address.unsecure:0.0.0.0}"/>
@@ -460,4 +465,10 @@
             <remote-destination host="localhost" port="25"/>
         </outbound-socket-binding>
     </socket-binding-group>
+
+    <deployments>
+        <deployment name="backupsystem-ru-ear.ear" runtime-name="backupsystem-ru-ear.ear">
+            <content sha1="abda52cfa2bbf2666540c839d26c055169db6d47"/>
+        </deployment>
+    </deployments>
 </server>
