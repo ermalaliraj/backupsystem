@@ -130,5 +130,8 @@ javax.naming.NamingException: Failed to lookup [Root exception is java.io.NotSer
 https://docs.jboss.org/author/display/WFLY8/EJB+invocations+from+a+remote+server+instance
 https://developer.jboss.org/thread/261163
 https://developer.jboss.org/thread/237145
+https://developer.jboss.org/thread/207725
+https://developer.jboss.org/thread/155233
+https://developer.jboss.org/thread/169780 (quesot )
 
 http://archive.oreilly.com/pub/a/onjava/excerpt/jms_ch2/index.html?page=3

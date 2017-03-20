@@ -55,35 +55,37 @@ public class JMSTestStandalone {
 	public void sendQueue() {
 		Connection connection = null;
 		try {
-			String host = "192.168.1.7";
-			//String host = "127.0.0.1";
-			String port = "4447"; 
+			String host = "10.151.4.162";
+			String port = "4447";
+			//String port = "5445"; 
 			
-//			Properties properties = new Properties();
-//			properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.jboss.naming.remote.client.InitialContextFactory");
-//			properties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
-//			properties.put(Context.PROVIDER_URL, "remote://" + host + ":" + port);
-//			properties.put("jboss.naming.client.ejb.context", "true");
-//			properties.put(Context.SECURITY_PRINCIPAL, "testuser");//adminapp
-//			properties.put(Context.SECURITY_CREDENTIALS, "testpwd");//adminpwd
-//			Context ctx = new InitialContext(properties);
-//			
 			Properties properties = new Properties();
-			properties.put(Context.INITIAL_CONTEXT_FACTORY, org.jboss.naming.remote.client.InitialContextFactory.class.getName());
+			properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.jboss.naming.remote.client.InitialContextFactory");
+			//properties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
+			properties.put(Context.URL_PKG_PREFIXES, "org.jboss.naming");
 			properties.put(Context.PROVIDER_URL, "remote://" + host + ":" + port);
-			properties.setProperty("java.naming.factory.url.pkgs", "org.jboss.naming");
+			properties.put("jboss.naming.client.ejb.context", "true");
 			properties.put(Context.SECURITY_PRINCIPAL, "testuser");//adminapp
 			properties.put(Context.SECURITY_CREDENTIALS, "testpwd");//adminpwd
-            Context ctx = new InitialContext(properties);
-            log.debug("Context created: "+ctx.getEnvironment());
+			Context ctx = new InitialContext(properties);
+			final ConnectionFactory connectionFactory = (ConnectionFactory) ctx.lookup("jms/RemoteConnectionFactory");
+			
+//			Properties properties = new Properties();
+//			properties.put(Context.INITIAL_CONTEXT_FACTORY, org.jboss.naming.remote.client.InitialContextFactory.class.getName());
+//			properties.put(Context.PROVIDER_URL, "remote://" + host + ":" + port);
+//			properties.setProperty("java.naming.factory.url.pkgs", "org.jboss.naming");
+//			properties.put(Context.SECURITY_PRINCIPAL, "testuser");//adminapp
+//			properties.put(Context.SECURITY_CREDENTIALS, "testpwd");//adminpwd
+//            Context ctx = new InitialContext(properties);
+//            log.debug("Context created: "+ctx.getEnvironment());
+//            
+//            HashMap map = new HashMap();
+//            map.put("host", host);
+//            map.put("port", 5445);
+//            TransportConfiguration transportConfiguration = new TransportConfiguration("org.hornetq.core.remoting.impl.netty.NettyConnectorFactory", map);
+//            ConnectionFactory connectionFactory = (ConnectionFactory) HornetQJMSClient.createConnectionFactoryWithoutHA(JMSFactoryType.TOPIC_CF, transportConfiguration);
             
-            HashMap map = new HashMap();
-            map.put("host", "192.168.1.7");
-            map.put("port", 5445);
-            TransportConfiguration transportConfiguration = new TransportConfiguration("org.hornetq.core.remoting.impl.netty.NettyConnectorFactory", map);
-            ConnectionFactory connectionFactory = (ConnectionFactory) HornetQJMSClient.createConnectionFactoryWithoutHA(JMSFactoryType.TOPIC_CF, transportConfiguration);
-            
-          //final ConnectionFactory connectionFactory = (ConnectionFactory) ctx.lookup("jms/RemoteConnectionFactory");
+			
 			log.debug("Got ConnectionFactory: " + connectionFactory);
 		
 			String jndiPrefix = "jms/queue/";

@@ -55,3 +55,14 @@ mvn package
 cp /home/uel/workspace/backupsystem/backupsystem-ru/backupsystem-ru-ear/target/backupsystem-ru-ear.ear /opt/jboss7/standalone/deployments/
 
 ./jboss-cli.sh --connect controller=localhost:9999
+
+
+
+- Failed to start service jboss.network.public: org.jboss.msc.service.StartException in service jboss.network.public: JBAS015810: failed to resolve interface public
+- the loopback was not configured... If you don't get the lo interface in the output of ifconfig, run:
+ifconfig lo 127.0.0.1 up
+
+
+hornetq-transports
+ADD module hornetq-transports-2.0.0.GA.jar to modules\org\hornetq\main
+
