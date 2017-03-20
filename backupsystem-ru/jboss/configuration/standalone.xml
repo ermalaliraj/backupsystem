@@ -267,25 +267,36 @@
 				<journal-min-files>2</journal-min-files>
 
 				<connectors>
-					<connector name="netty">
-						<factory-class>org.hornetq.integration.transports.netty.NettyConnectorFactory</factory-class>
-						<param key="host" value="10.151.5.31" />
+					<connector name="netty-manual">
+						<factory-class>org.hornetq.core.remoting.impl.netty.NettyConnectorFactory</factory-class>
+						<param key="host" value="vmcentos-back" />
 						<param key="port" value="5445" />
 					</connector>
-
+					<netty-connector name="netty" socket-binding="messaging" />
+					<netty-connector name="netty-throughput" socket-binding="messaging-throughput">
+						<param key="batch-delay" value="50" />
+					</netty-connector>
 					<in-vm-connector name="in-vm" server-id="0" />
 				</connectors>
 
 				<acceptors>
 					<acceptor name="netty">
-						<factory-class>org.hornetq.integration.transports.netty.NettyAcceptorFactory</factory-class>
-						<param key="host" value="10.151.5.31" />
+						<factory-class>org.hornetq.core.remoting.impl.netty.NettyConnectorFactory</factory-class>
+						<param key="host" value="vmcentos-back" />
 						<param key="port" value="5445" />
 
 						<param key="tcp-no-delay" value="false" />
 						<param key="tcp-send-buffer-size" value="1048576" />
 						<param key="tcp-receive-buffer-size" value="1048576" />
 					</acceptor>
+					<netty-acceptor name="netty-manual" socket-binding="messaging">
+						<param key="host" value="${jboss.bind.address:127.0.0.1}" />
+					</netty-acceptor>
+					<netty-acceptor name="netty-throughput" socket-binding="messaging-throughput">
+						<param key="host" value="${jboss.bind.address:127.0.0.1}" />
+						<param key="batch-delay" value="50" />
+						<param key="direct-deliver" value="false" />
+					</netty-acceptor>
 					<in-vm-acceptor name="in-vm" server-id="0" />
 				</acceptors>
 
@@ -320,7 +331,7 @@
 					</connection-factory>
 					<connection-factory name="RemoteConnectionFactory">
 						<connectors>
-							<connector-ref connector-name="netty" />
+							<connector-ref connector-name="netty-manual" />
 						</connectors>
 						<entries>
 							<entry name="RemoteConnectionFactory" />

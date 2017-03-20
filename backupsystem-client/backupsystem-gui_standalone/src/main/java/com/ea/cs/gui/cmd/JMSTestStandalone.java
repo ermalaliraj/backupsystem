@@ -55,7 +55,8 @@ public class JMSTestStandalone {
 	public void sendQueue() {
 		Connection connection = null;
 		try {
-			String host = "10.151.4.162";
+			//String host = "10.151.4.162";
+			String host = "192.168.1.8";
 			String port = "4447";
 			//String port = "5445"; 
 			
