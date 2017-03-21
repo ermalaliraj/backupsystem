@@ -280,8 +280,8 @@
 				</connectors>
 
 				<acceptors>
-					<acceptor name="netty">
-						<factory-class>org.hornetq.core.remoting.impl.netty.NettyConnectorFactory</factory-class>
+					<acceptor name="netty-manual">
+						<factory-class>org.hornetq.core.remoting.impl.netty.NettyAcceptorFactory</factory-class>
 						<param key="host" value="vmcentos-back" />
 						<param key="port" value="5445" />
 

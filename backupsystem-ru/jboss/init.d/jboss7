@@ -6,7 +6,7 @@
 # description: JBoss AS Standalone
 # processname: standalone
 # pidfile: /var/run/jboss-as/${JBOSS_INSTANCE}.pid
-# config: /opt/jboss7/standalone/configuration/as.conf
+# config: /etc/jboss-as/as.conf
 DEBUG=1
 # Source function library.
 . /etc/init.d/functions
@@ -24,8 +24,8 @@ JBOSS_DIR="/opt/${JBOSS_INSTANCE}/bin"
 #
 
 # Load Java configuration.
-#JAVA_HOME=/usr/local/java/jdk7
-JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.131-2.6.9.0.el7_3.x86_64
+JAVA_HOME=/usr/local/java/jdk7
+#JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.131-2.6.9.0.el7_3.x86_64
 export JAVA_HOME
 
 if [ -f "/opt/${JBOSS_INSTANCE}/standalone/configuration/as.conf" ]; then
@@ -79,16 +79,21 @@ if [ "$DEBUG" -eq 1 ]; then
  echo "DEBUG========================================="
  echo "JAVA_HOME           : $JAVA_HOME"
  echo "JBOSS_SCRIPT        : $JBOSS_SCRIPT"
- echo "JBOSS_INSTANCE      : $JBOSS_INSTANCE"
- echo "JBOSS_DIR           : $JBOSS_DIR"
- echo "JBOSS_USER          : $JBOSS_USER"
- echo "JBOSS_CONFIG        : $JBOSS_CONFIG"
- echo "SHUTDOWN_WAIT       : $SHUTDOWN_WAIT"
- echo "STARTUP_WAIT        : $STARTUP_WAIT"
  echo "JBOSS_HOME          : $JBOSS_HOME"
+ echo "JBOSS_DIR           : $JBOSS_DIR"
+ echo "JBOSS_BASE_DIR      : $JBOSS_BASE_DIR"
+ echo "JBOSS_CONFIG        : $JBOSS_CONFIG"
+ echo "JBOSS_BIND_ADDRESS  : $JBOSS_BIND_ADDRESS"
+ echo "JBOSS_MANAGEMENT_PORT: $JBOSS_MANAGEMENT_PORT"
  echo "JBOSS_PIDFILE       : $JBOSS_PIDFILE"
  echo "JBOSS_CONSOLE_LOG   : $JBOSS_CONSOLE_LOG"
+ echo "SERVER_LOG_FILE     : $SERVER_LOG_FILE"
+ echo "SHUTDOWN_WAIT       : $SHUTDOWN_WAIT"
+ echo "STARTUP_WAIT        : $STARTUP_WAIT"
+ echo "JBOSS_USER          : $JBOSS_USER"
+ echo "JBOSS_INSTANCE      : $JBOSS_INSTANCE"
  echo "prog                : $prog"
+
  echo "DEBUG========================================="
 fi
 

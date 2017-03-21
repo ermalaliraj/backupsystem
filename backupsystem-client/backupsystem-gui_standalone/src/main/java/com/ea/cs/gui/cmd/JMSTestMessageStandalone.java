@@ -1,20 +1,17 @@
 package com.ea.cs.gui.cmd;
 
-import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Properties;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
+import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
-import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
 import javax.jms.Queue;
 import javax.jms.Session;
-import javax.jms.TextMessage;
 //import javax.jms.Connection;
 //import javax.jms.ConnectionFactory;
 //import javax.jms.DeliveryMode;
@@ -28,18 +25,8 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
-import org.hornetq.api.core.TransportConfiguration;
-import org.hornetq.api.jms.HornetQJMSClient;
-import org.hornetq.api.jms.JMSFactoryType;
-import org.hornetq.jms.client.HornetQObjectMessage;
-import org.jboss.ejb.client.ContextSelector;
-import org.jboss.ejb.client.EJBClientConfiguration;
-import org.jboss.ejb.client.EJBClientContext;
-import org.jboss.ejb.client.PropertiesBasedEJBClientConfiguration;
-import org.jboss.ejb.client.remoting.ConfigBasedEJBClientContextSelector;
 
 import com.ea.bs.protocol.cmd.message.CommandMessageType;
-
 
 public class JMSTestMessageStandalone {
 
@@ -47,7 +34,6 @@ public class JMSTestMessageStandalone {
 	protected String queueName = null;
 	protected Context ctx = null;
 	protected Queue queue = null;
-	private static String jndiPrefix = null;
 
 	public static void main(String[] args) {
 		JMSTestMessageStandalone app = new JMSTestMessageStandalone();
@@ -60,7 +46,7 @@ public class JMSTestMessageStandalone {
 		MessageProducer producer = null;
 		try {
 			//String host = "10.151.4.162";
-			String host = "192.168.1.9";
+			String host = "192.168.1.8";
 			String port = "4447";
 			
 			Properties properties = new Properties();
@@ -92,6 +78,7 @@ public class JMSTestMessageStandalone {
 			producer = session.createProducer(queue);
 			ObjectMessage jmsMessage= session.createObjectMessage(getStatusMsg);
 			jmsMessage.setJMSReplyTo(replyQueue);
+			producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 			jmsMessage.setJMSExpiration(5000);
 
 			log.debug("Sending message...");
