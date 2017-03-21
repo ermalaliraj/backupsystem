@@ -65,4 +65,7 @@ ifconfig lo 127.0.0.1 up
 
 hornetq-transports
 ADD module hornetq-transports-2.0.0.GA.jar to modules\org\hornetq\main
+REMOVED
+
+
 
