@@ -35,7 +35,7 @@ public abstract class MessageSender {
 	private static final Log log = LogFactory.getLog(MessageSender.class);
 	
 //	@Resource(mappedName = "java:/RemoteConnectionFactory")
-	@Resource(mappedName = "java:/RemoteConnectionFactory")
+	@Resource(mappedName = "java:/JmsXA")
 	private ConnectionFactory connectionFactory;
 	protected MessageConnection messageConnection = null;
 	protected String destinationName = null;
