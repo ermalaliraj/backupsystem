@@ -8,7 +8,7 @@ import java.util.List;
 
 import com.ea.bs.protocol.files.message.FileMsgInfo;
 import com.ea.bs.ru.files.dto.FileRuDTO;
-import com.ea.util.IOUtilities;
+import com.ea.util.IOUtils;
 
 public class FileAssembler {
 
@@ -25,7 +25,7 @@ public class FileAssembler {
 			dto.setDate(new Date());
 			dto.setFileName(f.getName());
 			dto.setIdService(idService);
-			dto.setFileBytes(IOUtilities.getFileContent(f));
+			dto.setFileBytes(IOUtils.getFileContent(f));
 			list.add(dto);
 		}
 		return list;

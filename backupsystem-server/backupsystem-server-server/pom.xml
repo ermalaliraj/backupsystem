@@ -23,9 +23,7 @@
 		<dependency>
 			<groupId>com.ea</groupId>
 			<artifactId>utility</artifactId>
-		</dependency>
-				
-				
+		</dependency>				
 		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>

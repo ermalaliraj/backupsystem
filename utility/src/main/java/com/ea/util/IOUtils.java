@@ -17,11 +17,11 @@ import org.apache.commons.logging.LogFactory;
 /**
  * I/O Util class
  */
-public class IOUtilities {
+public class IOUtils {
 
-	private static final Log log = LogFactory.getLog(IOUtilities.class);
+	private static final Log log = LogFactory.getLog(IOUtils.class);
 
-	private IOUtilities() {		
+	private IOUtils() {		
 	}
 	
 	public static String normalizePath(String path) {
@@ -114,6 +114,14 @@ public class IOUtilities {
 			}
 		} catch (IOException e) {
 			log.warn("Cannot close resource: " + closeable.toString(), e);
+		}
+	}
+
+	public static boolean existsFile(String configPath) {
+		if(new File(configPath).exists()){
+			return true;
+		} else {
+			return false;	
 		}
 	}
 }

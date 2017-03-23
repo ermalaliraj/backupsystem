@@ -34,7 +34,7 @@ public class FileSender extends MessageSender implements FileSenderLocal {
 
 	public void sendFiles(List<FileMsgInfo> list) throws MessageException {
 		log.info("Sending files to the Server");
-		long idRu = ruConfig.getIdRu();
+		long idRu = ruConfig.getConfigDescriptor().getIdRu();
 		SendFileMessage sendFileMsg = new SendFileMessage(idRu, list);
 		sendAsynchMessage(sendFileMsg);
 		log.info("[RU] "+list.size() + " files correctly sent to the server from RU:"+idRu);

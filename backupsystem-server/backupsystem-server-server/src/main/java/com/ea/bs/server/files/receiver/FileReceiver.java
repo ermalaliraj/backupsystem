@@ -21,7 +21,7 @@ import com.ea.bs.server.files.dto.FileServerDTO;
 import com.ea.db.DBException;
 import com.ea.jms.Message;
 import com.ea.jms.receiver.MessageReceiver;
-import com.ea.util.IOUtilities;
+import com.ea.util.IOUtils;
 
 
 @MessageDriven(
@@ -66,9 +66,9 @@ public class FileReceiver extends MessageReceiver {
 				
 					//3. Save to filesystem
 					log.debug("[SERVER] FileDTO (crypted) from RU: "+fileDto);
-					String fileName = IOUtilities.normalizePath(serverConfig.getBackupPath()) + fileDto.getFileName();
+					String fileName = IOUtils.normalizePath(serverConfig.getBackupPath()) + fileDto.getFileName();
 					log.debug("[SERVER] Backuping: "+fileName);
-					IOUtilities.setFileContent(fileName, fileDto.getFileBytes());
+					IOUtils.setFileContent(fileName, fileDto.getFileBytes());
 					count ++;
 				}
 								

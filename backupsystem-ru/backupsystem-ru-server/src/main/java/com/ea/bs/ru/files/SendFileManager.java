@@ -25,7 +25,7 @@ import com.ea.bs.ru.files.sender.FileSenderLocal;
 import com.ea.db.DBException;
 import com.ea.jms.exception.MessageApplicationException;
 import com.ea.jms.exception.MessageException;
-import com.ea.util.IOUtilities;
+import com.ea.util.IOUtils;
 
 @Stateless
 @LocalBean
@@ -46,11 +46,11 @@ public class SendFileManager {
 	private Long idService;
 	
 	public void sendFileLogic() {
-		String pathWithFiles = ruConfig.getPathWithFileToBeSend();
-		log.debug("[RU] FileManager - Checking files ready to be sent on path: "+pathWithFiles+", isEncrypted?: "+ruConfig.isCryptedData());
+		String pathWithFiles = ruConfig.getConfigDescriptor().getPathWithFilesToBeSend();
+		log.debug("[RU] FileManager - Checking files ready to be sent on path: "+pathWithFiles+", isEncrypted?: "+ruConfig.getConfigDescriptor().isCryptedData());
 		try {
 			this.idService = 1L; //get from serviceBean  
-			List<File> files = IOUtilities.getFilesFromPath(pathWithFiles, ruConfig.getNrMaxFilesPerMsg(), ruConfig.getNrMaxSizePerFile());
+			List<File> files = IOUtils.getFilesFromPath(pathWithFiles, ruConfig.getConfigDescriptor().getMaxNrFilesPerMsg(), ruConfig.getConfigDescriptor().getMaxSizeBytePerFile());
 			log.debug("[RU] Tot files to send: "+files.size());
 			
 			List<FileRuDTO> dtoList = new ArrayList<FileRuDTO>(); 
@@ -61,7 +61,7 @@ public class SendFileManager {
 				fileDTO.setDate(new Date());
 				fileDTO.setFileName(f.getName());
 				fileDTO.setIdService(idService);
-				fileDTO.setFileBytes(IOUtilities.getFileContent(f));
+				fileDTO.setFileBytes(IOUtils.getFileContent(f));
 
 				dtoList.add(fileDTO);
 				log.debug("[RU] fileDTO - " + fileDTO);
@@ -72,7 +72,7 @@ public class SendFileManager {
 			
 			if(files.size() > 0){
 				//1. Save in DB
-				fileBean.saveFile(dtoList, pathWithFiles, ruConfig.isCryptedData());
+				fileBean.saveFile(dtoList, pathWithFiles, ruConfig.getConfigDescriptor().isCryptedData());
 				
 				//2. Send files
 				fileSender.sendFiles(listMsg);
@@ -82,11 +82,11 @@ public class SendFileManager {
 				for (FileRuDTO fileDTO : dtoList) {
 					try{
 						fileBackuped = pathWithFiles + fileDTO.getFileName();
-						if(ruConfig.isBackupSent()){
+						if(ruConfig.getConfigDescriptor().isBackupSent()){
 							//save in backup folder
 						}
 						log.debug("[RU] Deleting from filesystem, file: "+fileBackuped);
-						IOUtilities.deleteFile(fileBackuped);
+						IOUtils.deleteFile(fileBackuped);
 					} catch (Exception e) {
 						log.error("[RU] Exception deleting from filesystem file: " + fileBackuped, e);
 					} 
@@ -109,11 +109,11 @@ public class SendFileManager {
 	}
 	
 	public void sendSampleFileLogic() throws MessageApplicationException {
-		String pathWithFiles = ruConfig.getPathWithFileToBeSend();
-		log.debug("[RU] FileManager - Checking files ready to be sent on path: "+pathWithFiles+", isEncrypted?: "+ruConfig.isCryptedData());
+		String pathWithFiles = ruConfig.getConfigDescriptor().getPathWithFilesToBeSend();
+		log.debug("[RU] FileManager - Checking files ready to be sent on path: "+pathWithFiles+", isEncrypted?: "+ruConfig.getConfigDescriptor().isCryptedData());
 		try {
 			this.idService = 1L; //get from serviceBean  
-			List<File> files = IOUtilities.getFilesFromPath(pathWithFiles, ruConfig.getNrMaxFilesPerMsg(), ruConfig.getNrMaxSizePerFile());
+			List<File> files = IOUtils.getFilesFromPath(pathWithFiles, ruConfig.getConfigDescriptor().getMaxNrFilesPerMsg(), ruConfig.getConfigDescriptor().getMaxSizeBytePerFile());
 			log.debug("[RU] Tot files to send: "+files.size());
 			
 			List<FileRuDTO> dtoList = new ArrayList<FileRuDTO>(); 
@@ -124,7 +124,7 @@ public class SendFileManager {
 				fileDTO.setDate(new Date());
 				fileDTO.setFileName(f.getName());
 				fileDTO.setIdService(idService);
-				fileDTO.setFileBytes(IOUtilities.getFileContent(f));
+				fileDTO.setFileBytes(IOUtils.getFileContent(f));
 
 				dtoList.add(fileDTO);
 				log.debug("[RU] fileDTO - " + fileDTO);

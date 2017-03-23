@@ -71,5 +71,8 @@ hornetq-transports
 ADD module hornetq-transports-2.0.0.GA.jar to modules\org\hornetq\main
 REMOVED
 
+--running server from eclipse (not 0.0.0.0 for hornetq problem)
+-mp "C:/Program Files/jboss-as-7.1.1.Final/modules" -jaxpmodule javax.xml.jaxp-provider org.jboss.as.standalone -b=bs-server -bmanagement=bs-server --server-config=standalone.xml -Djboss.server.base.dir="C:\Program Files\jboss-as-7.1.1.Final\standalone"
+
 
 
