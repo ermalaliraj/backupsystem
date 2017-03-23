@@ -276,6 +276,11 @@
                         <param key="host" value="bs-ru"/>
                         <param key="port" value="5445"/>
                     </connector>
+                    <connector name="netty-server">
+                        <factory-class>org.hornetq.core.remoting.impl.netty.NettyConnectorFactory</factory-class>
+                        <param key="host" value="bs-server"/>
+                        <param key="port" value="5445"/>
+                    </connector>
                     <netty-connector name="netty" socket-binding="messaging"/>
                     <netty-connector name="netty-throughput" socket-binding="messaging-throughput">
                         <param key="batch-delay" value="50"/>
@@ -337,6 +342,15 @@
                         <entries>
                             <entry name="RemoteConnectionFactory"/>
                             <entry name="java:jboss/exported/jms/RemoteConnectionFactory"/>
+                        </entries>
+                    </connection-factory>
+                    <connection-factory name="ServerConnectionFactory">
+                        <connectors>
+                            <connector-ref connector-name="netty-server"/>
+                        </connectors>
+                        <entries>
+                            <entry name="ServerConnectionFactory"/>
+                            <entry name="java:jboss/exported/jms/ServerConnectionFactory"/>
                         </entries>
                     </connection-factory>
                     <pooled-connection-factory name="hornetq-ra">
@@ -476,4 +490,9 @@
         </outbound-socket-binding>
     </socket-binding-group>
 
+    <deployments>
+        <deployment name="backupsystem-ru-ear.ear" runtime-name="backupsystem-ru-ear.ear">
+            <content sha1="7514c8b8f581dc0e450c90a9bdfcdbeed55dbf81"/>
+        </deployment>
+    </deployments>
 </server>

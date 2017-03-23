@@ -1,0 +1,5 @@
+<ServerConfigDescriptor>
+	<backupPath>D:/bs/server/BACKUP_FOLDER</backupPath>
+	<cryptedData>false</cryptedData>
+	<!--keyStringSalt>false</keyStringSalt-->
+</ServerConfigDescriptor>
