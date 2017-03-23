@@ -61,7 +61,7 @@ public class CommandReceiver extends MessageReceiver {
 
 	@PostConstruct
 	public void init(InvocationContext ctx) {
-		idRu = ruConfig.getConfigDescriptor().getIdRu();
+		idRu = ruConfig.getRuDescriptor().getIdRu();
 	}
 
 	@Override

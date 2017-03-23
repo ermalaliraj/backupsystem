@@ -31,7 +31,7 @@ public class RuConfig {
 	@Resource(name = "RU_CONFIG_PATH")
 	private String ruConfigPath;
 	
-	private RuConfigDescriptor configDescriptor;
+	private RuConfigDescriptor ruDescriptor;
 
 	private MessageConnection serverConnection;
 		
@@ -79,13 +79,13 @@ public class RuConfig {
 			File configFile = new File(configPath);
 			JAXBContext jaxbContext = JAXBContext.newInstance(RuConfigDescriptor.class);
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-			configDescriptor = (RuConfigDescriptor) jaxbUnmarshaller.unmarshal(configFile);
+			ruDescriptor = (RuConfigDescriptor) jaxbUnmarshaller.unmarshal(configFile);
 		} catch (Exception e) {
 			log.fatal("Couldn't create a RuDescriptor from xml config file: "+configPath, e);
 			throw new Exception("Couldn't create a RuDescriptor from xml config file: "+configPath);
 			//buildFakeConfigDescriptor();
 		}
-		log.info("RU configDescriptor builded from xml file: "+configDescriptor);
+		log.info("RU configDescriptor builded from xml file: "+ruDescriptor);
 		
 		buildServerConnection();
 		log.info("[RU] serverConnection: "+serverConnection);
@@ -143,12 +143,12 @@ public class RuConfig {
 		this.serverConnection = serverConnection;
 	}
 
-	public RuConfigDescriptor getConfigDescriptor() {
-		return configDescriptor;
+	public RuConfigDescriptor getRuDescriptor() {
+		return ruDescriptor;
 	}
 
 	public void setConfigDescriptor(RuConfigDescriptor configDescriptor) {
-		this.configDescriptor = configDescriptor;
+		this.ruDescriptor = configDescriptor;
 	}
 
 }

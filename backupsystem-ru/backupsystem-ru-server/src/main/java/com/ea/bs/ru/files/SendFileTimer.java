@@ -41,18 +41,18 @@ public class SendFileTimer {
 		idService = 1L; //serviceBean.ceateService();
 		TimerConfig tf = new TimerConfig();
 		tf.setPersistent(false);
-		tf.setInfo(ruConfig.getConfigDescriptor().getSendFilesTimerInfo());
-		timerService.createIntervalTimer(ruConfig.getConfigDescriptor().getSendFilesFirstFire(), ruConfig.getConfigDescriptor().getSendFilesTimeout(), tf);
+		tf.setInfo(ruConfig.getRuDescriptor().getSendFilesTimerInfo());
+		timerService.createIntervalTimer(ruConfig.getRuDescriptor().getSendFilesFirstFire(), ruConfig.getRuDescriptor().getSendFilesTimeout(), tf);
 
-		log.debug("[RU] **Started timer "+ruConfig.getConfigDescriptor().getSendFilesTimerInfo()+" with following config:**");
-		log.debug("[RU] getPathWithFileToBeSend:" + ruConfig.getConfigDescriptor().getPathWithFilesToBeSend());
-		log.debug("[RU] getNrMaxFilesPerMsg:" + ruConfig.getConfigDescriptor().getMaxNrFilesPerMsg());
-		log.debug("[RU] getNrMaxSizePerFile:" + ruConfig.getConfigDescriptor().getMaxSizeBytePerFile());
-		log.debug("[RU] isCryptedData:" + ruConfig.getConfigDescriptor().isCryptedData());
-		log.debug("[RU] getSendFilesFirstFire:" + ruConfig.getConfigDescriptor().getSendFilesFirstFire());
-		log.debug("[RU] getSendFilesTimeout:" + ruConfig.getConfigDescriptor().getSendFilesTimeout());
+		log.debug("[RU] **Started timer "+ruConfig.getRuDescriptor().getSendFilesTimerInfo()+" with following config:**");
+		log.debug("[RU] getPathWithFileToBeSend:" + ruConfig.getRuDescriptor().getPathWithFilesToBeSend());
+		log.debug("[RU] getNrMaxFilesPerMsg:" + ruConfig.getRuDescriptor().getMaxNrFilesPerMsg());
+		log.debug("[RU] getNrMaxSizePerFile:" + ruConfig.getRuDescriptor().getMaxSizeBytePerFile());
+		log.debug("[RU] isCryptedData:" + ruConfig.getRuDescriptor().isCryptedData());
+		log.debug("[RU] getSendFilesFirstFire:" + ruConfig.getRuDescriptor().getSendFilesFirstFire());
+		log.debug("[RU] getSendFilesTimeout:" + ruConfig.getRuDescriptor().getSendFilesTimeout());
 		
-		log.info("[RU] Timer "+ruConfig.getConfigDescriptor().getSendFilesTimerInfo()+" created for service "+idService+". First run will be after "+(ruConfig.getConfigDescriptor().getSendFilesFirstFire()/1000)+" seconds");
+		log.info("[RU] Timer "+ruConfig.getRuDescriptor().getSendFilesTimerInfo()+" created for service "+idService+". First run will be after "+(ruConfig.getRuDescriptor().getSendFilesFirstFire()/1000)+" seconds");
 	}
 
 	public void stopSending() {

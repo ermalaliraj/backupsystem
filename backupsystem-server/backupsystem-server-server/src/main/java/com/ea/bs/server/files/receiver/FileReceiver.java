@@ -66,7 +66,7 @@ public class FileReceiver extends MessageReceiver {
 				
 					//3. Save to filesystem
 					log.debug("[SERVER] FileDTO (crypted) from RU: "+fileDto);
-					String fileName = IOUtils.normalizePath(serverConfig.getBackupPath()) + fileDto.getFileName();
+					String fileName = IOUtils.normalizePath(serverConfig.getServerDescriptor().getBackupPath()) + fileDto.getFileName();
 					log.debug("[SERVER] Backuping: "+fileName);
 					IOUtils.setFileContent(fileName, fileDto.getFileBytes());
 					count ++;

@@ -31,11 +31,11 @@ public class CommandClient {
 //	        remote.pingAsynch(id);
 //	        log.debug("PING sent to RU: "+id);
 	        
-	        String ret = remote.pingSynch(id);
-	        log.debug("PING SYNCH sent to RU: "+id+" returned from RU: "+ret);
+//	        String ret = remote.pingSynch(id);
+//	        log.debug("PING SYNCH sent to RU: "+id+" returned from RU: "+ret);
 //	        
-//	        remote.getSampleFiles(id);
-//	        log.debug("SampleFiles sent to RU: "+id);
+	        remote.getSampleFiles(id);
+	        log.debug("SampleFiles sent to RU: "+id);
 	        
 //	        RuDTO status = remote.getStatus(id);
 //	        log.debug("RU Status from server: "+status);

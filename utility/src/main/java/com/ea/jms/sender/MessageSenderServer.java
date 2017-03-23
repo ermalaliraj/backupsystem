@@ -25,11 +25,11 @@ import com.ea.jms.exception.NoReplyException;
  * Abstract class for sending JMS messages to a single Destination.
  * The context of the destination has to be passed with MessageConnection object through the Send method.
  */
-public abstract class MessageSenderSingle {
+public abstract class MessageSenderServer {
 
-	private static final Log log = LogFactory.getLog(MessageSenderSingle.class);
-	//@Resource(mappedName = "java:/JmsXA")
-	@Resource(mappedName = "java:/RemoteConnectionFactory")
+	private static final Log log = LogFactory.getLog(MessageSenderServer.class);
+
+	@Resource(mappedName = "java:/ServerConnectionFactory")
 	private ConnectionFactory connectionFactory;
 	
 	protected String destinationName;
@@ -39,14 +39,14 @@ public abstract class MessageSenderSingle {
 	/**
 	 * Send an Asynchronous message in persistent mode.    
 	 */
-	protected void sendAsynchMessage(MessageConnection messageConnection, Message message) throws MessageException {
-		sendAsynchMessage(messageConnection, message, true);
+	protected void sendAsynchMessage(Message message) throws MessageException {
+		sendAsynchMessage(message, true);
 	}
 
 	/**
 	 * Send an Asynchronous message
 	 */
-	protected void sendAsynchMessage(MessageConnection messageConnection, Message message, boolean msgPersistence) throws MessageException {
+	protected void sendAsynchMessage(Message message, boolean msgPersistence) throws MessageException {
 		Context ctx = null;
 		Connection connection = null;
 		Session session = null;

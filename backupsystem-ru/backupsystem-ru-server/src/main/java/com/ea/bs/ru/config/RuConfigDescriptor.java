@@ -9,7 +9,6 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 @XmlRootElement(name="RuConfigDescriptor")
 @XmlAccessorType(XmlAccessType.FIELD)
-//@XmlType(name="", propOrder={"error"})
 public class RuConfigDescriptor {
 	
 	private long idRu;
