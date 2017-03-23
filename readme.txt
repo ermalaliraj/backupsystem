@@ -12,6 +12,9 @@ cp /home/uel/workspace/backupsystem/backupsystem-ru/backupsystem-ru-ear/target/b
 
 rm -rf /opt/wildfly/standalone/deployments/*
 
+-mp "C:/Program Files/jboss-as-7.1.1.Final/modules" -jaxpmodule javax.xml.jaxp-provider org.jboss.as.standalone -b=bs-server -bmanagement=bs-server --server-config=standalone.xml -Djboss.server.base.dir="C:\Program Files\jboss-as-7.1.1.Final\standalone"
+
+-b=bs-server -bmanagement=bs-server
 
 Error SOLUTIONS:
 1)  Caused by: org.jboss.msc.service.DuplicateServiceException: Service jboss.pojo.\"org.jboss.netty.internal.LoggerConfigurator\".DESCRIBED is already registered"},
@@ -64,6 +67,14 @@ https://developer.jboss.org/thread/196472
 BUG for the dynamic functionality
 https://issues.jboss.org/browse/EJBCLIENT-12
 
+
+6) Certificati
+--Generate public certitifcate from secure ip:port
+openssl s_client -connect 100.52.30.193:8444 > D:/suv_collaudo_cert.crt 
+--remove everything and let only text between BEGIN/END CERTIFICATE--
+-- import certificate in CAcert of virtual macchine from which is connecting the client
+C:/Program Files/Java/jdk1.7.0_80/bin/keytool -import -trustcacerts -keystore "C:/Program Files/Java/jdk1.7.0_80/jre/lib/security/cacerts" -storepass changeit -noprompt -alias mycert -file D:/suv_collaudo_cert.crt
+"C:/Program Files/Java/jre7/bin/keytool" -import -trustcacerts -keystore "C:/Program Files/Java/jre7/lib/security/cacerts" -storepass changeit -noprompt -alias mycert -file D:/suv_collaudo_cert.crt
 
 git branch basic
 git checkout basic
@@ -132,6 +143,7 @@ https://developer.jboss.org/thread/261163
 https://developer.jboss.org/thread/237145
 https://developer.jboss.org/thread/207725
 https://developer.jboss.org/thread/155233
-https://developer.jboss.org/thread/169780 (quesot )
+http://hornetq.blogspot.it/2009/10/understanding-connectors-acceptors.html
+https://developer.jboss.org/thread/235659
 
 http://archive.oreilly.com/pub/a/onjava/excerpt/jms_ch2/index.html?page=3

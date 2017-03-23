@@ -58,14 +58,14 @@
     <profile>
         <subsystem xmlns="urn:jboss:domain:logging:1.1">
             <console-handler name="CONSOLE">
-                <level name="DEBUG"/>
+                <level name="INFO"/>
                 <formatter>
-                    <pattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c] %s%E%n"/>
+                    <pattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%E%n"/>
                 </formatter>
             </console-handler>
             <periodic-rotating-file-handler name="FILE">
                 <formatter>
-                    <pattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c] %s%E%n"/>
+                    <pattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%E%n"/>
                 </formatter>
                 <file relative-to="jboss.server.log.dir" path="server.log"/>
                 <suffix value=".yyyy-MM-dd"/>
@@ -75,23 +75,7 @@
                 <formatter>
                     <pattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c] %s%E%n"/>
                 </formatter>
-                <file relative-to="jboss.server.log.dir" path="capture_server.log"/>
-                <suffix value=".yyyy-MM-dd"/>
-                <append value="true"/>
-            </periodic-rotating-file-handler>
-            <periodic-rotating-file-handler name="FILE_CAPTURE_RU">
-                <formatter>
-                    <pattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c] %s%E%n"/>
-                </formatter>
                 <file relative-to="jboss.server.log.dir" path="capture_ru.log"/>
-                <suffix value=".yyyy-MM-dd"/>
-                <append value="true"/>
-            </periodic-rotating-file-handler>
-            <periodic-rotating-file-handler name="FILE_CAPTURE_GUI">
-                <formatter>
-                    <pattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c] %s%E%n"/>
-                </formatter>
-                <file relative-to="jboss.server.log.dir" path="capture_gui.log"/>
                 <suffix value=".yyyy-MM-dd"/>
                 <append value="true"/>
             </periodic-rotating-file-handler>
@@ -110,40 +94,31 @@
             <logger category="jacorb.config">
                 <level name="ERROR"/>
             </logger>
-            <logger category="org.hornetq">
-                <level name="INFO"/>
-            </logger>
             <logger category="javax.enterprise.resource.webcontainer">
                 <level name="WARN"/>
             </logger>
             <logger category="javax.faces">
                 <level name="WARN"/>
             </logger>
-            <logger category="org.jboss">
-                <level name="INFO"/>
-            </logger>
             <logger category="org.hibernate">
                 <level name="WARN"/>
             </logger>
+            <logger category="org.jboss">
+                <level name="DEBUG"/>
+            </logger>
+            <logger category="org.jboss.as.config">
+                <level name="DEBUG"/>
+            </logger>
+            <logger category="org.hornetq">
+                <level name="DEBUG"/>
+            </logger>
             <logger category="org.apache">
-                <level name="INFO"/>
+                <level name="DEBUG"/>
             </logger>
             <logger category="com.ea">
                 <level name="TRACE"/>
                 <handlers>
                     <handler name="FILE_CAPTURE_SERVER"/>
-                </handlers>
-            </logger>
-            <logger category="com.ea.bs.ru">
-                <level name="TRACE"/>
-                <handlers>
-                    <handler name="FILE_CAPTURE_RU"/>
-                </handlers>
-            </logger>
-            <logger category="com.ea.bs.gui">
-                <level name="TRACE"/>
-                <handlers>
-                    <handler name="FILE_CAPTURE_GUI"/>
                 </handlers>
             </logger>
             <root-logger>
@@ -158,14 +133,6 @@
         <subsystem xmlns="urn:jboss:domain:configadmin:1.0"/>
         <subsystem xmlns="urn:jboss:domain:datasources:1.0">
             <datasources>
-                <datasource jndi-name="java:jboss/datasources/backupSystemRuDS" pool-name="backupSystemRuDS" enabled="true" use-java-context="true">
-                    <connection-url>jdbc:h2:mem:test;DB_CLOSE_DELAY=-1</connection-url>
-                    <driver>h2</driver>
-                    <security>
-                        <user-name>sa</user-name>
-                        <password>sa</password>
-                    </security>
-                </datasource>
                 <datasource jndi-name="java:jboss/datasources/backupSystemServerDS" pool-name="backupSystemServerDS" enabled="true" use-java-context="true">
                     <connection-url>jdbc:h2:mem:test;DB_CLOSE_DELAY=-1</connection-url>
                     <driver>h2</driver>
@@ -174,7 +141,7 @@
                         <password>sa</password>
                     </security>
                 </datasource>
-                <datasource jndi-name="java:jboss/datasources/captureSystemRuDS" pool-name="captureSystemRuDS" enabled="true" use-java-context="true">
+                <datasource jndi-name="java:jboss/datasources/backupSystemRuDS" pool-name="backupSystemRuDS" enabled="true" use-java-context="true">
                     <connection-url>jdbc:h2:mem:test;DB_CLOSE_DELAY=-1</connection-url>
                     <driver>h2</driver>
                     <security>
@@ -188,13 +155,6 @@
                     <security>
                         <user-name>sa</user-name>
                         <password>sa</password>
-                    </security>
-                </datasource>
-                <datasource jndi-name="java:jboss/datasources/firstDS" pool-name="firstDS" enabled="true">
-                    <connection-url>jdbc:h2:mem:test;DB_CLOSE_DELAY=-1</connection-url>
-                    <driver>h2</driver>
-                    <security>
-                        <user-name>sa</user-name>
                     </security>
                 </datasource>
                 <drivers>
@@ -315,10 +275,10 @@
                 <journal-min-files>2</journal-min-files>
 
                 <connectors>
-                    <connector name="remote-jms">
+                    <connector name="netty-manual">
                         <factory-class>org.hornetq.core.remoting.impl.netty.NettyConnectorFactory</factory-class>
-                        <param key="host" value="127.0.0.1"/>
-                        <param key="port" value="4445"/>
+                        <param key="host" value="bs-ru"/>
+                        <param key="port" value="5445"/>
                     </connector>
                     <netty-connector name="netty" socket-binding="messaging"/>
                     <netty-connector name="netty-throughput" socket-binding="messaging-throughput">
@@ -328,6 +288,12 @@
                 </connectors>
 
                 <acceptors>
+                    <acceptor name="netty-manual">
+                        <factory-class>org.hornetq.core.remoting.impl.netty.NettyAcceptorFactory</factory-class>
+                        <param key="tcp-no-delay" value="false"/>
+                        <param key="tcp-send-buffer-size" value="1048576"/>
+                        <param key="tcp-receive-buffer-size" value="1048576"/>
+                    </acceptor>
                     <netty-acceptor name="netty" socket-binding="messaging">
                         <param key="host" value="${jboss.bind.address:127.0.0.1}"/>
                     </netty-acceptor>
@@ -370,17 +336,17 @@
                     </connection-factory>
                     <connection-factory name="RemoteConnectionFactory">
                         <connectors>
-                            <connector-ref connector-name="remote-jms"/>
+                            <connector-ref connector-name="netty-manual"/>
                         </connectors>
                         <entries>
-                            <entry name="java:/RemoteConnectionFactory"/>
+                            <entry name="RemoteConnectionFactory"/>
                             <entry name="java:jboss/exported/jms/RemoteConnectionFactory"/>
                         </entries>
                     </connection-factory>
                     <pooled-connection-factory name="hornetq-ra">
                         <transaction mode="xa"/>
                         <connectors>
-                            <connector-ref connector-name="remote-jms"/>
+                            <connector-ref connector-name="netty"/>
                         </connectors>
                         <entries>
                             <entry name="java:/JmsXA"/>
@@ -396,22 +362,6 @@
                     <jms-queue name="testQueue">
                         <entry name="queue/test"/>
                         <entry name="java:jboss/exported/jms/queue/test"/>
-                    </jms-queue>
-                    <jms-queue name="ermalQueueProva">
-                        <entry name="queue/test2"/>
-                        <entry name="java:jboss/exported/jms/queue/test2"/>
-                    </jms-queue>
-                    <jms-queue name="ermalQueue">
-                        <entry name="queue/ermalQueue"/>
-                        <entry name="java:jboss/exported/jms/queue/ermalQueue"/>
-                    </jms-queue>
-                    <jms-queue name="garanteprivacyCf">
-                        <entry name="cf/garanteprivacy"/>
-                        <entry name="java:jboss/exported/jms/gp/cf/garanteprivacy"/>
-                    </jms-queue>
-                    <jms-queue name="garanteprivacyQueue">
-                        <entry name="queue/garanteprivacy"/>
-                        <entry name="java:jboss/exported/jms/gp/queue/garanteprivacy"/>
                     </jms-queue>
                     <jms-topic name="testTopic">
                         <entry name="topic/test"/>
@@ -500,13 +450,13 @@
 
     <interfaces>
         <interface name="management">
-            <inet-address value="${jboss.bind.address.management:127.0.0.1}"/>
+            <inet-address value="${jboss.bind.address.management:bs-server}"/>
         </interface>
         <interface name="public">
-            <inet-address value="${jboss.bind.address:127.0.0.1}"/>
+            <inet-address value="${jboss.bind.address:bs-server}"/>
         </interface>
         <interface name="unsecure">
-            <inet-address value="${jboss.bind.address.unsecure:127.0.0.1}"/>
+            <inet-address value="${jboss.bind.address.unsecure:bs-server}"/>
         </interface>
     </interfaces>
 
@@ -515,7 +465,7 @@
         <socket-binding name="management-http" interface="management" port="${jboss.management.http.port:9990}"/>
         <socket-binding name="management-https" interface="management" port="${jboss.management.https.port:9443}"/>
         <socket-binding name="ajp" port="8009"/>
-        <socket-binding name="http" port="8200"/>
+        <socket-binding name="http" port="8080"/>
         <socket-binding name="https" port="8443"/>
         <socket-binding name="jacorb" interface="unsecure" port="3528"/>
         <socket-binding name="jacorb-ssl" interface="unsecure" port="3529"/>
@@ -528,7 +478,11 @@
         <outbound-socket-binding name="mail-smtp">
             <remote-destination host="localhost" port="25"/>
         </outbound-socket-binding>
-        <outbound-socket-binding name="backupsystem-socket-binding">
-            <remote-destination host="127.0.0.1" port="5445"/>
-        </outbound-socket-binding>
+    </socket-binding-group>
+
+    <deployments>
+        <deployment name="backupsystem-server-ear.ear" runtime-name="backupsystem-server-ear.ear">
+            <content sha1="4322a4ce3d218a5f323323789d5af9ea77d039f7"/>
+        </deployment>
+    </deployments>
 </server>

@@ -23,11 +23,11 @@ import com.ea.db.DBException;
 import com.ea.jms.Message;
 import com.ea.jms.MessageConnection;
 import com.ea.jms.exception.MessageException;
-import com.ea.jms.sender.MessageSenderSingle2;
+import com.ea.jms.sender.MessageSenderSingle;
 
 
 @Stateless
-public class CommandSender extends MessageSenderSingle2 implements CommandSenderLocal {
+public class CommandSender extends MessageSenderSingle implements CommandSenderLocal {
 
 	private static final Log log = LogFactory.getLog(CommandSender.class);
 
@@ -36,8 +36,8 @@ public class CommandSender extends MessageSenderSingle2 implements CommandSender
 
 	@PostConstruct
 	public void setDestinationName(InvocationContext ctx) {
-		super.destinationName = "remoteCMD";
 		super.destinationName = "jms/queue/remoteCMD";
+		super.destinationName = "remoteCMD";
 	}
 
 	public RuMsgInfo getRuDetail(long idRu) throws MessageException {

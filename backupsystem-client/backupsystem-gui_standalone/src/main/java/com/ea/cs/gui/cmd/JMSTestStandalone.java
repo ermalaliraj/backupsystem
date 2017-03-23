@@ -56,13 +56,13 @@ public class JMSTestStandalone {
 		Connection connection = null;
 		try {
 			//String host = "10.151.4.162";
-			String host = "192.168.1.9";
+			String host = "192.168.1.8";
 			String port = "4447";
 			//String port = "5445"; 
 			
 			Properties properties = new Properties();
 			properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.jboss.naming.remote.client.InitialContextFactory");
-			//properties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
+			properties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
 			//properties.put(Context.URL_PKG_PREFIXES, "org.jboss.naming");
 			properties.put(Context.PROVIDER_URL, "remote://" + host + ":" + port);
 			properties.put("jboss.naming.client.ejb.context", "true");

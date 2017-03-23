@@ -31,6 +31,8 @@ chmod 755 jboss7
 
 chkconfig --add jboss7
 chkconfig --level 234 jboss7 on  
+--spegni l'avvio automatico
+chkconfig --level 0123456 jboss7 off  
 
 --create application user testuser /testpwd
 --add line to application-users.properties
@@ -54,7 +56,9 @@ export JAVA_HOME=/usr/local/java/jdk7
 mvn package
 cp /home/uel/workspace/backupsystem/backupsystem-ru/backupsystem-ru-ear/target/backupsystem-ru-ear.ear /opt/jboss7/standalone/deployments/
 
+cd /opt/jboss7/bin
 ./jboss-cli.sh --connect controller=localhost:9999
+./jboss-cli.sh --connect controller=vmcentos-back:9999
 
 
 

@@ -83,7 +83,8 @@ public class CommandClient {
 	}
 	
 	protected static Context getContextEnvJboss7() throws NamingException {
-		String host = "127.0.0.1";
+		//String host = "127.0.0.1";
+		String host = "bs-server";
 		String port = "4447";
 		try {
 			Properties properties = new Properties();

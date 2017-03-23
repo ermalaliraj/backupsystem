@@ -157,7 +157,7 @@ public abstract class MessageSender {
 		try {
 			log.trace("Creating JMS connection. EJB MessageSender: " + hashCode());
 			//ConnectionFactory connectionFactory = null;
-			connection = connectionFactory .createConnection();
+			connection = connectionFactory.createConnection();
 
 			log.trace("Creating session and producer... EJB MessageSender: " + hashCode());
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);

@@ -35,7 +35,7 @@ public abstract class MessageSenderSingle {
 	private static final Log log = LogFactory.getLog(MessageSenderSingle.class);
 	//public final static String CONNECTION_FACTOY_DEFAULT = "InVmConnectionFactory";
 	//public final static String CONNECTION_FACTOY_DEFAULT = "jms/RemoteConnectionFactory";
-	public final static String CONNECTION_FACTOY_DEFAULT = "java:/JmsXA";
+	//public final static String CONNECTION_FACTOY_DEFAULT = "java:/JmsXA";
 	//@Resource(mappedName = "java:/JmsXA")
 	@Resource(mappedName = "java:/RemoteConnectionFactory")
 	private ConnectionFactory connectionFactory;
@@ -62,18 +62,6 @@ public abstract class MessageSenderSingle {
 
 		log.info("Sending ASYNCHronous message of type: "+message.getMessageType()+". EJB SingleMessageSender: " + hashCode());
 		try {
-			log.debug("Creating JNDI context server [host: "+messageConnection.getHost()+":"+messageConnection.getPort()+"],  Destination: " + destinationName+". EJB SingleMessageSender: " + hashCode());
-			//ctx = getContextEnvJboss7(messageConnection);
-			log.trace("JNDI context created. EJB SingleMessageSender: " + hashCode());
-
-			log.trace("Lookup Destination: " + destinationName + ". EJB SingleMessageSender: " + hashCode());
-			//Destination destination = (Destination) ctx.lookup(destinationName);
-			log.trace("Destination:" + destinationName + " looked up. EJB SingleMessageSender: " + hashCode());
-			
-			log.trace("Lookup Connection Factory. EJB SingleMessageSender: " + hashCode());
-			//ConnectionFactory connectionFactory = (ConnectionFactory) ctx.lookup("SecureConnectionFactory");
-			log.trace("Connection Factory looked up. EJB SingleMessageSender: " + hashCode());
-
 			log.trace("Creating JMS connection. EJB SingleMessageSender: " + hashCode());
 			connection = connectionFactory.createConnection();
 			log.trace("JMS connection created. EJB SingleMessageSender: " + hashCode());
@@ -120,29 +108,42 @@ public abstract class MessageSenderSingle {
 		
 		log.info("Sending SYNCHronous message of type: "+message.getMessageType()+". EJB SingleMessageSender: " + hashCode());
 		try {
-			log.debug("Creating JNDI context server [host: "+messageConnection.getHost()+":"+messageConnection.getPort()+"],  Destination: " + destinationName+". EJB SingleMessageSender: " + hashCode());
-			//ctx = getContextEnvJboss7(messageConnection);
-			log.trace("JNDI context created");
+			try {
+				log.trace("Creating JMS connection. EJB SingleMessageSender: " + hashCode());
+				connection = connectionFactory.createConnection();
+				log.trace("JMS connection created. EJB SingleMessageSender: " + hashCode());
+			} catch (Exception e) {
+				throw new MessageException("Error creating JMS connection", e);
+			} 
+			
+			try {
+				log.trace("Creating JMS session. EJB MessageSender: " + hashCode());
+				session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+				log.trace("JMS session created. EJB MessageSender: " + hashCode());	
+			} catch (Exception e) {
+				throw new MessageException("Error creating JMS session", e);
+			} 
+			
+			Queue destination = null;
+			try {
+				log.trace("Creating JMS queue '"+destinationName+"'. EJB MessageSender: " + hashCode());
+				destination = session.createQueue(destinationName);
+				log.trace("JMS queue created. EJB MessageSender: " + hashCode());
+			} catch (Exception e) {
+				throw new MessageException("Error creating JMS queue '"+destinationName+"'", e);
+			}
 
-			log.trace("Lookup Connection Factory. EJB SingleMessageSender: " + hashCode());
-			//ConnectionFactory connectionFactory = (ConnectionFactory) ctx.lookup(CONNECTION_FACTOY_DEFAULT);
-			log.trace("Connection Factory looked up. EJB SingleMessageSender: " + hashCode());
+			try {
+				log.trace("Creating JMS producer. EJB MessageSender: " + hashCode());
+				producer = session.createProducer(destination);
+				log.trace("JMS producer created. EJB MessageSender: " + hashCode());
+			} catch (Exception e) {
+				throw new MessageException("Error creating JMS producer", e);
+			}	
 
-			log.trace("Lookup Destination: " + destinationName + ". EJB SingleMessageSender: " + hashCode());
-//			Destination destination = (Destination) ctx.lookup(destinationName);
-//			log.trace("Destination:" + destinationName + " looked up. EJB SingleMessageSender: " + hashCode());
-//			log.trace("Destination:" + destinationName + " looked up. EJB SingleMessageSender: " + hashCode());
-
-			log.trace("Creating JMS connection. EJB SingleMessageSender: " + hashCode());
-			connection = connectionFactory.createConnection();
-			log.trace("JMS connection created. EJB SingleMessageSender: " + hashCode());
-
-			log.debug("Sending synchronous message. EJB SingleMessageSender: " + hashCode());
-			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			Queue destination = session.createQueue(destinationName);
-			producer = session.createProducer(destination);
 			Queue replyQueue = session.createTemporaryQueue(); // where will wait the reply
 			
+			log.trace("Sending message of type: "+message.getMessageType()+". EJB SingleMessageSender: " + hashCode());
 			ObjectMessage jmsMessage = session.createObjectMessage(message);
 			jmsMessage.setStringProperty("messageType", message.getMessageType());
 			jmsMessage.setJMSReplyTo(replyQueue);
@@ -166,9 +167,6 @@ public abstract class MessageSenderSingle {
 			log.info("Reply correctly received from Destination for synchronous message of type: "+message.getMessageType()+". Reply: "+response.getMessageType()+". EJB SingleMessageSender: " + hashCode());
 			return response;
 		}
-//		catch (NamingException e) {
-//			throw new MessageException("NamingException occurred while sending synchronous message.", e);
-//		} 
 		catch (JMSException e) {
 			throw new MessageException("Exception occurred while sending synchronous message: "+e.getMessage(), e);
 		} 
@@ -179,26 +177,6 @@ public abstract class MessageSenderSingle {
 			closeInitialContext(ctx);
 		}
 	}
-	
-//	protected static Context getContextEnvJboss7(MessageConnection messageConnection) throws NamingException {
-//		try {
-//			Properties properties = new Properties();
-//			properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.jboss.naming.remote.client.InitialContextFactory");
-//			properties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
-//			properties.put(Context.PROVIDER_URL, "remote://" + messageConnection.getHost() + ":" + messageConnection.getPort());
-//			//properties.put("jboss.naming.client.ejb.context", "true");  //cannnot create different
-//			properties.put(Context.SECURITY_PRINCIPAL, messageConnection.getUsername());
-//			properties.put(Context.SECURITY_CREDENTIALS, messageConnection.getPassword());
-//			// deactivate authentication
-//			// properties.put("jboss.naming.client.connect.options.org.xnio.Options.SASL_POLICY_NOPLAINTEXT","false");
-//			// properties.put("remote.connection.default.connect.options.org.xnio.Options.SASL_POLICY_NOANONYMOUS","false");
-//			Context context = new InitialContext(properties);
-//			return context;
-//		} catch (NamingException e) {
-//			log.error("Error creating InitialContext with data: " + messageConnection, e);
-//			throw e;
-//		}
-//	}
 
 	private void closeJmsProducer(MessageProducer producer) {
 		if (producer != null) {

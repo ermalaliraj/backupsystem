@@ -46,7 +46,8 @@ public class JMSTestMessageStandalone {
 		MessageProducer producer = null;
 		try {
 			//String host = "10.151.4.162";
-			String host = "192.168.1.8";
+			//String host = "192.168.1.8";
+			String host = "bs-ru";
 			String port = "4447";
 			
 			Properties properties = new Properties();

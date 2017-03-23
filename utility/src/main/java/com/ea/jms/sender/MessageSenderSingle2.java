@@ -30,7 +30,7 @@ import com.ea.jms.exception.NoReplyException;
  */
 public abstract class MessageSenderSingle2 {
 
-	private static final Log log = LogFactory.getLog(MessageSenderSingle.class);
+	private static final Log log = LogFactory.getLog(MessageSenderSingle2.class);
 	// public final static String CONNECTION_FACTOY_DEFAULT = "InVmConnectionFactory";
 	 public final static String CONNECTION_FACTOY_DEFAULT = "jms/RemoteConnectionFactory";
 	//public final static String CONNECTION_FACTOY_DEFAULT = "java:/JmsXA";
@@ -197,6 +197,8 @@ public abstract class MessageSenderSingle2 {
 
 		try {
 			Queue replyQueue = session.createTemporaryQueue(); // where will wait the reply
+			
+			log.trace("Sending message of type: "+message.getMessageType()+". EJB SingleMessageSender: " + hashCode());
 			ObjectMessage jmsMessage = session.createObjectMessage(message);
 			jmsMessage.setStringProperty("messageType", message.getMessageType());
 			jmsMessage.setJMSReplyTo(replyQueue);
@@ -232,14 +234,16 @@ public abstract class MessageSenderSingle2 {
 
 	private static Context getContextEnvJboss7(MessageConnection messageConnection) throws NamingException {
 		try {
-			messageConnection.setHost("192.168.1.9");
+			//messageConnection.setHost("192.168.1.9");
+			//messageConnection.setHost("192.168.1.8");
+			messageConnection.setHost("bs-ru");
 			messageConnection.setPort(4447);
 			
 			Properties properties = new Properties();
 			properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.jboss.naming.remote.client.InitialContextFactory");
 			properties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
 			properties.put(Context.PROVIDER_URL, "remote://" + messageConnection.getHost() + ":" + messageConnection.getPort());
-			//properties.put("jboss.naming.client.ejb.context", "true");
+			properties.put("jboss.naming.client.ejb.context", "true");
 			properties.put(Context.SECURITY_PRINCIPAL, messageConnection.getUsername());
 			properties.put(Context.SECURITY_CREDENTIALS, messageConnection.getPassword());
 			// deactivate authentication
