@@ -32,6 +32,10 @@
         <extension module="org.jboss.as.weld"/>
     </extensions>
 
+    <system-properties>
+        <property name="ru.configpath.dir" value="/bs/ru/config"/>
+    </system-properties>
+
     <management>
         <security-realms>
             <security-realm name="ManagementRealm">
@@ -282,8 +286,6 @@
                 <acceptors>
                     <acceptor name="netty-manual">
                         <factory-class>org.hornetq.core.remoting.impl.netty.NettyAcceptorFactory</factory-class>
-                        <!--param key="host" value="vmcentos-back"/>
-                        <param key="port" value="5445"/-->
                         <param key="tcp-no-delay" value="false"/>
                         <param key="tcp-send-buffer-size" value="1048576"/>
                         <param key="tcp-receive-buffer-size" value="1048576"/>
@@ -476,7 +478,7 @@
 
     <deployments>
         <deployment name="backupsystem-ru-ear.ear" runtime-name="backupsystem-ru-ear.ear">
-            <content sha1="83a9d9041aa0d6b237a48be5c5381e596ce25eb7"/>
+            <content sha1="968f564812fdf81cb36af66afef6329173a2aaaa"/>
         </deployment>
     </deployments>
 </server>
