@@ -23,6 +23,7 @@ import com.ea.bs.ru.cmd.dto.RuDTO;
 import com.ea.bs.ru.cmd.exception.ServiceAlreadyRunningException;
 import com.ea.bs.ru.cmd.exception.ServiceAlreadyStoppedException;
 import com.ea.bs.ru.cmd.facade.RuFacadeLocal;
+import com.ea.bs.ru.config.RuConfig;
 import com.ea.bs.ru.files.SendFileManager;
 import com.ea.bs.ru.files.SendFileTimer;
 import com.ea.db.DBException;
@@ -53,11 +54,14 @@ public class CommandReceiver extends MessageReceiver {
 	@EJB(name = "SendFileManager")
 	private SendFileManager sendFileManager;
 	
+	@EJB(name = "RuConfig")
+	private RuConfig ruConfig;
+	
 	private Long idRu;
 
 	@PostConstruct
 	public void init(InvocationContext ctx) {
-		idRu = 1L;// in a real app, Identity data of RU will be in xml config file.
+		idRu = ruConfig.getConfigDescriptor().getIdRu();
 	}
 
 	@Override
@@ -72,6 +76,10 @@ public class CommandReceiver extends MessageReceiver {
 			return stopService();
 		} else if (message.getMessageType().equals(CommandMessageType.ServerMessageType.GET_SAMPLE_FILE.name())) {
 			return getSampleFile();
+		} else if (message.getMessageType().equals(CommandMessageType.ServerMessageType.PING_ASYNCH.name())) {
+			return pingAsynch();
+		} else if (message.getMessageType().equals(CommandMessageType.ServerMessageType.PING_SYNCH.name())) {
+			return pingSynch();
 		} else {
 			// do not throw exception. We do not want same message to be re-send from the container
 			String msgErr = "[RU] Command " + message.getMessageType() + " is UNKNOWN for RU " + idRu;
@@ -194,5 +202,24 @@ public class CommandReceiver extends MessageReceiver {
 		}
 		return response;
 	}
+	private Message pingAsynch() {
+		log.info("[RU] PING Asynch in RU: "+idRu+". Nothing to do. A success we got here...");
+		return null;
+	}
+
+	
+	private Message pingSynch() {
+		log.info("[RU] PING synch in RU: "+idRu +". Replying with ACK message");
+		Message response = null;
+		try {
+			response = new Message(CommandMessageType.RUMessageType.ACK.name(), "Hello from RU: "+idRu);
+		} catch (Exception e) {
+			String msgErr = "[RU] Strange Error happened in RU: "+idRu;
+			response = new Message(CommandMessageType.RUMessageType.ERROR.name(), msgErr);
+			log.error("[RU] Error happened in pingSynch() in RU: "+idRu);
+		}
+		return response;
+	}
+
 
 }

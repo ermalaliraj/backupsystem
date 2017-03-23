@@ -132,4 +132,33 @@ public class CommandSender extends MessageSenderSingle implements CommandSenderL
 		} 
 	}
 
+	public void pingAsynch(long idRu) throws MessageException {
+		Message request = null;
+		try {
+			log.info("[SERVER] Send command " + CommandMessageType.ServerMessageType.PING_ASYNCH + " to idRu: "+idRu);
+			MessageConnection messageConnection = ruBean.getMessageConnectionRu(idRu);
+			request = new Message(CommandMessageType.ServerMessageType.PING_ASYNCH.name());
+			super.sendAsynchMessage(messageConnection, request, false);
+			log.info("[SERVER] Command " + CommandMessageType.ServerMessageType.PING_ASYNCH+ " finished processing for idRu: "+idRu);
+		} catch (DBException e) {
+			log.error("[SERVER] Cannot get MessageConnection from DB for idRu: " + idRu);
+			throw new MessageException("Cannot get MessageConnection from DB for idRu: " + idRu);
+		} 
+	}
+
+	public Message pingSynch(long idRu) throws MessageException {
+		Message request = null;
+		Message response = null;
+		try {
+			log.info("[SERVER] Send command " + CommandMessageType.ServerMessageType.PING_SYNCH + " to idRu: "+idRu);
+			MessageConnection messageConnection = ruBean.getMessageConnectionRu(idRu);
+			request = new Message(CommandMessageType.ServerMessageType.PING_SYNCH.name());
+			response = super.sendSynchMessage(messageConnection, request, false);
+			return response;
+		} catch (DBException e) {
+			log.error("[SERVER] Cannot get MessageConnection from DB for idRu: " + idRu);
+			throw new MessageException("Cannot get MessageConnection from DB for idRu: " + idRu);
+		} 
+	}
+
 }

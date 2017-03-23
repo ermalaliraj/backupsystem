@@ -273,7 +273,7 @@
                 <connectors>
                     <connector name="netty-manual">
                         <factory-class>org.hornetq.core.remoting.impl.netty.NettyConnectorFactory</factory-class>
-                        <param key="host" value="vmcentos-back"/>
+                        <param key="host" value="bs-ru"/>
                         <param key="port" value="5445"/>
                     </connector>
                     <netty-connector name="netty" socket-binding="messaging"/>
@@ -478,7 +478,7 @@
 
     <deployments>
         <deployment name="backupsystem-ru-ear.ear" runtime-name="backupsystem-ru-ear.ear">
-            <content sha1="968f564812fdf81cb36af66afef6329173a2aaaa"/>
+            <content sha1="85af0cbdc9e52ecd057b672f1b6ef130af6279d3"/>
         </deployment>
     </deployments>
 </server>

@@ -11,5 +11,10 @@
 
 --NEW
 127.0.0.1 localhost
-10.151.5.31 fisical-macchine
-192.168.1.8 vmcentos-back
+
+
+RU
+10.151.5.31 bs-server
+10.151.4.158 bs-ru
+10.151.4.158 vmcentos-back
+#192.168.1.9 vmcentos-back

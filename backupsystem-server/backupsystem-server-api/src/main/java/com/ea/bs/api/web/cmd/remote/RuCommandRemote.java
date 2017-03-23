@@ -26,6 +26,10 @@ public interface RuCommandRemote {
 	public void stopService(long idRu) throws ServerException, CannotStopServiceException, ServiceAlreadyStoppedException, RuNotPresentInRegistryException;
 
 	public List<byte[]> getSampleFiles(long idRu) throws ServerException;
+	
+	public void pingAsynch(long idRu) throws ServerException;
+	
+	public String pingSynch(long idRu) throws ServerException;
 
 
 }

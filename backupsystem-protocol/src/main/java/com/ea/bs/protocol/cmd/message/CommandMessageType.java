@@ -13,6 +13,6 @@ public class CommandMessageType {
 	 * Server to RU
 	 */
 	public enum ServerMessageType {
-		ACK, ERROR, START_SERVICE, STOP_SERVICE, GET_SAMPLE_FILE, GET_STATUS
+		ACK, ERROR, START_SERVICE, STOP_SERVICE, GET_SAMPLE_FILE, GET_STATUS, PING_ASYNCH, PING_SYNCH
 	};
 }

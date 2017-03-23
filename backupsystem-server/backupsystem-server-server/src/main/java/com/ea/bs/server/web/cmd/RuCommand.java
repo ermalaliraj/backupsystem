@@ -32,6 +32,7 @@ import com.ea.bs.server.ru.bean.RuBeanLocal;
 import com.ea.bs.server.service.bean.ServiceBeanLocal;
 import com.ea.bs.server.web.session.WebAccessInterceptor;
 import com.ea.db.DBException;
+import com.ea.jms.Message;
 import com.ea.jms.exception.MessageException;
 
 @Stateless
@@ -212,6 +213,38 @@ public class RuCommand implements RuCommandRemote {
 			throw new ServerException("General Exception getting sample file for idRu: " + idRu);
 		}	
 		return filesList;
+	}
+	
+	@RolesAllowed({"USER"})
+	public void pingAsynch(long idRu) throws ServerException {
+		try {
+			log.info("[SERVER] Ping Asynch for idRu: " + idRu);
+			commandSender.pingAsynch(idRu);
+			log.info("[SERVER] Ping Asynch finished for idRu: " + idRu);
+		} catch (MessageException e) {
+			log.error("[SERVER] MessageException sending PING_ASYNCH to idRu: " + idRu, e);
+			throw new ServerException("Exception sending PING_ASYNCH for idRu: " + idRu, e);
+		} catch (Exception e) {
+			log.error("[SERVER] General Exception sending PING_ASYNCH to idRu: " + idRu, e);
+			throw new ServerException("General Exception sending PING_ASYNCH to idRu: " + idRu, e);
+		}	
+	}
+	
+	@RolesAllowed({"USER"})
+	public String pingSynch(long idRu) throws ServerException {
+		try {
+			log.info("[SERVER] Ping Asynch for idRu: " + idRu);
+			Message response = commandSender.pingSynch(idRu);
+			log.debug("[SERVER] Response from RU: "+response);
+			log.info("[SERVER] Ping Synch finished for idRu: " + idRu);
+			return response.getMessageType();
+		} catch (MessageException e) {
+			log.error("[SERVER] MessageException sending PING_SYNCH to idRu: " + idRu, e);
+			throw new ServerException("MessageException sending PING_SYNCH to idRu: " + idRu);
+		} catch (Exception e) {
+			log.error("[SERVER] General Exception sending PING_SYNCH to idRu: " + idRu, e);
+			throw new ServerException("General Exception sending PING_SYNCH to idRu: " + idRu);
+		}	
 	}
 
 }

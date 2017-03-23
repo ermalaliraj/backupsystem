@@ -32,6 +32,10 @@
         <extension module="org.jboss.as.weld"/>
     </extensions>
 
+    <system-properties>
+        <property name="ru.configpath.dir" value="D:/bs/ru/config"/>
+    </system-properties>
+
     <management>
         <security-realms>
             <security-realm name="ManagementRealm">
@@ -60,12 +64,12 @@
             <console-handler name="CONSOLE">
                 <level name="INFO"/>
                 <formatter>
-                    <pattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%E%n"/>
+                    <pattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c] (%L) %s%E%n"/>
                 </formatter>
             </console-handler>
             <periodic-rotating-file-handler name="FILE">
                 <formatter>
-                    <pattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%E%n"/>
+                    <pattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c] (%L) %s%E%n"/>
                 </formatter>
                 <file relative-to="jboss.server.log.dir" path="server.log"/>
                 <suffix value=".yyyy-MM-dd"/>
@@ -73,7 +77,7 @@
             </periodic-rotating-file-handler>
             <periodic-rotating-file-handler name="FILE_CAPTURE_SERVER">
                 <formatter>
-                    <pattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c] %s%E%n"/>
+                    <pattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c](%L) %s%E%n"/>
                 </formatter>
                 <file relative-to="jboss.server.log.dir" path="capture_ru.log"/>
                 <suffix value=".yyyy-MM-dd"/>
@@ -482,7 +486,7 @@
 
     <deployments>
         <deployment name="backupsystem-server-ear.ear" runtime-name="backupsystem-server-ear.ear">
-            <content sha1="4322a4ce3d218a5f323323789d5af9ea77d039f7"/>
+            <content sha1="e4c3bd6d372c342d0fc47ad4c3c067f06182256e"/>
         </deployment>
     </deployments>
 </server>
