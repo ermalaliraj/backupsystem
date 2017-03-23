@@ -28,11 +28,11 @@ public class CommandClient {
 	        //remote.removeRemoteUnit(id);
 //			log.debug("RU: " + id + " removed!");
 	      
-	        remote.pingAsynch(id);
-	        log.debug("PING sent to RU: "+id);
+//	        remote.pingAsynch(id);
+//	        log.debug("PING sent to RU: "+id);
 	        
-//	        String ret = remote.pingSynch(id);
-//	        log.debug("PING SYNCH sent to RU: "+id+" returned from RU: "+ret);
+	        String ret = remote.pingSynch(id);
+	        log.debug("PING SYNCH sent to RU: "+id+" returned from RU: "+ret);
 //	        
 //	        remote.getSampleFiles(id);
 //	        log.debug("SampleFiles sent to RU: "+id);
@@ -54,7 +54,7 @@ public class CommandClient {
 //			log.debug("Servizio avviato (2) per RU " + id);
 //			RuDTO status2a = remote.getStatus(id);
 //			log.debug("RU Status (2a) from server: " + status2a);
-	      log.debug("OK");
+	      log.debug("End client");
 		} catch (NamingException e) {
 			log.error("NamingException: "+e.getMessage(), e);
 		} catch (Exception e) {

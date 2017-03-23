@@ -476,9 +476,4 @@
         </outbound-socket-binding>
     </socket-binding-group>
 
-    <deployments>
-        <deployment name="backupsystem-ru-ear.ear" runtime-name="backupsystem-ru-ear.ear">
-            <content sha1="85af0cbdc9e52ecd057b672f1b6ef130af6279d3"/>
-        </deployment>
-    </deployments>
 </server>
