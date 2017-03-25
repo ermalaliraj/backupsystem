@@ -8,6 +8,7 @@ import javax.ejb.Singleton;
 import javax.ejb.Timeout;
 import javax.ejb.Timer;
 import javax.ejb.TimerConfig;
+import javax.ejb.TimerHandle;
 import javax.ejb.TimerService;
 
 import org.apache.commons.logging.Log;
@@ -58,6 +59,11 @@ public class SendFileTimer {
 	public void stopSending() {
 		int i = 1;
 		for (Timer timer : timerService.getTimers()) {
+			
+			TimerHandle timerHandle = timer.getHandle();
+			timerHandle.getTimer();
+			timerService.getTimers();
+			
 			log.debug("[RU] "+i+" - Timer found: "+timer.getInfo());
 			timer.cancel();
 		}
