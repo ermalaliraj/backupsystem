@@ -64,8 +64,10 @@ public class JMSTestMessageStandalone {
 			log.debug("Got ConnectionFactory: " + connectionFactory);
 		
 			String queueName = "jms/queue/remoteCMD";
-			//com.ea.jms.Message getSampleMsg = new com.ea.jms.Message(CommandMessageType.ServerMessageType.GET_SAMPLE_FILE.name());
-			com.ea.jms.Message getStatusMsg = new com.ea.jms.Message(CommandMessageType.ServerMessageType.GET_STATUS.name());
+			//com.ea.jms.Message cmdMsg = new com.ea.jms.Message(CommandMessageType.ServerMessageType.GET_SAMPLE_FILE.name());
+			com.ea.jms.Message cmdMsg = new com.ea.jms.Message(CommandMessageType.ServerMessageType.PING_ASYNCH.name());
+//			com.ea.jms.Message cmdMsg = new com.ea.jms.Message(CommandMessageType.ServerMessageType.PING_SYNCH.name());
+//			com.ea.jms.Message cmdMsg = new com.ea.jms.Message(CommandMessageType.ServerMessageType.GET_STATUS.name());
 			
 			// String lookupObj = "/jms/queue/test";
 			log.debug("Looking up to " + queueName);
@@ -77,7 +79,7 @@ public class JMSTestMessageStandalone {
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 			Queue replyQueue = session.createTemporaryQueue(); // where will wait the reply
 			producer = session.createProducer(queue);
-			ObjectMessage jmsMessage= session.createObjectMessage(getStatusMsg);
+			ObjectMessage jmsMessage= session.createObjectMessage(cmdMsg);
 			jmsMessage.setJMSReplyTo(replyQueue);
 			producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 			jmsMessage.setJMSExpiration(5000);

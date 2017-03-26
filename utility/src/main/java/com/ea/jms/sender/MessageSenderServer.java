@@ -22,8 +22,7 @@ import com.ea.jms.exception.MessageException;
 import com.ea.jms.exception.NoReplyException;
 
 /**
- * Abstract class for sending JMS messages to a single Destination.
- * The context of the destination has to be passed with MessageConnection object through the Send method.
+ * Abstract class for sending JMS messages from RU to Server
  */
 public abstract class MessageSenderServer {
 

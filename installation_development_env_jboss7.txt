@@ -55,6 +55,7 @@ Created MODULE org\bouncycastle\main
 export JAVA_HOME=/usr/local/java/jdk7
 mvn package
 cp /home/uel/workspace/backupsystem/backupsystem-ru/backupsystem-ru-ear/target/backupsystem-ru-ear.ear /opt/jboss7/standalone/deployments/
+/home/uel/workspace/backupsystem/backupsystem-server/backupsystem-server-ear/target/backupsystem-server-ear.ear
 
 cd /opt/jboss7/bin
 ./jboss-cli.sh --connect controller=localhost:9999

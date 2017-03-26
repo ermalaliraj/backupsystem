@@ -23,11 +23,11 @@ import com.ea.db.DBException;
 import com.ea.jms.Message;
 import com.ea.jms.MessageConnection;
 import com.ea.jms.exception.MessageException;
-import com.ea.jms.sender.MessageSenderSingle;
+import com.ea.jms.sender.MessageSenderRu;
 
 
 @Stateless
-public class CommandSender extends MessageSenderSingle implements CommandSenderLocal {
+public class CommandSender extends MessageSenderRu implements CommandSenderLocal {
 
 	private static final Log log = LogFactory.getLog(CommandSender.class);
 

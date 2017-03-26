@@ -35,7 +35,7 @@ public class CommandClient {
 //	        log.debug("PING SYNCH sent to RU: "+id+" returned from RU: "+ret);
 //	        
 	        remote.getSampleFiles(id);
-	        log.debug("SampleFiles sent to RU: "+id);
+	        log.debug("SampleFiles sent to RU: "+id+" .Check backup folder for new files from RU");
 	        
 //	        RuDTO status = remote.getStatus(id);
 //	        log.debug("RU Status from server: "+status);

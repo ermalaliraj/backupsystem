@@ -147,3 +147,4 @@ http://hornetq.blogspot.it/2009/10/understanding-connectors-acceptors.html
 https://developer.jboss.org/thread/235659
 
 http://archive.oreilly.com/pub/a/onjava/excerpt/jms_ch2/index.html?page=3
+https://javafindings.wordpress.com/2013/05/16/java-messaging-service-jms-with-jboss-7-1-1-new/

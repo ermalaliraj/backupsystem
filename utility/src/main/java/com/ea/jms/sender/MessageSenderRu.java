@@ -22,13 +22,11 @@ import com.ea.jms.exception.MessageException;
 import com.ea.jms.exception.NoReplyException;
 
 /**
- * Abstract class for sending JMS messages to a single Destination.
- * The context of the destination has to be passed with MessageConnection object through the Send method.
+ * Abstract class for sending JMS messages from Server to RU
  */
-public abstract class MessageSenderSingle {
+public abstract class MessageSenderRu {
 
-	private static final Log log = LogFactory.getLog(MessageSenderSingle.class);
-	//@Resource(mappedName = "java:/JmsXA")
+	private static final Log log = LogFactory.getLog(MessageSenderRu.class);
 	@Resource(mappedName = "java:/RemoteConnectionFactory")
 	private ConnectionFactory connectionFactory;
 	
