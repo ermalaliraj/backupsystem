@@ -34,6 +34,7 @@
 
     <system-properties>
         <property name="ru.configpath.dir" value="/bs/ru/config"/>
+        <property name="server.configpath.dir" value="D:/bs/server/config"/>
     </system-properties>
 
     <management>

@@ -47,7 +47,7 @@ public class SendFileManager {
 	
 	public void sendFileLogic() {
 		String pathWithFiles = ruConfig.getRuDescriptor().getPathWithFilesToBeSend();
-		log.debug("[RU] FileManager - Checking files ready to be sent on path: "+pathWithFiles+", isEncrypted?: "+ruConfig.getRuDescriptor().isCryptedData());
+		log.debug("[RU] Checking files ready to be sent on path: "+pathWithFiles+", isEncrypted?: "+ruConfig.getRuDescriptor().isCryptedData());
 		try {
 			this.idService = 1L; //get from serviceBean  
 			List<File> files = IOUtils.getFilesFromPath(pathWithFiles, ruConfig.getRuDescriptor().getMaxNrFilesPerMsg(), ruConfig.getRuDescriptor().getMaxSizeBytePerFile());
