@@ -1,4 +1,4 @@
-package com.ea.bs.server.ru.bean;
+package com.ea.bs.server.ru.facade;
 
 import javax.ejb.Local;
 
@@ -7,7 +7,7 @@ import com.ea.db.DBException;
 import com.ea.jms.MessageConnection;
 
 @Local
-public interface RuBeanLocal {
+public interface RuFacadeLocal {
 	
 	public Long createRemoteUnit(RuDTO dto) throws DBException;
 	

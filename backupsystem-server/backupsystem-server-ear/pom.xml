@@ -32,8 +32,8 @@
 		<!-- EXTERNAL DEPENDENCIES -->
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>utility</artifactId>
-			<version>${ea.utility-version}</version>
+			<artifactId>backupsystem-common</artifactId>
+			<version>${bs.common-version}</version>
 			<type>jar</type>
 		</dependency>
 	</dependencies>

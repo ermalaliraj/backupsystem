@@ -1,4 +1,4 @@
-package com.ea.bs.server.service.bean;
+package com.ea.bs.server.service.facade;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -13,10 +13,10 @@ import com.ea.bs.server.service.dao.ServiceDAO;
 import com.ea.db.DBException;
 
 @Stateless
-public class ServiceBean implements ServiceBeanLocal {
+public class ServiceFacade implements ServiceFacadeLocal {
 
 	@SuppressWarnings("unused")
-	private static final Logger log = Logger.getLogger(ServiceBean.class);
+	private static final Logger log = Logger.getLogger(ServiceFacade.class);
 
 	@EJB
 	private RuDAO ruDAO; 

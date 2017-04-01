@@ -1,4 +1,4 @@
-package com.ea.bs.server.ru.bean;
+package com.ea.bs.server.ru.facade;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -15,9 +15,9 @@ import com.ea.db.DBException;
 import com.ea.jms.MessageConnection;
 
 @Stateless
-public class RuBean implements RuBeanLocal {
+public class RuFacade implements RuFacadeLocal {
 
-	private static final Logger log = Logger.getLogger(RuBean.class);
+	private static final Logger log = Logger.getLogger(RuFacade.class);
 
 	@EJB
 	private RuDAO ruDAO; 

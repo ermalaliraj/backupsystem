@@ -29,10 +29,18 @@ su - jboss7
 # cd /etc/init.d/
 chmod 755 jboss7
 
+--OLD WAY
 chkconfig --add jboss7
 chkconfig --level 234 jboss7 on  
 --spegni l'avvio automatico
 chkconfig --level 0123456 jboss7 off  
+
+--on CentOS Linux release 7.2.1511  (more /etc/redhat-release)
+systemctl enable jboss7.service
+--if config file changed(as.conf), reload
+systemctl daemon-reload
+--see errors
+journalctl -u jboss7
 
 --create application user testuser /testpwd
 --add line to application-users.properties
@@ -74,6 +82,6 @@ REMOVED
 
 --running server from eclipse (not 0.0.0.0 for hornetq problem)
 -mp "C:/Program Files/jboss-as-7.1.1.Final/modules" -jaxpmodule javax.xml.jaxp-provider org.jboss.as.standalone -b=bs-server -bmanagement=bs-server --server-config=standalone.xml -Djboss.server.base.dir="C:\Program Files\jboss-as-7.1.1.Final\standalone"
-
+-b=bs-ru -bmanagement=bs-ru
 
 

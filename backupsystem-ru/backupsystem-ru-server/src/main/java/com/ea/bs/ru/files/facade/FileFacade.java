@@ -1,4 +1,4 @@
-package com.ea.bs.ru.files.bean;
+package com.ea.bs.ru.files.facade;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -16,9 +16,9 @@ import com.ea.bs.ru.files.dto.FileRuDTO;
 import com.ea.db.DBException;
 
 @Stateless
-public class FileBean implements FileBeanLocal {
+public class FileFacade implements FileFacadeLocal {
 
-	private static final Logger log = Logger.getLogger(FileBean.class);
+	private static final Logger log = Logger.getLogger(FileFacade.class);
 
 	@Resource
 	SessionContext ctx;

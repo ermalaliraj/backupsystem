@@ -28,8 +28,8 @@ import com.ea.bs.server.cmd.assembler.CommandAssembler;
 import com.ea.bs.server.cmd.sender.CommandSenderLocal;
 import com.ea.bs.server.files.assembler.FileAssembler;
 import com.ea.bs.server.files.dto.FileServerDTO;
-import com.ea.bs.server.ru.bean.RuBeanLocal;
-import com.ea.bs.server.service.bean.ServiceBeanLocal;
+import com.ea.bs.server.ru.facade.RuFacadeLocal;
+import com.ea.bs.server.service.facade.ServiceFacadeLocal;
 import com.ea.bs.server.web.session.WebAccessInterceptor;
 import com.ea.db.DBException;
 import com.ea.jms.Message;
@@ -49,16 +49,16 @@ public class RuCommand implements RuCommandRemote {
 	@EJB(name = "CommandSender")
 	private CommandSenderLocal commandSender;
 	
-	@EJB(name = "RuBean")
-	private RuBeanLocal ruBean;
+	@EJB(name = "RuFacade")
+	private RuFacadeLocal ruFacade;
 	
-	@EJB(name = "ServiceBean")
-	private ServiceBeanLocal serviceBean;
+	@EJB(name = "ServiceFacade")
+	private ServiceFacadeLocal serviceFacade;
 
 	public Long crateNewRu(RuDTO ruDTO) throws ServerException {
 		log.debug("[SERVER] Create new RemoteUnit");
 		try {
-			Long id = ruBean.createRemoteUnit(ruDTO);
+			Long id = ruFacade.createRemoteUnit(ruDTO);
 			return id;
 		} catch (Exception e) {
 			log.error("[SERVER] Cannot insert in DB new RemoteUnit: "+ruDTO, e);
@@ -69,7 +69,7 @@ public class RuCommand implements RuCommandRemote {
 	public void removeRemoteUnit(Long id) throws ServerException{
 		log.debug("[SERVER] Remove RemoteUnit "+id);
 		try {
-			ruBean.removeRemoteUnit(id);
+			ruFacade.removeRemoteUnit(id);
 		} catch (Exception e) {
 			log.error("[SERVER] Cannot remove from DB RemoteUnit: "+id, e);
 			throw new ServerException("Cannot remove RemoteUnit from DB. Error: " + e.getMessage());
@@ -79,7 +79,7 @@ public class RuCommand implements RuCommandRemote {
 	public RuDTO getStatus(long idRu) throws ServerException, RuNotPresentInRegistryException {
 		log.debug("[SERVER] Get Status for ru: " + idRu);
 		try {
-			RuDTO ruDTO = ruBean.getRemoteUnitServer(idRu);
+			RuDTO ruDTO = ruFacade.getRemoteUnitServer(idRu);
 			log.debug("[SERVER] RU from DB: "+ruDTO); 
 			if(ruDTO != null){
 				RuMsgInfo ruMsgInfo = commandSender.getRuDetail(idRu);
@@ -109,9 +109,9 @@ public class RuCommand implements RuCommandRemote {
 	public void avviaServizio(long idRu) throws ServerException, ServiceAlreadyRunningException, CannotStartServiceException, RuNotPresentInRegistryException {
 		log.info("[SERVER] Starting service for idRu: "+idRu);
 		try {
-			RuDTO ruDTO = ruBean.getRemoteUnitServer(idRu);
+			RuDTO ruDTO = ruFacade.getRemoteUnitServer(idRu);
 			if(ruDTO != null){
-				Long idService = serviceBean.creaNewService(idRu);
+				Long idService = serviceFacade.creaNewService(idRu);
 				log.debug("[SERVER] New service "+idService + " created in DB for ru: "+idRu);
 				
 				commandSender.startService(idRu);
@@ -150,9 +150,9 @@ public class RuCommand implements RuCommandRemote {
 	public void stopService(long idRu) throws ServerException, CannotStopServiceException, ServiceAlreadyStoppedException, RuNotPresentInRegistryException {
 		log.info("[SERVER] Stopping service for idRu: "+idRu);
 		try {
-			RuDTO ruDTO = ruBean.getRemoteUnitServer(idRu);
+			RuDTO ruDTO = ruFacade.getRemoteUnitServer(idRu);
 			if(ruDTO != null){
-				serviceBean.stopServiceForRu(idRu);
+				serviceFacade.stopServiceForRu(idRu);
 				log.debug("[SERVER] Service set as STOPPED in DB-SERVER for ru: "+idRu);
 				
 				commandSender.stopService(idRu);

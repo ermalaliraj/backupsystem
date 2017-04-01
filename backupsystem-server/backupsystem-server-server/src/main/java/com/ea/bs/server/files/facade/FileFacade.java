@@ -1,4 +1,4 @@
-package com.ea.bs.server.files.bean;
+package com.ea.bs.server.files.facade;
 
 import java.util.List;
 
@@ -13,9 +13,9 @@ import com.ea.bs.server.files.dto.FileServerDTO;
 import com.ea.db.DBException;
 
 @Stateless
-public class FileBean implements FileBeanLocal {
+public class FileFacade implements FileFacadeLocal {
 
-	private static final Logger log = Logger.getLogger(FileBean.class);
+	private static final Logger log = Logger.getLogger(FileFacade.class);
 
 	//@Resource(mappedName = "java:/jdbc/BSServerDS")
 	private DataSource myDS;

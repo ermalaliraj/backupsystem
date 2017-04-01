@@ -28,7 +28,7 @@
 		<!-- EXTERNAL DEPENDENCIES -->
 		<dependency>
 			<groupId>com.ea</groupId>
-			<artifactId>utility</artifactId>
+			<artifactId>backupsystem-common</artifactId>
 			<type>jar</type>
 		</dependency>
 	</dependencies>

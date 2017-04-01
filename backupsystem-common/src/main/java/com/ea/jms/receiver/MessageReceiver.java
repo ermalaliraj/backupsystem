@@ -69,10 +69,10 @@ public abstract class MessageReceiver implements MessageListener {
 		} 
 		catch (MessageException e) {
 			log.error("MessageException in MDB MessageReceiver: " + hashCode() +", ROLLBACK!", e);
-			ctx.setRollbackOnly();
+			//ctx.setRollbackOnly();
 		} catch (Exception e) {
 			log.error("Exception in MDB MessageReceiver: " + hashCode() +", ROLLBACK!", e);
-			ctx.setRollbackOnly();
+			//ctx.setRollbackOnly();  remove rallback
 		} 
 	}
 

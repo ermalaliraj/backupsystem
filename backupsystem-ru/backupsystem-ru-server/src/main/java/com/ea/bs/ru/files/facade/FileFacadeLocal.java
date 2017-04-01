@@ -1,4 +1,4 @@
-package com.ea.bs.ru.files.bean;
+package com.ea.bs.ru.files.facade;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -10,7 +10,7 @@ import com.ea.bs.ru.files.dto.FileRuDTO;
 import com.ea.db.DBException;
 
 @Local
-public interface FileBeanLocal {
+public interface FileFacadeLocal {
 
 	public void saveFile(FileRuDTO dto, String path, boolean isCrypted) throws DBException, IOException, GeneralSecurityException;
 

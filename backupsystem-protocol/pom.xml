@@ -10,14 +10,14 @@
 	<artifactId>backupsystem-protocol</artifactId>
 	
 	<properties>
-		<ea.utility-version>1.0.0-SNAPSHOT</ea.utility-version>
+		<bs.common-version>1.0.0-SNAPSHOT</bs.common-version>
 	</properties>
 	
 	<dependencies>
 		<dependency>
 			<groupId>com.ea</groupId>
-			<artifactId>utility</artifactId>
-			<version>${ea.utility-version}</version>
+			<artifactId>backupsystem-common</artifactId>
+			<version>${bs.common-version}</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>

@@ -1,11 +1,11 @@
-package com.ea.bs.server.service.bean;
+package com.ea.bs.server.service.facade;
 
 import javax.ejb.Local;
 
 import com.ea.db.DBException;
 
 @Local
-public interface ServiceBeanLocal {
+public interface ServiceFacadeLocal {
 	
 	public Long creaNewService(Long idRu) throws DBException;
 	

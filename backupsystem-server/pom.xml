@@ -9,7 +9,7 @@
 
 	<modules>
 		<module>backupsystem-server-api</module>
-		<module>../utility</module>
+		<module>../backupsystem-common</module>
 		<module>../backupsystem-protocol</module>
 		<module>backupsystem-server-server</module>
 		<!-- <module>backupsystem-web</module> -->
@@ -27,7 +27,7 @@
 		
 		<bs.api-version>1.0.0-SNAPSHOT</bs.api-version>
 		<bs.protocol-version>1.0.0-SNAPSHOT</bs.protocol-version>
-		<ea.utility-version>1.0.0-SNAPSHOT</ea.utility-version>
+		<bs.common-version>1.0.0-SNAPSHOT</bs.common-version>
 	</properties>
 
 	<dependencyManagement>
@@ -41,8 +41,8 @@
 			</dependency>
 			<dependency>
 				<groupId>com.ea</groupId>
-				<artifactId>utility</artifactId>
-				<version>${ea.utility-version}</version>
+				<artifactId>backupsystem-common</artifactId>
+				<version>${bs.common-version}</version>
 				<type>jar</type>
 				<scope>compile</scope>
 			</dependency>

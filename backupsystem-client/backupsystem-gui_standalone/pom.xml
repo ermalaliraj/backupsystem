@@ -19,7 +19,7 @@
 		
 		<dependency>
 			<groupId>com.ea</groupId>
-			<artifactId>utility</artifactId>
+			<artifactId>backupsystem-common</artifactId>
 		</dependency>
 		
 		<dependency>

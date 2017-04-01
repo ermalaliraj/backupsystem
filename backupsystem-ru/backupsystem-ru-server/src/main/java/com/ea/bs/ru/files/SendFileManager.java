@@ -19,8 +19,8 @@ import org.apache.commons.logging.LogFactory;
 import com.ea.bs.protocol.files.message.FileMsgInfo;
 import com.ea.bs.ru.config.RuConfig;
 import com.ea.bs.ru.files.assembler.FileAssembler;
-import com.ea.bs.ru.files.bean.FileBeanLocal;
 import com.ea.bs.ru.files.dto.FileRuDTO;
+import com.ea.bs.ru.files.facade.FileFacadeLocal;
 import com.ea.bs.ru.files.sender.FileSenderLocal;
 import com.ea.db.DBException;
 import com.ea.jms.exception.MessageApplicationException;
@@ -38,8 +38,8 @@ public class SendFileManager {
 	
 	@EJB(name = "FileSender")
 	private FileSenderLocal fileSender;
-	@EJB(name = "FileBean")
-	private FileBeanLocal fileBean;
+	@EJB(name = "FileFacade")
+	private FileFacadeLocal fileFacade;
 	@EJB(name = "RuConfig")
 	private RuConfig ruConfig;
 	
@@ -72,7 +72,7 @@ public class SendFileManager {
 			
 			if(files.size() > 0){
 				//1. Save in DB
-				fileBean.saveFile(dtoList, pathWithFiles, ruConfig.getRuDescriptor().isCryptedData());
+				fileFacade.saveFile(dtoList, pathWithFiles, ruConfig.getRuDescriptor().isCryptedData());
 				
 				//2. Send files
 				fileSender.sendFiles(listMsg);

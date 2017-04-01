@@ -18,7 +18,7 @@ import com.ea.bs.protocol.cmd.message.ru.SendSampleFileMessage;
 import com.ea.bs.protocol.cmd.message.server.StartServiceMessage;
 import com.ea.bs.protocol.cmd.message.server.StopServiceMessage;
 import com.ea.bs.protocol.files.message.FileMsgInfo;
-import com.ea.bs.server.ru.bean.RuBeanLocal;
+import com.ea.bs.server.ru.facade.RuFacadeLocal;
 import com.ea.db.DBException;
 import com.ea.jms.Message;
 import com.ea.jms.MessageConnection;
@@ -31,8 +31,8 @@ public class CommandSender extends MessageSenderRu implements CommandSenderLocal
 
 	private static final Log log = LogFactory.getLog(CommandSender.class);
 
-	@EJB(name = "RemoteUnitBean")
-	private RuBeanLocal ruBean;
+	@EJB(name = "RemoteUnitFacade")
+	private RuFacadeLocal ruFacade;
 
 	@PostConstruct
 	public void setDestinationName(InvocationContext ctx) {
@@ -45,7 +45,7 @@ public class CommandSender extends MessageSenderRu implements CommandSenderLocal
 		Message response = null;
 		try {
 			log.debug("[SERVER] Send command GET_STATUS to idRU: " + idRu);
-			MessageConnection messageConnection = ruBean.getMessageConnectionRu(idRu);
+			MessageConnection messageConnection = ruFacade.getMessageConnectionRu(idRu);
 			request = new Message(CommandMessageType.ServerMessageType.GET_STATUS.name());
 			response = this.sendSynchMessage(messageConnection, request, false);
 			if (response instanceof RuDetailMessage) {
@@ -70,7 +70,7 @@ public class CommandSender extends MessageSenderRu implements CommandSenderLocal
 	public void startService(long idRu) throws MessageException {
 		log.info("[SERVER] Send command " + CommandMessageType.ServerMessageType.START_SERVICE + " to idRu: "+idRu);
 		try {
-			MessageConnection messageConnection = ruBean.getMessageConnectionRu(idRu);
+			MessageConnection messageConnection = ruFacade.getMessageConnectionRu(idRu);
 			StartServiceMessage request = new StartServiceMessage(idRu, new Date());
 			Message response = this.sendSynchMessage(messageConnection, request, false);
 			if (!CommandMessageType.RUMessageType.ACK.name().equalsIgnoreCase(response.getMessageType())){
@@ -88,7 +88,7 @@ public class CommandSender extends MessageSenderRu implements CommandSenderLocal
 	public void stopService(long idRu) throws MessageException {
 		log.info("[SERVER] Send command " + CommandMessageType.ServerMessageType.STOP_SERVICE + " to idRu: "+idRu);
 		try {
-			MessageConnection messageConnection = ruBean.getMessageConnectionRu(idRu);
+			MessageConnection messageConnection = ruFacade.getMessageConnectionRu(idRu);
 			StopServiceMessage request = new StopServiceMessage(idRu, new Date());
 			Message response = this.sendSynchMessage(messageConnection, request, false);
 			if (!CommandMessageType.RUMessageType.ACK.name().equalsIgnoreCase(response.getMessageType())){
@@ -108,7 +108,7 @@ public class CommandSender extends MessageSenderRu implements CommandSenderLocal
 		Message response = null;
 		try {
 			log.info("[SERVER] Send command " + CommandMessageType.ServerMessageType.GET_SAMPLE_FILE + " to idRu: "+idRu);
-			MessageConnection messageConnection = ruBean.getMessageConnectionRu(idRu);
+			MessageConnection messageConnection = ruFacade.getMessageConnectionRu(idRu);
 			request = new Message(CommandMessageType.ServerMessageType.GET_SAMPLE_FILE.name());
 			response = this.sendSynchMessage(messageConnection, request, false);
 			if (response instanceof SendSampleFileMessage) {
@@ -136,7 +136,7 @@ public class CommandSender extends MessageSenderRu implements CommandSenderLocal
 		Message request = null;
 		try {
 			log.info("[SERVER] Send command " + CommandMessageType.ServerMessageType.PING_ASYNCH + " to idRu: "+idRu);
-			MessageConnection messageConnection = ruBean.getMessageConnectionRu(idRu);
+			MessageConnection messageConnection = ruFacade.getMessageConnectionRu(idRu);
 			request = new Message(CommandMessageType.ServerMessageType.PING_ASYNCH.name());
 			super.sendAsynchMessage(messageConnection, request, false);
 			log.info("[SERVER] Command " + CommandMessageType.ServerMessageType.PING_ASYNCH+ " finished processing for idRu: "+idRu);
@@ -151,7 +151,7 @@ public class CommandSender extends MessageSenderRu implements CommandSenderLocal
 		Message response = null;
 		try {
 			log.info("[SERVER] Send command " + CommandMessageType.ServerMessageType.PING_SYNCH + " to idRu: "+idRu);
-			MessageConnection messageConnection = ruBean.getMessageConnectionRu(idRu);
+			MessageConnection messageConnection = ruFacade.getMessageConnectionRu(idRu);
 			request = new Message(CommandMessageType.ServerMessageType.PING_SYNCH.name());
 			response = super.sendSynchMessage(messageConnection, request, false);
 			return response;

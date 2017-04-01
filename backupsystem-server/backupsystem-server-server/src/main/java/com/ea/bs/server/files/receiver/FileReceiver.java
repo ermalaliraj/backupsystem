@@ -16,8 +16,8 @@ import com.ea.bs.protocol.files.message.FileMsgInfo;
 import com.ea.bs.protocol.files.message.ru.SendFileMessage;
 import com.ea.bs.server.config.ServerConfig;
 import com.ea.bs.server.files.assembler.FileAssembler;
-import com.ea.bs.server.files.bean.FileBeanLocal;
 import com.ea.bs.server.files.dto.FileServerDTO;
+import com.ea.bs.server.files.facade.FileFacadeLocal;
 import com.ea.db.DBException;
 import com.ea.jms.Message;
 import com.ea.jms.receiver.MessageReceiver;
@@ -37,7 +37,7 @@ public class FileReceiver extends MessageReceiver {
 	private static final Log log = LogFactory.getLog(FileReceiver.class);
 
 	@EJB(name = "FileBean")
-	private FileBeanLocal fileBean;
+	private FileFacadeLocal fileFacade;
 	
 	@EJB(name = "ServerConfig")
 	private ServerConfig serverConfig;
@@ -62,7 +62,7 @@ public class FileReceiver extends MessageReceiver {
 					log.debug("[SERVER] FileDTO: " + fileDto);
 					
 					//2. Save in DB
-					fileBean.saveFile(fileDto);
+					fileFacade.saveFile(fileDto);
 				
 					//3. Save to filesystem
 					log.debug("[SERVER] FileDTO (crypted) from RU: "+fileDto);

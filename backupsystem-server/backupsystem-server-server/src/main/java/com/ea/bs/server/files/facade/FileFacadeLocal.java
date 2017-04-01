@@ -1,4 +1,4 @@
-package com.ea.bs.server.files.bean;
+package com.ea.bs.server.files.facade;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import com.ea.bs.server.files.dto.FileServerDTO;
 import com.ea.db.DBException;
 
 @Local
-public interface FileBeanLocal {
+public interface FileFacadeLocal {
 
 	public void saveFile(FileServerDTO dto) throws DBException;
 
