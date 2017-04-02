@@ -1,0 +1,40 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ice="http://www.icesoft.com/icefaces/component"
+	xmlns:ace="http://www.icefaces.org/icefaces/components"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:sic="http://java.sun.com/jsf/composite/components"
+	template="./template/logintemplate.xhtml">
+
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+
+	<ui:define name="content">
+		<h:form id="tableform">
+			<p:growl id="messages" />
+
+			<h:panelGroup layout="block" styleClass="box" style="width:500px;margin:50px auto;">
+				<h:outputText styleClass="titleValue blue" style="line-height:40px;padding-left:10px;"
+					value="#{lbl.title_login}"/>
+
+				<h:panelGrid columns="2" style="margin:0 auto;">
+					<h:outputLabel for="username" value="#{lbl.username}:" />
+					<p:inputText id="username" value="#{loginBean.username}" required="true"
+						label="#{lbl.username}"
+						requiredMessage="#{lbl.message_username_mandatory}" />
+
+					<h:outputLabel for="password" value="#{lbl.password}:" />
+					<p:password id="password" value="#{loginBean.password}" required="true"
+						label="#{lbl.password}"
+						requiredMessage="#{lbl.message_pwd_mandatory}" />
+						
+					<p:commandButton value="#{lbl.login}" update="messages :tableform"
+						style="margin-top:20px;margin-bottom:25px;"
+						action="#{loginBean.executeLogin}"/>
+				</h:panelGrid>
+			</h:panelGroup>
+		</h:form>
+	</ui:define>
+</ui:composition>

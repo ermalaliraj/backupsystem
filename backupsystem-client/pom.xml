@@ -11,7 +11,7 @@
 		<module>../backupsystem-common</module>
 		<module>../backupsystem-protocol</module>
 		
-		<module>backupsystem-gui</module>
+		<module>backupsystem-guiJSF</module>
 		<module>backupsystem-gui_standalone</module>
 	</modules>
 	

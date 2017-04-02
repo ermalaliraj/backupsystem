@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<f:view locale="#{userBean.locale}">
+
+	<h:head>
+		<title><ui:insert name="titlePop">Ticket Management</ui:insert></title>
+	</h:head>
+	
+	<h:body style="overflow: hidden; width:100%;"
+		onload="moveTo(0,0); resizeTo(screen.width,screen.height-20);window.focus();">
+
+		
+		<ui:insert name="content">
+
+		</ui:insert>
+	</h:body>
+</f:view>
+
+</html>

@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:cc="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<!-- INTERFACE -->
+<cc:interface>
+	<cc:attribute name="header" required="true" />
+	<cc:attribute name="message" required="true" />
+	<cc:attribute name="okButtonLabel" required="true" />
+</cc:interface>
+
+<cc:implementation>
+	<h:panelGroup id="#{cc.id}" rendered="#{cc.rendered}">
+
+		<p:dialog resizable="false" modal="true" header="#{cc.attrs.header}"
+			severity="alert" widgetVar="#{cc.id}AjaxErrorDialog">
+			<div style="padding: 5px;">#{cc.attrs.message}</div>
+			<div style="padding: 5px; text-align: center">
+				<h:form>
+					<p:commandButton value="#{cc.attrs.okButtonLabel}"
+						oncomplete="#{cc.id}AjaxErrorDialog.hide();" />
+				</h:form>
+			</div>
+		</p:dialog>
+
+		<h:outputScript>	
+		$(document).ready(function() {
+			$(document).ajaxError(function(XMLHttpRequest, textStatus, errorThrown) {
+				#{cc.id}AjaxErrorDialog.show();
+				console.log(XMLHttpRequest);
+				console.log(textStatus);
+				console.log(errorThrown);
+			});
+		});
+
+	</h:outputScript>
+	</h:panelGroup>
+</cc:implementation>
+</html>

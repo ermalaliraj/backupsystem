@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:sic="http://java.sun.com/jsf/composite/components"
+	xmlns:p="http://primefaces.org/ui">
+
+<f:view locale="#{userBean.locale}">
+	
+	<h:head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+		<h:outputScript library="primefaces" name="jquery/jquery.js" />
+		<h:outputScript library="primefaces" name="primefaces.js" />
+
+		<title><ui:insert name="title">Ticket Management</ui:insert></title>
+	</h:head>
+	
+	<h:body>
+
+		
+		<h:outputStylesheet library="css" name="style.css" />
+		<script type="text/javascript" src="../resources/js/util.js"></script>
+
+		<div class="container">
+
+			<ui:include src="/template/header.xhtml" />
+
+			<div class="content">
+				<table class="userboxtable">
+					<tr>
+						<td>
+							<div class="userBox">
+								<span> Nome: <h:outputText value="#{userBean.userDTO.name}"/> </span> &#160;&#160;&#160;&#160; 
+								<span> Cognome: <h:outputText value="#{userBean.userDTO.surname}"/> </span>
+							</div>
+						</td>
+					</tr>
+				</table>
+
+				<h:form id="topForm">
+					<h:panelGroup id="pagecontenttop" styleClass="menu-page" layout="block" style="min-height: 45px !important;">
+						<h:panelGroup layout="block" class="fltlft name-page"
+							style="width:100%">
+							<table style="width: 100%">
+								<tbody>
+									<tr>
+										<td class="title" style="width: 50%;">
+											<ui:remove>
+											titolo
+											<!-- <span style="float: left;">#{ticketMenuManager.currentMenuPage}</span> -->
+											</ui:remove>
+										</td>
+										<td><h:panelGroup style="float: left;">
+												<p:ajaxStatus>
+													<f:facet name="start">
+														<p:graphicImage value="../resources/images/ajax-loader.gif" />
+													</f:facet>
+													<f:facet name="complete">
+														<h:outputText value="" />
+													</f:facet>
+												</p:ajaxStatus>
+											</h:panelGroup></td>
+										<td><span style="float: right;"> </span></td>
+									</tr>
+								</tbody>
+							</table>
+						</h:panelGroup>
+	
+						<h:panelGroup layout="block" class="clearfloat"></h:panelGroup>
+					</h:panelGroup>
+				</h:form>
+
+				<h:panelGroup id="pagecontent" layout="block" style="background-color: #dedede;">
+					<sic:ajaxError header="#{lbl.message_ajax_request_error_header}"
+						message="#{lbl.message_ajax_request_error}"
+						okButtonLabel="#{lbl.ok}"></sic:ajaxError>
+					<ui:insert name="content" />
+				</h:panelGroup>
+
+			</div>
+		</div>
+
+ 		<h:form id="messageErrorForm">
+ 			<p:growl id="messages" widgetVar="growlMessage"/>
+		</h:form>
+		
+	</h:body>
+</f:view>
+</html>

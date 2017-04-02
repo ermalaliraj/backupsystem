@@ -1,0 +1,128 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ice="http://www.icesoft.com/icefaces/component"
+	xmlns:ace="http://www.icefaces.org/icefaces/components"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:sic="http://java.sun.com/jsf/composite/components">
+
+
+
+	<style>
+.ui-datepicker .ui-datepicker-header {
+	background:
+		url("../resources/css/redmond/images/ui-bg_gloss-wave_55_5c9ccc_500x100.png")
+		repeat-x scroll 50% 50% #5c9ccc;
+}
+
+.ui-datepicker .ui-datepicker-calendar .ui-state-default {
+	background:
+		url("../resources/css/redmond/images/ui-bg_glass_85_dfeffc_1x400.png")
+		repeat-x scroll 50% 50% #dfeffc;
+	border: 1px solid #c5dbec;
+	color: #2e6e9e;
+	font-weight: bold;
+}
+
+.ui-autocomplete-input.ui-inputfield {
+	width: 250px !important;
+}
+
+.ui-autocomplete {
+	margin: 2px;
+}
+
+table th {
+	background-color: #2c343b;
+	border-left: 1px solid #586876;
+	color: #ffffff;
+	padding-left: 4px;
+	padding-right: 4px;
+	text-transform: uppercase;
+}
+
+table td {
+	/*border-left: 1px solid #ffffff; */
+	color: #0066a5;
+	height: 20px;
+	padding-left: 4px;
+	padding-right: 4px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.box input[type="text"] {
+	margin: 2px;
+}
+
+.box select {
+	margin: 2px;
+}
+
+.box textarea {
+	margin: 2px;
+}
+
+.box {
+	background-image: url("../resources/images/box-grey-color.jpg");
+	background-repeat: repeat-x;
+	background-size: contain;
+	border: 1px solid #9f9f9f;
+	height: auto;
+	margin-bottom: 10px;
+	min-width: 522px;
+	width: 100%;
+}
+
+.box .title {
+	color: #000000;
+	font-size: 12px;
+	font-weight: normal;
+	line-height: 17px;
+	padding: 9px;
+	text-align: right;
+	width: 150px;
+}
+
+.box .subtitle {
+	color: #0066a5;
+	font-size: 12px;
+	font-weight: bold;
+	line-height: 17px;
+	padding: 9px;
+	text-align: left;
+	text-transform: uppercase;
+}
+
+.altezza {
+	line-height: 20px !important;
+}
+
+input[type="text"] {
+	width: 120px;
+}
+
+#tableForm table th:nth-child(1){width: 25%;}	
+#tableForm table td:nth-child(1){width: 25%;}
+#tableForm table th:nth-child(2){width: 25%;}	
+#tableForm table td:nth-child(2){width: 25%;} 
+#tableForm table th:nth-child(3){width: 25%;}	
+#tableForm table td:nth-child(3){width: 25%;}
+#tableForm table th:nth-child(4){width: 25%;}	
+#tableForm table td:nth-child(4){width: 25%;}
+
+</style>
+
+	<div class="box-content">
+		<h:panelGroup id="main">
+
+			<h:panelGroup id="panelSearch">
+				<h:form id="searchForm">
+					search form
+				</h:form>
+			</h:panelGroup>
+		</h:panelGroup>
+	</div>
+</ui:composition>

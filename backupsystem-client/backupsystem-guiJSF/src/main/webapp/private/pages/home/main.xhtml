@@ -1,0 +1,22 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ice="http://www.icesoft.com/icefaces/component"
+	xmlns:ace="http://www.icefaces.org/icefaces/components"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:sic="http://java.sun.com/jsf/composite/components">
+
+	<div class="box" style="width:300px;height:200px;margin:auto;">
+	
+		<h:panelGrid styleClass="table1">
+			<h:outputText value="#{lbl.welcome}"/>
+			<h:outputText value="#{userBean.userDTO.name}"/>
+			<h:outputText value="#{userBean.userDTO.surname}"/>
+			<h:outputText value="#{userBean.userDTO.idUser}"/>
+		</h:panelGrid>
+	
+	</div>
+	
+	
+	</ui:composition>
