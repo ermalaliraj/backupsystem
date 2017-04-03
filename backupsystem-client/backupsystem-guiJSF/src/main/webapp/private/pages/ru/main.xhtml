@@ -10,119 +10,99 @@
 
 
 
-	<style>
-.ui-datepicker .ui-datepicker-header {
-	background:
-		url("../resources/css/redmond/images/ui-bg_gloss-wave_55_5c9ccc_500x100.png")
-		repeat-x scroll 50% 50% #5c9ccc;
-}
-
-.ui-datepicker .ui-datepicker-calendar .ui-state-default {
-	background:
-		url("../resources/css/redmond/images/ui-bg_glass_85_dfeffc_1x400.png")
-		repeat-x scroll 50% 50% #dfeffc;
-	border: 1px solid #c5dbec;
-	color: #2e6e9e;
-	font-weight: bold;
-}
-
-.ui-autocomplete-input.ui-inputfield {
-	width: 250px !important;
-}
-
-.ui-autocomplete {
-	margin: 2px;
-}
-
-table th {
-	background-color: #2c343b;
-	border-left: 1px solid #586876;
-	color: #ffffff;
-	padding-left: 4px;
-	padding-right: 4px;
-	text-transform: uppercase;
-}
-
-table td {
-	/*border-left: 1px solid #ffffff; */
-	color: #0066a5;
-	height: 20px;
-	padding-left: 4px;
-	padding-right: 4px;
-	text-align: center;
-	vertical-align: middle;
-}
-
-.box input[type="text"] {
-	margin: 2px;
-}
-
-.box select {
-	margin: 2px;
-}
-
-.box textarea {
-	margin: 2px;
-}
-
-.box {
-	background-image: url("../resources/images/box-grey-color.jpg");
-	background-repeat: repeat-x;
-	background-size: contain;
-	border: 1px solid #9f9f9f;
-	height: auto;
-	margin-bottom: 10px;
-	min-width: 522px;
-	width: 100%;
-}
-
-.box .title {
-	color: #000000;
-	font-size: 12px;
-	font-weight: normal;
-	line-height: 17px;
-	padding: 9px;
-	text-align: right;
-	width: 150px;
-}
-
-.box .subtitle {
-	color: #0066a5;
-	font-size: 12px;
-	font-weight: bold;
-	line-height: 17px;
-	padding: 9px;
-	text-align: left;
-	text-transform: uppercase;
-}
-
-.altezza {
-	line-height: 20px !important;
-}
-
-input[type="text"] {
-	width: 120px;
-}
-
-#tableForm table th:nth-child(1){width: 25%;}	
-#tableForm table td:nth-child(1){width: 25%;}
-#tableForm table th:nth-child(2){width: 25%;}	
-#tableForm table td:nth-child(2){width: 25%;} 
-#tableForm table th:nth-child(3){width: 25%;}	
-#tableForm table td:nth-child(3){width: 25%;}
-#tableForm table th:nth-child(4){width: 25%;}	
-#tableForm table td:nth-child(4){width: 25%;}
+<style>
+/* 	#tableForm table th:nth-child(1){width: 25%;}	
+	#tableForm table td:nth-child(1){width: 25%;}
+	#tableForm table th:nth-child(2){width: 25%;}	
+	#tableForm table td:nth-child(2){width: 25%;} 
+	#tableForm table th:nth-child(3){width: 25%;}	
+	#tableForm table td:nth-child(3){width: 25%;}
+	#tableForm table th:nth-child(4){width: 25%;}	
+	#tableForm table td:nth-child(4){width: 25%;} */
 
 </style>
+
+	<ui:include src="newRuPopup.xhtml" />
 
 	<div class="box-content">
 		<h:panelGroup id="main">
 
 			<h:panelGroup id="panelSearch">
 				<h:form id="searchForm">
-					search form
+					<div class="box" id="box-search">
+						<div id="info1" class="fltlft info1">
+							<h:outputLabel value="#{lbl.ru_name}: " />
+							<h:inputText value="#{ruController.name}" maxlength="10" size="10" />
+
+							<h:outputLabel value="#{lbl.ru_description}: " />
+							<h:inputText value="#{ruController.description}" maxlength="10" size="10" />
+						</div>
+						
+						<div id="info2" class="fltlft info2">
+							<h:outputLabel value="#{lbl.ru_ip}: " />
+							<h:inputText value="#{ruController.ip}" maxlength="10" size="10" />
+						</div>
+						<div class="clearfloat"></div>
+
+						<div id="info5" class="fltrt info4" style="padding: 15px 10px 4px 8px;">
+							<p:commandButton styleClass="cerca" value="#{lbl.search}"
+								widgetVar="cercaBtn1"
+								onclick="cercaBtn1.disable();"
+								actionListener="#{ruController.search}"
+								oncomplete="cercaBtn1.enable();"
+								update=":tableForm :messageErrorForm" />
+								
+							<p:commandButton styleClass="cerca" value="#{lbl.ru_new}"
+								oncomplete="cercaBtn1.enable();newRuPop.show();"
+								update=":messageErrorForm :formNewRu:newRuPopPanel" />
+						</div>
+						<div class="clearfloat"></div>
+					</div>
+				</h:form>
+				
+				<h:form id="tableForm">
+					<p:dataTable emptyMessage="" widgetVar="tableVar" var="item"
+						id="tableId" paginatorAlwaysVisible="true"
+						value="#{ruController.ruList}"
+						paginator="true" rows="10"
+						paginatorPosition="bottom"
+						paginatorTemplate="{FirstPageLink}  {PreviousPageLink}  {PageLinks} {CurrentPageReport}   {NextPageLink}  {LastPageLink}"
+						currentPageReportTemplate="#{lbl.di} {totalPages}"
+						rowKey="#{item.idServizio}" resizableColumns="false"
+						styleClass="sicveDatatable"
+						rowIndexVar="rowIndex">
+
+						<p:columnGroup type="header">
+							<p:row>
+								<p:column rowspan="2" headerText="#{lbl.ru_name}"/>
+								<p:column rowspan="2" headerText="#{lbl.ru_description}"/>
+								<p:column rowspan="2" headerText="#{lbl.ru_ip}"/>
+								<p:column rowspan="2" headerText="#{lbl.ru_detail}"/>
+							</p:row>
+						</p:columnGroup>
+
+						<p:column>
+							<h:outputText value="#{item.name}" />
+						</p:column>
+						<p:column>
+							<h:outputText value="#{item.description}" />
+						</p:column>
+						<p:column>
+							<h:outputText value="#{item.ip}" />
+						</p:column>
+						<p:column>
+							<p:commandButton styleClass="viewdett viewdett-#{rowIndex}" value=" "
+								onclick="disablebutton($('.viewdett-#{rowIndex}'));"
+								actionListener="#{ruController.openPopupDetail}"
+								oncomplete="enablebutton($('.viewdett-#{rowIndex}'));"
+								update=":messageErrorForm" >
+								<f:attribute name="item" value="#{item}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
 				</h:form>
 			</h:panelGroup>
+			
 		</h:panelGroup>
 	</div>
 </ui:composition>

@@ -1,0 +1,86 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ice="http://www.icesoft.com/icefaces/component"
+	xmlns:ace="http://www.icefaces.org/icefaces/components"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:sic="http://java.sun.com/jsf/composite/components">
+		
+	<h:form id="formAvv">
+
+		<p:dialog header="New Remote Unit" widgetVar="newRuPop"
+			dynamic="false" resizable="false" modal="true"
+			styleClass="popupcontent">
+			<h:panelGroup id="newRuPopPanel" layout="block" style="width:950px;">
+
+				<div class="info-box">
+					<table>
+						<tr>
+							<td>
+								<div class="box2" style="height: 340px;">
+									<div class="boxCont">
+										<div class="boxLeft">#{lbl.ru_name}: </div>
+										<div class="boxRight">
+											
+										</div>
+										<div class="clearfloat"></div>
+									</div>
+									<div class="boxCont">
+										<div class="boxLeft">#{lbl.ru_ip}: </div>
+										<div class="boxRight">
+											
+										</div>
+										<div class="clearfloat"></div>
+									</div>
+									<br></br>
+									<div class="boxCont">
+										<div class="boxLeft">#{lbl.ru_description}: </div>
+										<div class="boxRight">
+											<h:outputText value="#{caricaRicercaVerificaViolazioniBean.servizioSelected.autostrada}" />
+										</div>
+										<div class="clearfloat"></div>
+									</div>
+								</div>
+							</td>
+							
+							<td>
+								<div class="box3" style="height: 340px;">
+									<div style="font-size: 13px; color: #0066a5; margin-bottom: 8px;">
+										prova
+									</div>
+									
+									<div class="boxCont">
+										<div class="boxLeft"></div>
+										<div class="boxRight"></div>
+										<div class="clearfloat"></div>
+									</div>
+									
+									<div style="font-size: 12px; color: #0066a5; text-align: center; height: 50px;">
+										<div style="border-bottom: 1px solid #0066a5; width: 45%; text-align: center; margin-left: 25%; margin-top: 15px;"></div>
+									</div>
+									<div class="clearfloat"></div>
+								</div>
+							</td>
+						</tr>
+					</table>
+					
+					<div style="padding-top: 10px;padding-bottom:30px;">
+						<div style="width: 165px;margin: 0 auto;">
+							<p:commandButton value="#{lbl.save}" style="float: left;"
+								widgetVar="newButton"  />
+							<p:commandButton value="#{lbl.cancel}" style="float: right;"
+								widgetVar="closeButton" 
+								onclick="newRuPop.hide();"/>
+						</div>
+					</div>
+					<div class="clearfloat"></div>
+
+				</div>
+			</h:panelGroup>
+		</p:dialog>
+
+	</h:form>
+
+</ui:composition>

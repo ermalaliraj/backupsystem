@@ -58,27 +58,6 @@ public abstract class AMenuManager {
 		return submenu;
 	}
 
-	public String getCurrentMenuPage() {
-		return this.currentMenuPageLabel;
-	}
-
-	public void setCurrentMenuPage(String page) {
-		this.currentMenuPageLabel = page;
-	}
-
-	private void logChangeMenu(String message) {
-		Thread thread = Thread.currentThread();
-		FacesContext fCtx = FacesContext.getCurrentInstance();
-		String sessionId = "NO_SESSION";
-		if (fCtx != null) {
-			HttpSession session = (HttpSession) fCtx.getExternalContext().getSession(false);
-			if (session != null) {
-				sessionId = session.getId();
-			}
-		}
-		logger.debug("SESSION [" + sessionId + "] THREAD [" + thread.getId() + "-" + thread.getName() + "] " + message);
-	}
-
 	public String executeMenuSelection(String menuid) throws Exception {
 		String ret = null;
 		String mact = null;
@@ -103,9 +82,7 @@ public abstract class AMenuManager {
 				this.currentMenuPageFolder = mpag;
 				this.currentMenuPageLabel = mlab;
 			}
-			// if (ret == null) {
-			// ret = "/private/pages/" + mpag + "/main.xhtml";
-			// }
+
 			this.logChangeMenu("SELECTED MENU ["+menuid+"], page [" + mpag + "], label [" + mlab + "], action [" + mact + "]");
 			if (ret != null) {
 				this.logChangeMenu("MENU action returned: " + ret);
@@ -115,24 +92,6 @@ public abstract class AMenuManager {
 			logger.error("Errore selezionando menuId: " + menuid, e);
 		}
 		return ret;
-	}
-
-	public MenuModel getMenuModel() throws Exception {
-		return menu;
-	}
-
-	public String getCurrentMenuPageFolder() {
-		if (this.currentMenuPageFolder == null) {
-			UserBean ub = JSFUtil.findBean(UserBean.BEAN_NAME);
-			this.currentMenuPageFolder = ub.getHomepageFolder();
-			this.logChangeMenu("GET CURRENT (was NULL) MENU PAGE FOLDER [" + this.currentMenuPageFolder + "]");
-		}
-		return currentMenuPageFolder;
-	}
-
-	public void setCurrentMenuPageFolder(String currentMenuPageFolder) {
-		this.logChangeMenu("SET CURRENT MENU PAGE FOLDER [" + currentMenuPageFolder + "]");
-		this.currentMenuPageFolder = currentMenuPageFolder;
 	}
 
 	public void loadMenu() throws Exception {
@@ -161,11 +120,46 @@ public abstract class AMenuManager {
 			}
 		}
 		
-		logChangeMenu("loadMenu() - full MENUBAR: "+menuStr);
+		logChangeMenu("loadMenu() - MENU: "+menuStr);
 	}
 
 	public void refreshMenu() throws Exception {
 		logChangeMenu("Refreshing menu... (check why?)");
 		loadMenu();
+	}
+	
+	private void logChangeMenu(String message) {
+		Thread thread = Thread.currentThread();
+		FacesContext fCtx = FacesContext.getCurrentInstance();
+		String sessionId = "NO_SESSION";
+		if (fCtx != null) {
+			HttpSession session = (HttpSession) fCtx.getExternalContext().getSession(false);
+			if (session != null) {
+				sessionId = session.getId();
+			}
+		}
+		logger.debug("SESSION [" + sessionId + "] THREAD [" + thread.getId() + "-" + thread.getName() + "] " + message);
+	}
+	
+	public String getCurrentMenuPage() {
+		return this.currentMenuPageLabel;
+	}
+
+	public void setCurrentMenuPage(String page) {
+		this.logChangeMenu("SET current menu page label[" + currentMenuPageLabel + "]");
+		this.currentMenuPageLabel = page;
+	}
+
+	public MenuModel getMenuModel() throws Exception {
+		return menu;
+	}
+
+	public String getCurrentMenuPageFolder() {
+		return currentMenuPageFolder;
+	}
+
+	public void setCurrentMenuPageFolder(String currentMenuPageFolder) {
+		this.logChangeMenu("SET current menu page folder [" + currentMenuPageFolder + "]");
+		this.currentMenuPageFolder = currentMenuPageFolder;
 	}
 }

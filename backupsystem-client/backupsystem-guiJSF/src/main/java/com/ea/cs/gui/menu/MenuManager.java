@@ -13,6 +13,9 @@ import javax.faces.context.FacesContext;
 import org.apache.log4j.Logger;
 import org.primefaces.component.menuitem.MenuItem;
 
+import com.ea.cs.gui.user.UserBean;
+import com.ea.cs.gui.util.JSFUtil;
+
 @ManagedBean(name = MenuManager.BEAN_NAME)
 @SessionScoped
 public class MenuManager extends AMenuManager implements Serializable {
@@ -25,8 +28,10 @@ public class MenuManager extends AMenuManager implements Serializable {
 	
 	@PostConstruct
 	protected void init() {
-		try {
+		try{
 			super.loadMenu();
+			UserBean ub = JSFUtil.findBean(UserBean.BEAN_NAME);
+			setCurrentMenuPage(ub.getHomepageFolder());
 		} catch (Exception e) {
 			logger.debug("Error loading menu on init() ", e);
 		}

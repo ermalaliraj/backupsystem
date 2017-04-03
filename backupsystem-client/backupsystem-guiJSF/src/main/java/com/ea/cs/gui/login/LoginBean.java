@@ -58,10 +58,11 @@ public class LoginBean implements Serializable {
 			logger.info("User menu from DB: "+menuList);
 			ub.setUsermenu(menuList);
 			
+			//Set deafult page
 			Object menuInSession = JSFUtil.findBean(MenuManager.BEAN_NAME);
 			MenuManager mm = (MenuManager) menuInSession;
 			mm.setCurrentMenuPage("Ticket PS");
-			mm.setCurrentMenuPageFolder(null);
+			mm.setCurrentMenuPageFolder("home");
 
 			return "private/index.xhtml?faces-redirect=true";	
 		} catch (Exception e) {
@@ -85,11 +86,11 @@ public class LoginBean implements Serializable {
 	private List<MenuDTO> getUserMenuFromRole(String menuPropertiesName, List<RoleDTO> roles) {
 		List<MenuDTO> menuList = new ArrayList<MenuDTO>();
 		
-		MenuDTO user = new MenuDTO(1000, "User DB");
-		final MenuDTO home = new MenuDTO(1001, "Home DB");
-		final MenuDTO logout = new MenuDTO(1002, "Logout DB");
-		MenuDTO config = new MenuDTO(2000, "Config DB");
-		MenuDTO ru = new MenuDTO(3000, "Remote Unit DB");
+		MenuDTO user = new MenuDTO(1000, "User");
+		final MenuDTO home = new MenuDTO(1001, "Home");
+		final MenuDTO logout = new MenuDTO(1002, "Logout");
+		MenuDTO config = new MenuDTO(2000, "Config");
+		MenuDTO ru = new MenuDTO(3000, "Remote Unit");
 		
 		List<MenuDTO> userItems = new ArrayList<MenuDTO>();
 		userItems.add(home);

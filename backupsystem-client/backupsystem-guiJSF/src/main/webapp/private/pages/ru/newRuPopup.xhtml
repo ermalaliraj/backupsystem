@@ -1,0 +1,75 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ice="http://www.icesoft.com/icefaces/component"
+	xmlns:ace="http://www.icefaces.org/icefaces/components"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:sic="http://java.sun.com/jsf/composite/components">
+		
+	
+	<h:form id="formNewRu">
+
+		<p:dialog header="New Remote Unit" widgetVar="newRuPop"
+			dynamic="false" resizable="false" modal="true"
+			styleClass="popupcontent">
+			
+			
+			<h:panelGroup id="newRuPopPanel" layout="block">
+
+				<div class="info-box">
+					
+					<div class="box2" style="height: 340px;">
+						<div class="boxCont">
+							<div class="boxLeft">#{lbl.ru_name}: </div>
+							<div class="boxRight">
+								<h:inputText value="#{ruController.newRuName}" required="true" maxlength="30" size="30" />
+							</div>
+							<div class="clearfloat"></div>
+						</div>
+						
+						<div class="boxCont">
+							<div class="boxLeft">#{lbl.ru_ip}: </div>
+							<div class="boxRight">
+								<h:inputText value="#{ruController.newRuIp}" maxlength="30" size="30" />
+							</div>
+							<div class="clearfloat"></div>
+						</div>
+						<br></br>
+						<div class="boxCont">
+							<div class="boxLeft">#{lbl.ru_description}: </div>
+							<div class="boxRight">
+								<h:inputTextarea styleClass="corpo" label="Messaggio" 
+									cols="40" rows="5" value="#{ruController.newRuDescription}"
+									required="true">
+									<f:validateLength maximum="200" />
+								</h:inputTextarea>
+							</div>
+							<div class="clearfloat"></div>
+						</div>
+					</div>
+					
+					<div style="padding-top: 10px;padding-bottom:30px;">
+						<div style="width: 165px;margin: 0 auto;">
+							<p:commandButton value="#{lbl.save}" style="float: left;"
+								widgetVar="newButton" 
+								process=":formNewRu:newRuPopPanel"
+								actionListener="#{ruController.saveRu}"
+								update=":tableForm :messageErrorForm :formNewRu:newRuPopPanel"
+								oncomplete="newRuPop.hide();" />
+							<p:commandButton value="#{lbl.cancel}" style="float: right;"
+								widgetVar="closeButton" 
+								onclick="newRuPop.hide();"/>
+						</div>
+					</div>
+					<div class="clearfloat"></div>
+
+				</div>
+			</h:panelGroup>
+			
+		</p:dialog>
+</h:form>
+
+
+</ui:composition>

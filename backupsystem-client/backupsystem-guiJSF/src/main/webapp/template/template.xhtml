@@ -14,13 +14,14 @@
 		<h:outputScript library="primefaces" name="jquery/jquery.js" />
 		<h:outputScript library="primefaces" name="primefaces.js" />
 
-		<title><ui:insert name="title">Ticket Management</ui:insert></title>
+		<title><ui:insert name="title">Backupsystem - Admin</ui:insert></title>
 	</h:head>
 	
 	<h:body>
-
 		
 		<h:outputStylesheet library="css" name="style.css" />
+		<h:outputStylesheet library="css" name="menu-style.css" />
+		
 		<script type="text/javascript" src="../resources/js/util.js"></script>
 
 		<div class="container">
@@ -32,8 +33,8 @@
 					<tr>
 						<td>
 							<div class="userBox">
-								<span> Nome: <h:outputText value="#{userBean.userDTO.name}"/> </span> &#160;&#160;&#160;&#160; 
-								<span> Cognome: <h:outputText value="#{userBean.userDTO.surname}"/> </span>
+								<span> Name: <h:outputText value="#{userBean.userDTO.name}"/> </span> &#160;&#160;&#160;&#160; 
+								<span> Surname: <h:outputText value="#{userBean.userDTO.surname}"/> </span>
 							</div>
 						</td>
 					</tr>
@@ -47,10 +48,7 @@
 								<tbody>
 									<tr>
 										<td class="title" style="width: 50%;">
-											<ui:remove>
-											titolo
-											<!-- <span style="float: left;">#{ticketMenuManager.currentMenuPage}</span> -->
-											</ui:remove>
+											<span style="float: left;">#{menuManager.currentMenuPage}</span>
 										</td>
 										<td><h:panelGroup style="float: left;">
 												<p:ajaxStatus>

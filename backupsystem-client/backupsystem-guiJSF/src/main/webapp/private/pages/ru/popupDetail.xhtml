@@ -1,0 +1,1285 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ice="http://www.icesoft.com/icefaces/component"
+	xmlns:ace="http://www.icefaces.org/icefaces/components"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:sic="http://java.sun.com/jsf/composite/components">
+
+	<!--  meta http-equiv="content-type" content="text/html;charset=utf-8" / -->
+
+	<style>
+.ripristina {
+	background: #85bae4;
+	background: linear-gradient(#85bae4, #5393c5) repeat scroll 0 0 #4596ce;
+	border: medium none;
+	border-radius: 2px;
+	color: #ffffff;
+	cursor: pointer;
+	font-size: 12px;
+	margin-right: 5px;
+	padding: 2px;
+	text-align: center;
+	text-decoration: none;
+	text-shadow: 0 -1px 1px #145072;
+	text-transform: uppercase;
+	width: 78px;
+}
+
+.ui-widget {
+	font-family: "Lato", sans-serif;
+	font-size: 12px;
+}
+
+.box2 {
+	background-color: none;
+	border: none;
+	margin-bottom: 0px;
+	margin-right: 18px;
+}
+
+.ui-resizable-s {
+	cursor: unset;
+}
+
+.container{
+	background-color: #dedede;
+}
+</style>
+
+	<h:form id="formdia">
+
+		<h:panelGroup id="datapopup">
+			<p:dialog closable="false" resizable="false" modal="true"
+				header="#{lbl.conferma_esecuzione_comando}" severity="alert"
+				id="confirmationHaveModify" widgetVar="confirmationHaveModify">
+				<h:form>
+					<div style="padding: 5px;">#{lbl.message_have_modify}</div>
+					<div style="padding: 5px; text-align: center">
+						<p:commandButton value="#{lbl.ok}" widgetVar="confirmationHaveModifyOkButton" />
+						<p:commandButton value="#{lbl.annulla}" widgetVar="annullabutton"
+							style="margin-left: 6px;"
+							onclick="enableButtons(); confirmationHaveModify.hide()" type="button" />
+					</div>
+				</h:form>
+			</p:dialog>
+			<p:dialog closable="false" modal="true"
+				header="#{lbl.conferma_esecuzione_comando}" resizable="false"
+				severity="alert" widgetVar="confirmationVelocitaRilevata">
+				<h:form>
+					<div style="padding: 5px;">#{lbl.message_velocita_rilevata_alta}</div>
+					
+					<p:commandButton value="#{lbl.ok}"
+						onclick="confirmationVelocitaRilevata.hide();executeVerbalizza();" />
+					<p:commandButton value="#{lbl.annulla}" widgetVar="annullabutton" style="margin-left: 6px;"
+						onclick="confirmationVelocitaRilevata.hide()" type="button" />
+				</h:form>
+			</p:dialog>
+
+			<p:dialog resizable="false" closable="false" modal="true"
+				header="#{lbl.conferma_esecuzione_comando}" severity="alert"
+				widgetVar="confirmationDatiModificati">
+				<h:form>
+					<div style="padding: 5px;">#{lbl.message_dati_modificati}</div>
+					<div style="padding: 5px; text-align: center">
+						<p:commandButton value="#{lbl.ok}"
+							onclick="executeChiudiPopup();" />
+						<p:commandButton value="#{lbl.annulla}" widgetVar="annullabutton" style="margin-left: 6px;"
+							onclick="confirmationDatiModificati.hide()" type="button" />
+					</div>
+
+				</h:form>
+			</p:dialog>
+			
+			<p:dialog resizable="false" header="#{lbl.dettaglio}"
+				onShow="controllaAutorimorchio(); bindShortcutKey(); checkModify(); bindGrowlError();"
+				widgetVar="infrazioneDaAccertareDetailPopupDet" modal="true"
+				styleClass="resizepop2 popupcontent2"
+				onHide="">
+				<p:ajax event="close" oncomplete="chiudiPopup();" update="@none"/>
+
+	<script type="text/javascript">
+		function unbindShortcutKey() {
+			document.onkeyup = null;
+		  	document.onkeypress = null;
+		  	document.onkeydown = null;
+			$("#[id$=prevButton]").attr("accesskey","");
+			$("#[id$=closeButton]").attr("accesskey","");
+			$("#[id$=eliminaButton]").attr("accesskey","");
+			$("#[id$=stampaButton]").attr("accesskey","");
+			$("#[id$=VerbalizzaButton]").attr("accesskey","");
+			$("#[id$=AccertaButton]").attr("accesskey","");
+			$("#[id$=rielaboraButton]").attr("accesskey","");
+			$("#[id$=nextButton]").attr("accesskey","");
+		}
+		
+		function bindShortcutKey() {
+			document.onkeyup = KeyCheck;
+		  	document.onkeypress = disableBrowserShortcut;
+		  	document.onkeydown = disableBrowserShortcut;
+		  	$("#[id$=prevButton]").attr("accesskey","1");
+			$("#[id$=closeButton]").attr("accesskey","c");
+			$("#[id$=eliminaButton]").attr("accesskey","e");
+			$("#[id$=stampaButton]").attr("accesskey","s");
+			$("#[id$=VerbalizzaButton]").attr("accesskey","a");
+			$("#[id$=AccertaButton]").attr("accesskey","a");
+			$("#[id$=rielaboraButton]").attr("accesskey","r");
+			$("#[id$=nextButton]").attr("accesskey","2");
+		}
+		
+		function tipoTargaChange(select) {
+			$(".tipoTargaStop").val($(select).val());
+		}
+		function nazioneChange(select){
+			$("#nazioneStop").val($(select).val());
+		}
+		
+			
+		var onLine = "#{dto.onLine}";
+		function verbalizza() {
+			<c:if test="#{(! empty velocitaLimite) &amp;&amp;(dto.velocitaRilevata &gt;=velocitaLimite)}">
+				confirmationVelocitaRilevata.show();
+					return false;
+			</c:if>
+			executeVerbalizza();
+		}
+		function executeVerbalizza(){
+		 	//disabilitaBottoni();
+		 	var targaStart = $(".targaStart").val().trim();
+		 	var targaStop = "alpha";
+		 	if($(".targaStop").val() != undefined)	{
+		 		targaStop = $(".targaStop").val();
+		 	}
+		 	if(!test9It($(".targaStart").val(),$('#nazioneStart').val())){
+		 		//abilitaBottoni();
+		 		return false;
+		 	}
+		 	if(!test9It($(".targaStop").val(),$('#nazioneStop').val())){
+		 		//abilitaBottoni();
+		 		return false;
+		 	}
+		 	
+		 	if(onLine != "false" &amp;&amp; $("input[name='codeVerbaleOL']").val().trim() == ''){
+		 		codiceVerbale.show();
+		 		//abilitaBottoni();
+		 		return false;
+		 	}
+		 	
+			if((targaStart=='')||(targaStop=='')){
+				targaObbligatoria.show();
+				//abilitaBottoni();
+				return false;
+			} else {
+	 			if((targaStart.length &lt; 4)||(targaStop.length &lt; 4)){
+	 				campaTargaCaratteri.show();
+	 				//abilitaBottoni();
+	 				return false;
+	 			} else{	
+					/* var risp = confirm("Sei sicuro di accertare questa infrazione?");
+		          	if (risp){		  
+		           	_isDirty=false;         		
+		          		$('.confermaAccerta').click();
+		
+		 	        } */
+		 	      	buttonDefault = accertaDialogButtonYes.id;
+		 			confermaAccertaPopupWin.show();
+		      	}
+  			}
+		}
+
+		function confirmAccerta() {
+	       	_isDirty=false;         		
+	      	$('.confermaAccerta').click();
+		}
+		  
+		function rielabora(){
+			//disabilitaBottoni();
+			var targaStart = $(".targaStart").val().trim();
+			var targaStop = "alpha";
+			if($(".targaStop").val() != undefined){
+				targaStop = $(".targaStop").val().trim()
+			}
+			if(!test9It($(".targaStart").val(),$('#nazioneStart').val())){
+				//abilitaBottoni();
+				return false;
+			}
+			if(!test9It($(".targaStop").val(),$('#nazioneStop').val())){
+				//abilitaBottoni();
+				return false;
+			}
+			
+			if((targaStart=='')||(targaStop=='')){
+				targaObbligatoria.show();
+				//abilitaBottoni();
+				return false;
+			} else {
+				if((targaStart.length &lt; 4)||(targaStop.length &lt; 4)){
+					campaTargaCaratteri.show();
+					//abilitaBottoni();
+					return false;
+				} else{	
+					confermaRielaboraPopupWin.show();
+				}   
+			}
+		}
+		
+		function confirmRielabora() {
+			_isDirty=false;
+			$("input[name='targa']").val(ricalcolaTarga());
+			$("input[name='nazione']").val(ricalcolaNazione()); 
+	     	$('.confermaRielabora').click();
+	 	}  
+		  
+		function disableBrowserShortcut(e){
+			var evt=(window.event) ? event : e;
+			var keyID = evt.code ;
+			  
+			try{
+				if(evt.altKey){
+			  		if(keyID=="KeyK") //ALT+K =avanti
+//	 		  			if((document.frm.avantiButton)&amp;&amp;(document.frm.avantiButton.style.display!="none"))
+			  			next();
+			  		if(keyID=="KeyP") //ALT+P =indietro
+//	 		  			if((document.frm.indietroButton)&amp;&amp;(document.frm.indietroButton.style.display!="none"))
+			  				prev();
+			  		if(keyID=="KeyC") //ALT+C =chiudi
+//	 		  			if((document.frm.chiudiButton)&amp;&amp;(document.frm.chiudiButton.style.display!="none"))
+							$('.chiudiButt').click();
+		  			if(keyID=="KeyA") //ALT+A =accerta/verbalizza/valida
+//	 	 				if((document.frm.confermaButton)&amp;&amp;(document.frm.confermaButton.style.display!="none") &amp;&amp; (document.frm.confermaButton.disabled==false))
+			  				verbalizza();
+					if(keyID=="KeyE") //ALT+E =elimina
+//	 					if((document.frm.eliminaButton)&amp;&amp;(document.frm.eliminaButton.style.display!="none") &amp;&amp; (document.frm.eliminaButton.disabled==false) )
+		 					eliminaInfrazioneModalPopup.show();
+		  			if(keyID=="KeyS") //ALT+S =stampa
+//	 	  				if((document.frm.stampaButton)&amp;&amp;(document.frm.stampaButton.style.display!="none") &amp;&amp; (document.frm.stampaButton.disabled==false))
+		  					$('.stampa').click();
+		  			if(keyID=="Digit1") //ALT+1 =ripristina 1
+//	 	  				if((document.frm.resetButton1)&amp;&amp;(document.frm.resetButton1.style.display!="none") )
+			  				resetFilter();
+					if(keyID=="Digit2") //ALT+2 =ripristina 2
+//	 	 				if((document.frm.resetButton2)&amp;&amp;(document.frm.resetButton2.style.display!="none") )
+		  					resetFilterStop();
+//	 				if(keyID==82) //ALT+R =rielabora/invalida
+//	 		 			if((document.frm.rielaboraButton)&amp;&amp;(document.frm.rielaboraButton.style.display!="none") &amp;&amp; (document.frm.rielaboraButton.disabled==false))
+//	 		  				document.frm.rielaboraButton.click();
+
+					e.preventDefault(); 
+					e.stopPropagation(); 
+					return false;
+		  		} 
+		  	} catch(e){
+		  	}
+	  	}
+
+		var buttonDefault = null;		  
+		  
+		function KeyCheck(e){
+			var evt=(window.event) ? event : e;
+			var keyID = evt.keyCode;
+			if(keyID==13) {
+				if (typeof buttonDefault !== 'undefined') {
+					console.log('clicking: ' + buttonDefault);
+			 		$("[id$='" + buttonDefault + "']").click();
+				}
+			 	if (evt.preventDefault) {
+					evt.preventDefault();
+				}
+				return;
+			}
+			if (keyID==9) {
+				if (typeof buttonDefault !== 'undefined') {
+					$("[id$='" + buttonDefault + "']").css('border','0');
+				  	if (buttonDefault == 'confverb') {
+					  	buttonDefault = 'annverb';
+				  	} else if (buttonDefault == 'annverb') {
+						buttonDefault = 'confverb';
+					}
+				  	$("[id$='" + buttonDefault + "']").css('border','1px dotted gray');
+				  	return;
+				}else{
+					if(e.target.id){
+						if($(e.target).is(":button") ){
+							buttonDefault = e.target.id;	
+						}
+					}
+				}
+			}
+		}
+		  
+		function  checkChange(){
+			if($('#targaInitStart').text() != $('.targaStart').val())
+				return true;
+ 			if($('#tipoTargaInitStart').text() != $('.tipoTargaStart').val())
+				return true;
+ 			if($('#complessoVeicoliInitStart').text() != ''+($('.cv input').attr('checked')=='checked'))
+				return true;
+ 			if($('#merciPericoloseInitStart').text() != ''+($('.mp input').attr('checked')=='checked'))
+				return true;
+ 			if($('#nazioneInitStart').text() != $('#nazioneStart').val())
+ 				return true;
+			  
+			if($('.targaStop').val() != undefined){
+				if($('#targaInitStop').text() != $('.targaStop').val())
+					return true;
+				if($('#tipoTargaInitStop').text() != $('.tipoTargaStop').val())
+					return true;
+				if($('#complessoVeicoliInitStop').text() != ''+($('.cvStop input').attr('checked')=='checked'))
+					return true;
+				if($('#merciPericoloseInitStop').text() != ''+($('.mpStop input').attr('checked')=='checked'))
+					return true;
+				if($('#nazioneInitStop').text() != $('#nazioneStop').val())
+					return true;				  
+			}
+			  
+			var classePs = '';
+			try {
+				classePs =  $('.classe-ps').val();
+				if(!classePs){
+					classePs = $('.classe-ps-output')[0].innerHTML;  //se il valore non e' cambiabile. quindi la troviamo nel output field.
+		 		} 
+			} catch (e) {}
+			//console.log("classePSinit = "+$('#classePSinit').val()+", .classe-ps= "+classePs);
+			if($('#classePSinit').val() != classePs) {
+				return true;
+			}
+			
+			var classeMcpc = '';
+			try {
+				classeMcpc =  $('.classe-mcpc').val();
+			 	if(!classeMcpc){
+			 		classeMcpc = $('.classe-mcpc-output')[0].innerHTML;//se il valore non e' cambiabile. quindi la troviamo nel output field.
+			 	}
+			} catch (e) {}
+			//console.log("classeMCTCinit = "+$('#classeMCTCinit').val()+" .classe-mcpc= "+classeMcpc);
+			if($('#classeMCTCinit').val() != classeMcpc) {
+				return true;
+			}
+
+			return false;			 
+		}
+		  
+		function showRielabora(test){
+			//console.log("showRielabora "+test);
+			if(test){
+		  		$('.accertaVerbalizza').hide();
+		  		$('.rielabora').show();  
+		 	} else {
+		  		$('.rielabora').hide();
+		  		$('.accertaVerbalizza').show();				  
+		 	}
+		}
+		  
+		function ricalcolaTarga(){
+		  	var targa = $('.targaStart').val().trim();
+		  	if ($('.targaStop').val() != undefined &amp;&amp; ""!=$('.targaStop').val().trim())
+		  		if (targa != $('.targaStop').val().trim())
+		  			targa = '---';
+		  	return targa;
+		}
+
+		function ricalcolaNazione(){
+		  	var nazione = $('#nazioneStart').val();
+		  	if ($('#nazioneStop').val() != undefined &amp;&amp; ""!=$('#nazioneStop').val())
+		  		if (nazione != $('#nazioneStart').val())
+		  			nazione = '---';
+			return nazione;
+		}
+		  
+		function caricaMCPC(temp){
+// 			  var objId = temp.id;				
+// 			  if(temp.value != temp.defaultValue){       
+// 			 		document.getElementById("MCPC").disabled=false;	
+// 			 		document.getElementById("ClassePS").value=temp.value;			
+// 			         cercaTipoOperazioneNoVuota('MCPC','A130',temp.value);
+// 			         }
+		}
+
+		var _isDirty = false;
+
+		$( document ).ready(function() {
+			$("input[type='text']").change(function(){
+				_isDirty = true;
+			});
+			$("select[name!='motivazione']").change(function(){
+				_isDirty = true;
+			});
+		});
+
+		function chiudiPopup() {
+			console.debug('handle hide popup');
+			if (_isDirty) {
+				confirmationDatiModificati.show();
+				return;
+			}else{
+				executeChiudiPopup();
+			}
+		}
+		function executeChiudiPopup(){
+			confirmationDatiModificati.hide();
+			infrazioneDaAccertareDetailPopupDet.hide();
+			$('.reloadSearch').click();
+			unbindShortcutKey();
+			
+			var isOnline  = #{accertamentoInfrazioni.online};
+			if(isOnline){
+				setPopupOpenedToFalse();
+			}
+		}
+		  
+		function handleCvStartChecked(){
+			if($('.cv input').attr('checked')=='checked'){
+				$('.cvLabelStart').css('color','red')
+				$('.cvLabelStop').css('color','red')
+				$('.cvLabel').css('color','red')
+				$('#check5').attr('checked','checked')
+				$('.cvStop input').attr('checked','checked')
+			} else {
+				$('.cvLabelStart').css('color','')
+				$('.cvLabelStop').css('color','')
+				$('.cvLabel').css('color','')
+				$('#check5').removeAttr('checked')
+				$('.cvStop input').removeAttr('checked')
+			}
+			controllaAutorimorchio()
+		}
+		function handleCvStopChecked(){
+			if ($('.cvStop input').attr('checked')=='checked') { 
+				$('.cvLabelStop').css('color','red');
+				$('.cvLabel').css('color','red');
+				$('#check5').attr('checked','checked');	
+			} else {
+				$('.cvLabelStop').css('color','');
+				if($('#complessoVeicoliStart').attr('checked')!='checked'){
+					//se trn start e' checked, allora lascia come e' il valore nel riassunto
+					$('.cvLabel').css('color','');
+					$('#check5').removeAttr('checked');
+				}
+			}
+			controllaAutorimorchio();
+		}
+			
+		function handleMpStartChecked(){
+			if($('.mp input').attr('checked')=='checked'){
+				$('.mpLabelStart').css('color','red')
+				$('.mpLabelStop').css('color','red')
+				$('.mpLabel').css('color','red')
+				$('#check6').attr('checked','checked')
+				$('.mpStop input').attr('checked','checked')
+			}else{
+				$('.mpLabelStart').css('color','')
+				$('.mpLabelStop').css('color','')
+				$('.mpLabel').css('color','')
+				$('#check6').removeAttr('checked')
+				$('.mpStop input').removeAttr('checked')
+			}
+		}
+		function handleMpStopChecked(){
+			if($('.mpStop input').attr('checked')=='checked'){
+				$('.mpLabelStop').css('color','red')
+				$('.mpLabel').css('color','red')
+				$('#check6').attr('checked','checked')
+			}else{
+				$('.mpLabelStop').css('color','')
+				if($('#merciPericoloseStart').attr('checked')!='checked'){
+					//se trn start e' checked, allora lascia come e' il valore nel riassunto
+					$('.mpLabel').css('color','')
+					$('#check6').removeAttr('checked')
+				}
+			}
+		}
+	</script>
+
+				<div style="display: none;">
+					<input type="hidden" name="idInfrazionePreload" id="idInfrazionePreload" value="" /> 
+					<input type="hidden" name="idInfrazione" value="#{infrazione}" /> 
+					<input type="hidden" name="onLine" value="#{dto.onLine}" /> 
+					<input type="hidden" id="classeMCTCinit" name="classeMCTC" value="#{accertamentoInfrazioni.selectedClasseMCPC}" />
+				    <input type="hidden" id="classePSinit" name="classePSinit" value="#{dto.classePS}" /> 
+				    <input type="hidden" name="targa" value="" /> 
+				    <input type="hidden" name="nazione" value="" /> 
+					<input type="hidden" name="luminositaDtoStart" value="#{dtoStart.luminosita}" /> 
+					<input type="hidden" name="contrastoDtoStart" value="#{dtoStart.contrasto}" /> 
+					<input type="hidden" name="luminositaDtoStop" value="#{dtoStop.luminosita}" /> 
+					<input type="hidden" name="contrastoDtoStop" value="#{dtoStop.contrasto}" /> 
+					<input type="hidden" name="idInfrazioneDtoStart" value="#{dtoStart.idTransito}" /> 
+					<input type="hidden" name="idInfrazioneDtoStop" value="#{dtoStop.idTransito}" /> 
+					<input type="hidden" name="zoomDtoStart" value="#{dtoStart.zoom}" /> 
+					<input type="hidden" name="zoomDtoStop" value="#{dtoStop.zoom}" /> 
+					<input type="hidden" name="coordinataBottomXDtoStart" value="#{dtoStart.coordinataBottomX}" /> 
+					<input type="hidden" name="coordinataBottomYDtoStart" value="#{dtoStart.coordinataBottomY}" /> 
+					<input type="hidden" name="coordinataUpperXDtoStart" value="#{dtoStart.coordinataUpperX}" /> 
+					<input type="hidden" name="coordinataUpperYDtoStart" value="#{dtoStart.coordinataUpperY}" /> 
+					<input type="hidden" name="coordinataBottomXDtoStop" value="#{dtoStop.coordinataBottomX}" /> 
+					<input type="hidden" name="coordinataBottomYDtoStop" value="#{dtoStop.coordinataBottomY}" /> 
+					<input type="hidden" name="coordinataUpperXDtoStop" value="#{dtoStop.coordinataUpperX}" />
+					<input type="hidden" name="coordinataUpperYDtoStop" value="#{dtoStop.coordinataUpperY}" /> 
+					
+					<span id="coordinataUpperX"><h:outputText value="#{dtoStart.coordinataUpperX}" /></span> 
+					<span id="coordinataUpperY"><h:outputText value="#{dtoStart.coordinataUpperY}" /></span> 
+					<span id="coordinataBottomX"><h:outputText value="#{dtoStart.coordinataBottomX}" /></span> 
+					<span id="coordinataBottomY"><h:outputText value="#{dtoStart.coordinataBottomY}" /></span> 
+					<span id="coordinataUpperXStop"><h:outputText value="#{dtoStop.coordinataUpperX}" /></span> 
+					<span id="coordinataUpperYStop"><h:outputText value="#{dtoStop.coordinataUpperY}" /></span> 
+					<span id="coordinataBottomXStop"><h:outputText value="#{dtoStop.coordinataBottomX}" /></span> 
+					<span id="coordinataBottomYStop"><h:outputText value="#{dtoStop.coordinataBottomY}" /></span> 
+					<span id="complessoVeicoliInitStart">#{dtoStart.complessoVeicoli}</span>
+					<span id="targaInitStart">#{dtoStart.targa}</span> 
+					<span id="tipoTargaInitStart">#{dtoStart.tipoTarga}</span> 
+					<span id="merciPericoloseInitStart">#{dtoStart.merciPericolose}</span> 
+					<span id="nazioneInitStart">#{dtoStart.nazione}</span> 
+					<span id="complessoVeicoliInitStop">#{dtoStop.complessoVeicoli}</span> 
+					<span id="targaInitStop">#{dtoStop.targa}</span> 
+					<span id="tipoTargaInitStop">#{dtoStop.tipoTarga}</span> 
+					<span id="merciPericoloseInitStop">#{dtoStop.merciPericolose}</span> 
+					<span id="nazioneInitStop">#{dtoStop.nazione}</span>
+				</div>
+
+
+				<div class="container">
+					<div class="content" style="margin-top: 0px;">
+						<div class="menu-page">
+							<div class="fltlft name-page">
+								<span class="title">Accertamento infrazione</span>
+							</div>
+							<div class="clearfloat"></div>
+						</div>
+						<div class="box-content">
+							<c:if test="#{dto.invalidata}">
+								<div
+									style="width: 100%; text-align: center; font: bold; font-size: 20px; color: red;">Attenzione:
+									dati dell'infrazione non validati!</div>
+							</c:if>
+
+							<!-- Il valore non viene riportato  quindi se viene riaperta non visualizzera quanto gia digitato -->
+							<div id="verbaleSuStrada" style="float: right; margin-bottom: 7px;">
+								<span class="sicveLabelRicerca"><b>Codice verbale su strada</b></span> 
+								<input name="codeVerbaleOL" onkeyup="toUpperCase(this);" value="#{dto.numeroAccertamento}" maxlength="13" />
+								
+
+							</div>
+							
+							<c:if test="#{!dto.onLine and dto.numeroAccertamento==null}">
+								<script type="text/javascript">
+								$('#verbaleSuStrada').hide();
+							</script>
+							</c:if>
+
+							<div class="fltlft box0"
+								style="min-height: 755px; position: relative;">
+								<h:panelGroup layout="block" rendered="#{not empty dtoStart}">
+									<div class="fltlft bxlft pddlft">
+										<span class="blue"> <h:outputText
+												value="#{dtoStart.dataTransito}">
+												<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"
+													timeZone="CET" />
+											</h:outputText>&#160; <h:outputText value="#{dtoStart.sistemaPeriferico}" />
+										</span>
+										<div class="fltlft box-grey">
+
+											<sic:imageViewer id="TransitoStart" controlPosition="right"
+												miniStartImageId="miniImmagineStart"
+												detailPanel="dettaglioImmagineStartModalPopup"
+												detailCanvas="detailFirstCanvasCanvas" canvasHeight="213"
+												canvasWidth="290" sliderClass="slider"
+												image="#{immagineStart}"
+												imageTopX="#{dtoStart.coordinataUpperX}"
+												imageBottomX="#{dtoStart.coordinataBottomX}"
+												imageTopY="#{dtoStart.coordinataUpperY}"
+												imageBottomY="#{dtoStart.coordinataBottomY}"
+												zoom="#{dtoStart.zoom}" luminosita="#{LUMINOSITA_START}"
+												contrasto="#{CONTRASTO_START}" zoomIcon="images/zoom.png"
+												lumIcon="images/lum.png" contrIcon="images/contr.png">
+												<f:facet name="controllHeader">
+													<h:panelGroup layout="block" styleClass="occhio">
+														<h:graphicImage name="images/occhio.png" />
+													</h:panelGroup>
+												</f:facet>
+
+											</sic:imageViewer>
+											<div class="clearfloat"></div>
+											<div class="fltlft bold">
+												<span class="padding">ID: <h:outputText
+														value="#{dtoStart.idTransito}" /></span>
+												<div class="cam2">
+													<img style="width: 100%;" src="#{immagineStart}"
+														id="miniImmagineStart" />
+												</div>
+											</div>
+											<div class="fltrt info">
+												<div class="fltlft">
+													<div class="fltlft bxtxt">
+														<div class="bold" style="line-height: 40px;">Targa:</div>
+														<div class="bold">Tipo:</div>
+														<span class="cvLabelStart bold">C.V.</span> 
+														<span class="checkbox cv" style="margin-right: 25px;"
+															onclick="handleCvStartChecked();">
+															<c:if test="#{dtoStart.complessoVeicoli}">
+																<input type="checkbox" id="complessoVeicoliStart"
+																	name="complessoVeicoliStart" class="checkbox"
+																	value="true" checked="checked" />
+															</c:if> <c:if test="#{!dtoStart.complessoVeicoli}">
+																<input type="checkbox" id="complessoVeicoliStart"
+																	name="complessoVeicoliStart" class="checkbox"
+																	value="true" />
+															</c:if> <label for="check2"></label>
+														</span>
+														<script type="text/javascript">												    	
+												    	if($('.cv input').attr('checked')=='checked'){
+												    		$('.cvLabelStart').css('color','red');
+												    		$('.cvLabel').css('color','red');
+												    	}
+													</script>
+														<br />
+														<div class="bold">Nazione:</div>
+														<div class="bold">Cl. rilevata:</div>
+													</div>
+													<div class="fltrt bxinpt" style="margin-top: 4px;">
+														<input type="text" name="targaStart" maxlength="10"
+															size="10" value="#{dtoStart.targa}" class="targaStart"
+															style="margin-bottom: 7px; font-size: 27px; width: 160px; height: 26px;" />
+														<br /> <select class="tipoTargaStart"
+															onchange="tipoTargaChange(this);" name="tipoTargaStart"
+															id="tipoTarga">
+															<c:forEach var="tipo" items="#{tipi}">
+																<c:if test="#{tipo==dtoStart.tipoTarga}">
+																	<option value="#{tipo}" selected="selected">
+																		<h:outputText value="#{tipo}" />
+																	</option>
+																</c:if>
+																<c:if test="#{tipo!=dtoStart.tipoTarga}">
+																	<option value="#{tipo}">
+																		<h:outputText value="#{tipo}" />
+																	</option>
+																</c:if>
+															</c:forEach>
+														</select> <br /> 
+														<span class="mpLabelStart bold" style="vertical-align: 0px">M.P.</span>
+														<span class="checkbox mp" style="margin-right: 25px;"
+															onclick="handleMpStartChecked();">
+															<c:if test="#{dtoStart.merciPericolose}">
+																<input type="checkbox" id="merciPericoloseStart"
+																	name="merciPericoloseStart" class="checkbox"
+																	value="true" checked="checked" />
+															</c:if> <c:if test="#{!dtoStart.merciPericolose}">
+																<input type="checkbox" id="merciPericoloseStart"
+																	name="merciPericoloseStart" class="checkbox"
+																	value="true" />
+															</c:if> <label for="check2"></label>
+														</span>
+														<script type="text/javascript">
+												    	if($('.mp input').attr('checked')=='checked'){
+												    		$('.mpLabelStart').css('color','red');
+												    		$('.mpLabel').css('color','red');
+												    	}
+													</script>
+														<br /> <select name="nazioneStart" id="nazioneStart"
+															onchange="nazioneChange(this);">
+															<c:forEach var="nazione" items="#{nazioniTarghe}">
+																<c:if test="#{nazione==dtoStart.nazione}">
+																	<option value="#{nazione}" selected="selected">
+																		<h:outputText value="#{nazione}" />
+																	</option>
+																</c:if>
+																<c:if test="#{nazione!=dtoStart.nazione}">
+																	<option value="#{nazione}">
+																		<h:outputText value="#{nazione}" />
+																	</option>
+																</c:if>
+															</c:forEach>
+														</select> <br /> <span class="fltlft grey"><h:outputText
+																value="#{dtoStart.classe}" /></span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</h:panelGroup>
+								<c:if test="#{not empty dtoStop}">
+									<div class="fltlft bxrt pddrt">
+										<span class="blue"> <h:outputText
+												value="#{dtoStop.dataTransito}">
+												<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"
+													timeZone="CET" />
+											</h:outputText>&#160; <h:outputText value="#{dtoStop.sistemaPeriferico}" />
+										</span>
+										<div class="fltlft box-grey">
+											<sic:imageViewer id="TransitoStop" controlPosition="right"
+												miniStartImageId="miniImmagineStop"
+												detailPanel="dettaglioImmagineStopModalPopup"
+												detailCanvas="detailSecondCanvasCanvas" canvasHeight="213"
+												canvasWidth="290" sliderClass="slider"
+												image="#{immagineStop}"
+												imageTopX="#{dtoStop.coordinataUpperX}"
+												imageBottomX="#{dtoStop.coordinataBottomX}"
+												imageTopY="#{dtoStop.coordinataUpperY}"
+												imageBottomY="#{dtoStop.coordinataBottomY}"
+												zoom="#{dtoStop.zoom}" luminosita="#{LUMINOSITA_STOP}"
+												contrasto="#{CONTRASTO_STOP}" zoomIcon="images/zoom.png"
+												lumIcon="images/lum.png" contrIcon="images/contr.png">
+												<f:facet name="controllHeader">
+													<h:panelGroup layout="block" styleClass="occhio">
+														<h:graphicImage name="images/occhio.png" />
+													</h:panelGroup>
+												</f:facet>
+
+											</sic:imageViewer>
+											<div class="clearfloat"></div>
+											<div class="fltlft bold">
+												<span class="padding">ID: <h:outputText
+														value="#{dtoStop.idTransito}" /></span>
+												<div class="cam2">
+													<img style="width: 100%;" src="#{immagineStop}"
+														id="miniImmagineStop" />
+												</div>
+											</div>
+											<div class="fltrt info">
+												<div class="fltlft">
+													<div class="fltlft bxtxt">
+														<div class="bold" style="line-height: 40px;">Targa:</div>
+														<div class="bold">Tipo:</div>
+														<span class="cvLabelStop bold">C.V.</span> <span
+															class="checkbox cvStop" style="margin-right: 25px;"
+															onclick="handleCvStopChecked();">
+															<c:if test="#{dtoStop.complessoVeicoli}">
+																<input type="checkbox" id="complessoVeicoliStop"
+																	name="complessoVeicoliStop" class="checkbox"
+																	value="true" checked="checked" />
+															</c:if> <c:if test="#{!dtoStop.complessoVeicoli}">
+																<input type="checkbox" id="complessoVeicoliStop"
+																	name="complessoVeicoliStop" class="checkbox"
+																	value="true" />
+															</c:if> <label for="check2"></label>
+														</span>
+														<script type="text/javascript">
+												    	if($('.cvStop input').attr('checked')=='checked'){
+												    		$('.cvLabelStop').css('color','red');
+												    		$('.cvLabel').css('color','red');
+												    	}
+													</script>
+														<br />
+														<div class="bold">Nazione:</div>
+														<div class="bold">Cl. rilevata:</div>
+													</div>
+													<div class="fltrt bxinpt" style="margin-top: 4px;">
+														<input type="text" name="targaStop" maxlength="10"
+															size="10" value="#{dtoStop.targa}" class="targaStop"
+															style="margin-bottom: 7px; font-size: 27px; width: 160px; height: 26px;" />
+														<br /> <select class="tipoTargaStop" name="tipoTargaStop">
+															<c:forEach var="tipo" items="#{tipi}">
+																<c:if test="#{tipo==dtoStop.tipoTarga}">
+																	<option value="#{tipo}" selected="selected">
+																		<h:outputText value="#{tipo}" />
+																	</option>
+																</c:if>
+																<c:if test="#{tipo!=dtoStop.tipoTarga}">
+																	<option value="#{tipo}">
+																		<h:outputText value="#{tipo}" />
+																	</option>
+																</c:if>
+															</c:forEach>
+														</select> <br /> 
+														<span class="mpLabelStop bold" style="vertical-align: 0px">M.P.</span>
+														<span class="checkbox mpStop" style="margin-right: 25px;"
+															onclick="handleMpStopChecked();">
+															<c:if test="#{dtoStop.merciPericolose}">
+																<input type="checkbox" id="merciPericoloseStop"
+																	name="merciPericoloseStop" class="checkbox"
+																	value="true" checked="checked" />
+															</c:if> <c:if test="#{!dtoStop.merciPericolose}">
+																<input type="checkbox" id="merciPericoloseStop"
+																	name="merciPericoloseStop" class="checkbox"
+																	value="true" />
+															</c:if> <label for="check2"></label>
+														</span>
+														<script type="text/javascript">
+												    	if($('.mpStop input').attr('checked')=='checked'){
+												    		$('.mpLabelStop').css('color','red');		
+												    		$('.mpLabel').css('color','red');												    	
+												    	}
+													</script>
+														<br /> <select name="nazioneStop" id="nazioneStop">
+															<c:forEach var="nazione" items="#{nazioniTarghe}">
+																<c:if test="#{nazione==dtoStop.nazione}">
+																	<option value="#{nazione}" selected="selected">
+																		<h:outputText value="#{nazione}" />
+																	</option>
+																</c:if>
+																<c:if test="#{nazione!=dtoStop.nazione}">
+																	<option value="#{nazione}">
+																		<h:outputText value="#{nazione}" />
+																	</option>
+																</c:if>
+															</c:forEach>
+														</select> <br /> <span class="fltlft grey"><h:outputText
+																value="#{dtoStop.classe}" /></span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</c:if>
+								<div class="clearfloat"></div>
+								<div class="fltlft box-grey2 padding2">
+									<div class="fltlft box-veicolo">
+										<div class="grey">INFORMAZIONI SUL VEICOLO</div>
+										<div>
+											<span class="bold">CI. MCTC:</span>&#160;
+											<span id="classeMCTCI"><h:outputText value="#{dto.classeMCTC}" /></span>
+										</div>
+										<div>
+											<span class="bold">Dest. Uso:</span>&#160;
+											<h:outputText value="#{dto.destinazioneUsoVeicolo}" />
+										</div>
+										<span class="bold">Classe PS:</span>&#160;
+										<c:choose>
+											<c:when test="#{!empty dto.classeMCTC}">
+												<h:outputText value="#{dto.classePS}" styleClass="classe-ps-output" />
+												<input type="hidden" name="nascostoPS" id="nascostoPS" value="#{dto.classePS}" />
+											</c:when>
+											<c:otherwise>
+												<h:selectOneMenu id="selps" styleClass="select classe-ps"
+													value="#{accertamentoInfrazioni.selectedClassePS}">
+													
+													<f:selectItem itemLabel="" itemValue="" />
+													<f:selectItems value="#{accertamentoInfrazioni.classiPSSI}" />
+													<p:ajax update="selmcpcsi" process="selps"
+														oncomplete="caricaMCPC(this);controllaAutorimorchio();"></p:ajax>
+												</h:selectOneMenu>
+
+											</c:otherwise>
+										</c:choose>
+
+										<span class="bold" style="padding-left:15px;">M.C.P.C.:</span>&#160;
+										<c:choose>
+											<c:when test="#{!empty dto.classeMCTC}">
+												<h:outputText value="#{dto.massaComplessivaPienoCarico}" styleClass="classe-mcpc-output"/>
+												<input type="hidden" name="nascostoMCPC" id="nascostoMCPC"
+													value="#{dto.massaComplessivaPienoCarico}" />
+											</c:when>
+											<c:otherwise>
+												<h:selectOneMenu id="selmcpcsi" name="selmcpcsi"
+													styleClass="select classe-mcpc"
+													value="#{accertamentoInfrazioni.selectedClasseMCPC}">
+													<f:selectItem itemLabel=" " />
+													<f:selectItems value="#{accertamentoInfrazioni.classiMCPCSI}" />
+													<p:ajax update="selmcpcsi" process="selmcpcsi"
+														oncomplete="showRielabora(checkChange());"/>
+												</h:selectOneMenu>
+											</c:otherwise>
+										</c:choose>
+
+										<br /> 
+										<span class="checkbox spazio-checkbox cvLabel" style="display: inline-block;">
+											<span class="bold">C.V.</span>
+											<c:choose>
+												<c:when
+													test="#{dtoStart.complessoVeicoli||(! empty dtoStop &amp;&amp; dtoStop.complessoVeicoli)}">
+													<input type="checkbox" id="check5" value=""
+														checked="checked" disabled="disabled" />
+												</c:when>
+												<c:otherwise>
+													<input type="checkbox" id="check5" value=""
+														disabled="disabled" />
+												</c:otherwise>
+											</c:choose> <label for="check5"></label>
+										</span> 
+										<span class="checkbox spazio-checkbox mpLabel">
+											<span class="bold" style="padding-left:15px;">M.P.</span>
+											<c:choose>
+												<c:when
+													test="#{dtoStart.merciPericolose||(! empty dtoStop &amp;&amp; dtoStop.merciPericolose)}">
+													<input type="checkbox" id="check6" value=""
+														checked="checked" disabled="disabled" />
+												</c:when>
+												<c:otherwise>
+													<input type="checkbox" id="check6" value=""
+														disabled="disabled" />
+												</c:otherwise>
+											</c:choose> <label for="check6"></label>
+										</span>
+									</div>
+
+									<div class="fltlft box-veicolo">
+										<div class="grey">INFORMAZIONI SULLA RILEVAZIONE</div>
+										<div class="fltlft box1" style="width: 160px;">
+											<div class="fltlft bold">
+												Vel. consentita: <br /> 
+												Vel. rilevata: <br /> 
+												Vel. contestata:
+											</div>
+											<div class="fltrt spazio">
+												<span class="grey"> <h:outputText
+														value="#{dto.velocitaConsentita}"
+														rendered="#{dto.velocitaConsentita!=0}">
+														<f:convertNumber pattern="#0.00" />
+													</h:outputText> <br />
+												</span> <span class="blue"> <h:outputText
+														value="#{dto.velocitaRilevata}">
+														<f:convertNumber pattern="#0.00" />
+													</h:outputText> <br /></span> <span class="blue"> <h:outputText
+														value="#{dto.velocitaContestata}">
+														<f:convertNumber pattern="#0.00" />
+													</h:outputText>
+												</span>
+											</div>
+											<div class="clearfloat"></div>
+										</div>
+										<div class="fltrt box2" style="width: 200px;">
+											<div class="fltlft bold">
+												Tipologia strada: <br />
+												<c:if test="#{numeroElementi==2}">
+													Dist. tra sist. periferici:
+													<br />
+												</c:if>
+												Condizioni meteo: <br />
+											</div>
+											<div class="fltrt spazio">
+												<span class="grey"><h:outputText
+														value="#{dto.tipologiaStrada}" /><br /></span>
+												<c:if test="#{numeroElementi==2}">
+													<span class="grey">
+													<h:outputText value="#{dto.distanzaSistemiPeriferici}">
+														<f:convertNumber groupingUsed="false" minFractionDigits="3" />
+													</h:outputText> Km<br /></span>
+												</c:if>
+												<span class="grey"><h:outputText
+														value="#{dto.condizioneMeteo}" /><br /></span>
+											</div>
+											<div class="clearfloat"></div>
+										</div>
+									</div>
+									<div class="clearfloat"></div>
+									<div id="autorimorchio"></div>
+								</div>
+
+
+
+								<div class="fltlft box-grey2 padding2">
+									<div class="box-veicolo">
+										<c:if test="#{!empty dto.descrizioneVeicolo}">
+											<div class="grey">VEICOLO</div>
+											<div class="fltlft">
+												<h:outputText value="#{dto.descrizioneVeicolo}" />
+											</div>
+										</c:if>
+										<br />
+										<c:if
+											test="#{(!empty dto.violazioni)&amp;&amp;(!empty dto.violazioni[0].ipotesi)}">
+											<div class="grey">INFRAZIONE</div>
+											<div>
+												<c:forEach var="lista" items='#{dto.violazioni}'>
+													<h:outputText value='#{lista.ipotesi}' />
+													<h:outputText value='#{lista.descrizione}' />
+													<br />
+												</c:forEach>
+											</div>
+										</c:if>
+										<c:if
+											test="#{(!accertamento)&amp;&amp;(!empty dto.descrizionePersona)}">
+											<div class="grey">
+												<h:outputText value="OBBLIGATO IN SOLIDO (da autonol.)"
+													rendered="#{dto.safo}"
+													style="color: red; font-weight:bold;" />
+												<h:outputText value="OBBLIGATO IN SOLIDO "
+													rendered="#{!dto.safo}" style="font-weight:bold;" />
+											</div>
+											<div>
+												<h:outputText value="#{dto.descrizionePersona}"
+													rendered="#{dto.safo}"
+													style="color: red; font-weight:bold;" />
+												<h:outputText value="#{dto.descrizionePersona}"
+													rendered="#{!dto.safo}" />
+											</div>
+										</c:if>
+									</div>
+
+									<div class="clearfloat"></div>
+								</div>
+
+								<p:panel id="preloadImg" style="display: none;">
+									<img src="#{immagineStartPreload}" />
+									<img src="#{immagineStopPreload}" />
+								</p:panel>
+
+								<p:commandButton styleClass="preload" style="display:none;"
+									value=" "
+									actionListener="#{accertamentoInfrazioni.preloadDettaglioConImmaginiInfAccertate}"
+									onstart="bloccoOperazioni=true"
+									oncomplete="bloccoOperazioni=false"
+									update=":#{p:component('preloadImg')}" />
+								
+								 <p:commandButton styleClass="reloadSearch" style="display:none;"
+									value=" "
+									actionListener="#{accertamentoInfrazioni.infrazioniOperazioniInCorso}"
+									update=":tableForm2 :tableForm2_online" immediate="true">
+									<f:attribute name="servizioOperInCorsoHidden"
+										value="#{accertamentoInfrazioni.idServizio}" />
+									<f:attribute name="codiceServizio"
+										value="#{accertamentoInfrazioni.codiceServizio}" />
+									<f:attribute name="tipoOperInCorsoHidden" value="4" />
+								</p:commandButton> 
+
+								<table
+									style="bottom: 5px; left: 50%; transform: translateX(-50%); position: absolute; width: auto;">
+									<tbody>
+										<tr>
+											<td></td>
+
+											<td class="freccia"><c:if
+													test="${accertamentoInfrazioni.listaInfrazioni.size()>1}">
+
+													<p:commandLink tabindex="0" styleClass="cerca"
+														id="prevButton" onclick="prev();">
+														<img src="../../resources/images/lft.png" width="10"
+															height="10" alt="left" />
+													</p:commandLink>
+												</c:if></td>
+											<td><p:commandButton tabindex="1" id="closeButton"
+													widgetVar="chiudibutton" styleClass="cerca chiudiButt"
+													value="CHIUDI" update=":tableForm2:monitbl"
+													onclick="infrazioneDaAccertareDetailPopupDet.hide();" /></td>
+											<td><p:commandButton tabindex="2" id="eliminaButton"
+													styleClass="cerca elimina" value="ELIMINA"
+													disabled="disabled"
+													onclick="eliminaInfrazioneModalPopup.show()" /> <p:commandButton
+													styleClass="confermaElimina" style="display:none;"
+													value=" "
+													actionListener="#{accertamentoInfrazioni.eliminaDettagliInfrazioneDaAccertare}"
+													immediate="true" update=":messageErrorForm">
+													<f:attribute name="servizioOperInCorsoHidden"
+														value="#{accertamentoInfrazioni.idServizio}" />
+													<f:attribute name="codiceServizio"
+														value="#{accertamentoInfrazioni.codiceServizio}" />
+													<f:attribute name="tipoOperInCorsoHidden" value="4" />
+												</p:commandButton></td>
+											<td><p:commandButton tabindex="3" id="stampaButton"
+													styleClass="cerca stampa" value="STAMPA"
+													actionListener="#{accertamentoInfrazioni.stampaImmagineAccertare}"
+													immediate="true" ajax="false">
+												</p:commandButton></td>
+											<td><h:panelGroup layout="block"
+													rendered="#{accertamento=='true'}">
+													<p:commandButton tabindex="4" id="AccertaButton"
+														styleClass="cerca accertaVerbalizza" value="ACCERTA"
+														disabled="disabled" onclick="verbalizza()" />
+
+													<p:commandButton styleClass="confermaAccerta" value=" "
+														style="display: none;"
+														actionListener="#{accertamentoInfrazioni.accertaDettagliInfrazioneDaAccertare}"
+														onclick="disableButtons()" immediate="true"
+														update=":messageErrorForm">
+														<f:attribute name="servizioOperInCorsoHidden"
+															value="#{accertamentoInfrazioni.idServizio}" />
+														<f:attribute name="codiceServizio"
+															value="#{accertamentoInfrazioni.codiceServizio}" />
+													</p:commandButton>
+												</h:panelGroup> <h:panelGroup layout="block"
+													rendered="#{accertamento=='false'}">
+													<p:commandButton tabindex="4" id="VerbalizzaButton"
+														styleClass="cerca accertaVerbalizza" value="VERBALIZZA"
+														disabled="disabled" onclick="verbalizza()" />
+													<p:commandButton styleClass="confermaVerbalizza"
+														style="display:none;" value=" "
+														actionListener="#{accertamentoInfrazioni.accertaDettagliInfrazioneDaAccertare}"
+														onclick="disableButtons()" immediate="true"
+														update=":messageErrorForm">
+														<f:attribute name="servizioOperInCorsoHidden"
+															value="#{accertamentoInfrazioni.idServizio}" />
+														<f:attribute name="codiceServizio"
+															value="#{accertamentoInfrazioni.codiceServizio}" />
+													</p:commandButton>
+												</h:panelGroup> <p:commandButton tabindex="5" styleClass="cerca rielabora"
+													id="rielaboraButton" name="rielaboraButton"
+													style="display:none" value="RIELABORA" disabled="disabled"
+													onclick="rielabora()" /> <p:commandButton
+													styleClass="confermaRielabora" style="display:none;"
+													value=" "
+													actionListener="#{accertamentoInfrazioni.rielaboraInfrazione}"
+													onclick="disableButtons()" immediate="true"
+													update=":messageErrorForm">
+													<f:attribute name="servizioOperInCorsoHidden"
+														value="#{accertamentoInfrazioni. idServizio}" />
+													<f:attribute name="codiceServizio"
+														value="#{accertamentoInfrazioni.codiceServizio}" />
+												</p:commandButton></td>
+
+											<td class="freccia"><c:if
+													test="${accertamentoInfrazioni.listaInfrazioni.size()>1}">
+
+													<p:commandLink tabindex="6" styleClass="cerca"
+														id="nextButton" onclick="next();" >
+														<img src="../../resources/images/rt.png" width="10"
+															height="10" alt="right" />
+													</p:commandLink>
+
+												</c:if></td>
+											<td></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div style="clear: both;"></div>
+				</div>
+
+			</p:dialog>
+
+			<p:dialog resizable="false" header="Eliminazione Infrazione"
+				widgetVar="eliminaInfrazioneModalPopup" modal="true">
+				<c:if test="#{!empty motivazioniCancellazione}">
+					<div>
+						<table class="tabella" height="200px" width="300px">
+							<tr height="100px">
+								<td align="right" nowrap="nowrap">Motivo dell'eliminazione:</td>
+								<td align="left" style="padding-right: 20px;"><select
+									name="motivazione">
+										<c:forEach var="motivo" items="#{motivazioniCancellazione}">
+											<option value="#{motivo.id}">
+												<h:outputText value="#{motivo.descrizione}" />
+											</option>
+										</c:forEach>
+								</select></td>
+							</tr>
+							<tr height="70px">
+								<td colspan="2" align="center"
+									style="background-color: #C0C0C0;">
+									<p:commandButton styleClass="cerca" value="CONFERMA" disabled="disabled"
+										name="confermaElimina"
+										onclick="_isDirty=false;$('.confermaElimina').click();" /> 
+									<p:commandButton styleClass="cerca" value="ANNULLA" disabled="disabled"
+										name="annullaElimina"
+										style="margin-left: 6px;"
+										onclick="eliminaInfrazioneModalPopup.hide();" /></td>
+							</tr>
+						</table>
+					</div>
+				</c:if>
+			</p:dialog>
+
+			<p:dialog resizable="false" header="Dettaglio Immagine"
+				widgetVar="dettaglioImmagineStartModalPopup" width="1024"
+				onHide=" plugin = $.data($('#TransitoStartCanvas')[0], 'plugin_imageViewer'); plugin.resynch();"
+				styleClass="resizepopImg popupcontent2" modal="true">
+				<sic:imageViewer id="detailFirstCanvas" controlPosition="left"
+					currentDialog="dettaglioImmagineStartModalPopup"
+					miniStartImageId="" initAtStart="false" canvasWidth="800"
+					canvasHeight="600" sliderClass="slider" image="#{immagineStart}"
+					imageTopX="#{dtoStart.coordinataUpperX}"
+					imageBottomX="#{dtoStart.coordinataBottomX}"
+					imageTopY="#{dtoStart.coordinataUpperY}"
+					imageBottomY="#{dtoStart.coordinataBottomY}"
+					zoom="#{dtoStart.zoom}" luminosita="#{LUMINOSITA_START}"
+					contrasto="#{CONTRASTO_START}" zoomIcon="images/zoom.png"
+					lumIcon="images/lum.png" contrIcon="images/contr.png">
+					<f:facet name="controllHeader">
+						<h:panelGroup layout="block" styleClass="occhio">
+							<h:graphicImage name="images/occhio.png" />
+						</h:panelGroup>
+					</f:facet>
+
+				</sic:imageViewer>
+			</p:dialog>
+
+
+			<p:dialog resizable="false" header="Dettaglio Immagine"
+				widgetVar="dettaglioImmagineStopModalPopup" width="1024"
+				styleClass="resizepopImg popupcontent2" modal="true"
+				onHide=" plugin = $.data($('#TransitoStopCanvas')[0], 'plugin_imageViewer'); plugin.resynch();">
+
+				<sic:imageViewer id="detailSecondCanvas" controlPosition="left"
+					miniStartImageId="" initAtStart="false" canvasWidth="800"
+					currentDialog="dettaglioImmagineStopModalPopup" canvasHeight="600"
+					sliderClass="slider" image="#{immagineStop}"
+					imageTopX="#{dtoStop.coordinataUpperX}"
+					imageBottomX="#{dtoStop.coordinataBottomX}"
+					imageTopY="#{dtoStop.coordinataUpperY}"
+					imageBottomY="#{dtoStop.coordinataBottomY}" zoom="#{dtoStop.zoom}"
+					luminosita="#{LUMINOSITA_STOP}" contrasto="#{CONTRASTO_STOP}"
+					zoomIcon="images/zoom.png" lumIcon="images/lum.png"
+					contrIcon="images/contr.png">
+					<f:facet name="controllHeader">
+						<h:panelGroup layout="block" styleClass="occhio">
+							<h:graphicImage name="images/occhio.png" />
+						</h:panelGroup>
+					</f:facet>
+
+				</sic:imageViewer>
+			</p:dialog>
+		</h:panelGroup>
+	</h:form>
+
+
+	<h:form>
+
+		<p:dialog modal="true" resizable="false" widgetVar="codiceVerbale"
+			width="400" header="#{lbl.attenzione}" style="z-index:99999;">
+			<div style="padding: 5px;">#{lbl.codice_verbale_obbligatorio}</div>
+			<div style="padding: 5px; text-align: center">
+				<p:commandButton value="OK" onclick="codiceVerbale.hide();" />
+			</div>
+
+		</p:dialog>
+
+		<p:dialog modal="true" resizable="false" widgetVar="targaObbligatoria"
+			width="400" header="#{lbl.attenzione}" style="z-index:99999;">
+			<div style="padding: 5px;">#{lbl.targa_obbligatoria}</div>
+			<div style="padding: 5px; text-align: center">
+				<p:commandButton value="OK" onclick="targaObbligatoria.hide();" />
+			</div>
+
+		</p:dialog>
+
+		<p:dialog modal="true" resizable="false"
+			widgetVar="campaTargaCaratteri" width="400"
+			header="#{lbl.attenzione}" style="z-index:99999;">
+			<div style="padding: 5px;">#{lbl.targa_larghezza}</div>
+			<div style="padding: 5px; text-align: center">
+				<p:commandButton value="OK" onclick="campaTargaCaratteri.hide();" />
+			</div>
+
+		</p:dialog>
+
+		<p:dialog modal="true" resizable="false"
+			widgetVar="confermaAccertaPopupWin" width="400"
+			header="#{lbl.attenzione}" style="z-index:99999;">
+			<div style="padding: 5px;">Sei sicuro di accertare questa
+				infrazione?</div>
+			<div style="padding: 5px; text-align: center">
+				<p:commandButton value="SI" widgetVar="accertaDialogButtonYes"
+					onclick="confirmAccerta();confermaAccertaPopupWin.hide();" />
+				<p:commandButton value="NO" style="margin-left: 6px;"
+					onclick="confermaAccertaPopupWin.hide();" />
+				<p:ajaxStatus style="padding-top:10px;">
+					<f:facet name="start">
+						<h:outputText
+							style="font-weight:bold;padding:2px 10px 2px 10px;border:1px solid black;background-color:#FFFFFF;"
+							value="#{lbl.waitajax}" />
+					</f:facet>
+					<f:facet name="complete">
+						<h:outputText value="" />
+					</f:facet>
+				</p:ajaxStatus>
+			</div>
+
+		</p:dialog>
+
+		<p:dialog modal="true" resizable="false"
+			widgetVar="confermaRielaboraPopupWin" width="400"
+			header="#{lbl.attenzione}" style="z-index:99999;">
+			<div style="padding: 5px;">Sei sicuro di rielabolare questa
+				infrazione?</div>
+			<div style="padding: 5px; text-align: center">
+				<p:commandButton value="SI"
+					onclick="confirmRielabora();confermaRielaboraPopupWin.hide();" />
+				<p:commandButton value="NO" style="margin-left: 6px;"
+					onclick="confermaRielaboraPopupWin.hide();" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+
+</ui:composition>
